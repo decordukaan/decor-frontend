@@ -32,7 +32,7 @@ const ProductSection = () => {
   }
 
   return (
-    <div className='container mx-auto mt-[72px]'>
+    <div className='container mx-auto my-[72px] '>
       <h2 className='text-[#3a3a3a] font-semibold text-[38px]'>
         Latest collections
       </h2>

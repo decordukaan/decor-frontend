@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Group, Anchor, Box, Flex, Stack } from '@mantine/core';
+import { Group, Anchor, Box, Stack } from '@mantine/core';
 import { IconChevronDown } from '@tabler/icons-react';
 
 interface NavigationItem {
@@ -17,7 +17,7 @@ const Navigation = ({ navigationItems, isMobile }: NavigationProps) => {
   return (
     <>
       {/* Desktop Navigation */}
-      <div className='lg:flex hidden '>
+      <div className='lg:flex bg-yellow-600 bg-opacity-20 py-3 px-6 rounded-full hidden '>
         <Group align='center'>
           {navigationItems.map((item, index) => (
             <NavItem key={index} item={item} />
@@ -49,10 +49,27 @@ const NavItem = ({ item }: { item: NavigationItem }) => {
       style={{ position: 'relative', cursor: 'pointer' }}
     >
       <Group align='center'>
-        <Anchor href={item.href}>{item.label}</Anchor>
-        {item.subItems && item.subItems.length > 0 && (
-          <IconChevronDown size={16} />
-        )}
+        <Anchor
+          style={{
+            backgroundColor: '#f4f4f5',
+            padding: '8px 18px',
+            borderRadius: '100px',
+            color: '#CA8A04',
+            fontSize: '16px',
+            display:
+              item.subItems && item.subItems.length > 0
+                ? 'flex'
+                : 'inline-block',
+            alignItems: 'center',
+            gap: '6px', // Add some spacing between text & icon
+          }}
+          href={item.href}
+        >
+          {item.label}
+          {item.subItems && item.subItems.length > 0 && (
+            <IconChevronDown size={16} />
+          )}
+        </Anchor>
       </Group>
       {item.subItems && item.subItems.length > 0 && isOpen && (
         <Box
@@ -63,8 +80,9 @@ const NavItem = ({ item }: { item: NavigationItem }) => {
             background: 'white',
             boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.1)',
             borderRadius: '4px',
-            padding: '8px',
+            padding: '4px 8px',
             zIndex: 1000,
+            minWidth: 'calc(100% + 50px)',
           }}
         >
           {item.subItems.map((subItem, index) => (
@@ -73,9 +91,9 @@ const NavItem = ({ item }: { item: NavigationItem }) => {
               href={subItem.href}
               style={{
                 display: 'block',
-                padding: '4px 8px',
+                padding: '4px 4px',
                 textDecoration: 'none',
-                color: 'inherit',
+                color: '#CA8A04',
               }}
             >
               {subItem.label}
@@ -93,9 +111,7 @@ const MobileNavItem = ({ item }: { item: NavigationItem }) => {
   return (
     <Box>
       <Group onClick={() => setIsOpen((prev) => !prev)}>
-        <Anchor href={item.href}>
-          {item.label}
-        </Anchor>
+        <Anchor href={item.href}>{item.label}</Anchor>
         {item.subItems && item.subItems.length > 0 && (
           <IconChevronDown
             size={16}

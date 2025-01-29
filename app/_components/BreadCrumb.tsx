@@ -40,12 +40,11 @@ const BreadCrumb = () => {
 
         <li>
           <a href='#' className='block transition hover:text-gray-700'>
-            {' '}
-            Shirts{' '}
+            Products
           </a>
         </li>
 
-        <li className='rtl:rotate-180'>
+        {/* <li className='rtl:rotate-180'>
           <svg
             xmlns='http://www.w3.org/2000/svg'
             className='size-4'
@@ -58,14 +57,13 @@ const BreadCrumb = () => {
               clipRule='evenodd'
             />
           </svg>
-        </li>
+        </li> */}
 
-        <li>
+        {/* <li>
           <a href='#' className='block transition hover:text-gray-700'>
-            {' '}
-            Plain Tee{' '}
+
           </a>
-        </li>
+        </li> */}
       </ol>
     </nav>
   );

@@ -10,6 +10,7 @@ import { useEffect, useState } from 'react';
 import { useDrawer } from '@/app/_hooks/useDrawer';
 import Navigation from '../../molecules/Navigation';
 import Cart from '@/app/_components/Cart';
+import Link from 'next/link';
 
 interface MenuProps {
   isLogin: boolean;
@@ -44,12 +45,14 @@ const Menu = ({ isLogin, setIsLogin, navigationItems }: MenuProps) => {
       <div>
         <header className={classes.header}>
           <Group justify='space-between' h='100%'>
+            <Link href='/'>
             <Image
               src='/images/logo.png'
               alt='Company Logo'
               width={90}
               height={90}
             />
+            </Link>
 
             {/* Desktop Navigation */}
             <Navigation navigationItems={navigationItems} />

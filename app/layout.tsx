@@ -17,12 +17,14 @@ import { useState } from 'react';
 // Import styles of packages that you've installed.
 // All packages except `@mantine/hooks` require styles imports
 import '@mantine/core/styles.css';
+import '@mantine/notifications/styles.css';
 
 import {
   ColorSchemeScript,
   MantineProvider,
   mantineHtmlProps,
 } from '@mantine/core';
+import { Notifications } from '@mantine/notifications';
 
 const outfit = Outfit({ subsets: ['latin'] });
 
@@ -47,6 +49,7 @@ export default function RootLayout({
           </head>
           <body className={outfit.className}>
             <MantineProvider>
+              <Notifications />
               <Header />
               {children}
               <Footer />

@@ -4,32 +4,31 @@ import { useState } from 'react';
 import { setLocalStorage, getLocalStorage } from '../_utils/localStorage';
 
 const Header = () => {
-
   const [isLogin, setIsLogin] = useState(false);
   const navigationItems = [
-    { label: 'Home', href: '#' },
-    { label: 'Learn', href: '#' },
+    { label: 'About Us', href: '/about-us' },
+    { label: 'Products', href: '/product-detail' },
     {
-      label: 'Products',
+      label: 'Categories',
       href: '#',
       subItems: [
+        { label: 'Wall Art', href: '#' },
+        { label: 'Cushions & Throws', href: '#' },
+        { label: 'Lighting', href: '#' },
+        { label: 'Vases & Planters', href: '#' },
         { label: 'Clock', href: '#' },
-        { label: 'Wall Painting', href: '#' },
-        { label: 'Pots', href: '#' },
       ],
     },
-    { label: 'Learn', href: '#' },
+    { label: 'Contact Us', href: '/contact-us' },
   ];
 
   return (
-    <div className="container mx-auto">
-
-        <Menu
-          navigationItems={navigationItems}
-          isLogin={isLogin}
-          setIsLogin={setIsLogin}
-        />
-
+    <div className='container mx-auto mt-[15px] mb-[20px]'>
+      <Menu
+        navigationItems={navigationItems}
+        isLogin={isLogin}
+        setIsLogin={setIsLogin}
+      />
     </div>
   );
 };

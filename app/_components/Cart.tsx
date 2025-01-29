@@ -4,6 +4,7 @@ import { Product } from '../types/products';
 
 const Cart = ({ openCart, setOpenCart }: any) => {
   const { cart, setCart } = useContext(CartContext);
+
   return (
     <div className='h-[300px] w-[250px] bg-gray-100 z-10 rounded-md absolute mx-10 right-10 top-12 p-5 border shadow-sm overflow-auto'>
       <div className='mt-4 space-y-6'>
@@ -19,7 +20,7 @@ const Cart = ({ openCart, setOpenCart }: any) => {
                 className='size-16 rounded object-cover'
               />
 
-              <div>
+              <div className='flex-grow'>
                 <h3 className='text-sm text-gray-900'>
                   {item?.product?.attributes?.title}
                 </h3>
@@ -33,7 +34,13 @@ const Cart = ({ openCart, setOpenCart }: any) => {
 
                   <div>
                     <dt className='inline'>
-                      ₹ {item?.product?.attributes?.pricing}
+                      ₹ {item?.product?.attributes?.pricing} x {item.quantity}
+                    </dt>
+                  </div>
+
+                  <div>
+                    <dt className='inline font-semibold'>
+                      Total: ₹ {(item?.product?.attributes?.pricing * item.quantity).toFixed(2)}
                     </dt>
                   </div>
                 </dl>
@@ -43,9 +50,12 @@ const Cart = ({ openCart, setOpenCart }: any) => {
         </ul>
 
         <div className='space-y-4 text-center'>
+          <div className='text-sm font-semibold'>
+            Total: ₹ {cart.reduce((total: number, item: any) => total + (item?.product?.attributes?.pricing * item.quantity), 0).toFixed(2)}
+          </div>
           <a
             href='/cart'
-            className='block rounded bg-gray-700 px-5 py-3 text-sm text-gray-100 transition hover:bg-gray-600'
+            className='block rounded bg-yellow-500 hover:bg-yellow-500 hover:bg-opacity-30 hover:text-yellow-600 text-white  px-5 py-3 text-sm transition '
           >
             View my cart ({cart?.length})
           </a>

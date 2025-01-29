@@ -7,12 +7,13 @@ import {
 import { RiFacebookCircleLine } from 'react-icons/ri';
 import { MdOutlineMailOutline } from 'react-icons/md';
 import { IoIosCall } from 'react-icons/io';
+import Link from 'next/link';
 
 import Image from 'next/image';
 
 const Footer = () => {
   return (
-    <footer className=' mt-[72px]'>
+    <footer>
       <div
         className='flex justify-start  items-center'
         style={{
@@ -43,8 +44,10 @@ const Footer = () => {
             </h4>
             <ul className='text-[18px] text-[#373737] mt-[18px] space-y-2'>
               <li className='group relative cursor-pointer'>
-                Contact Us
-                <span className='absolute bottom-0 left-0 w-0 h-[2px] bg-[#373737] transition-all duration-300 group-hover:w-full'></span>
+                <Link href='/contact-us'>
+                  Contact Us
+                  <span className='absolute bottom-0 left-0 w-0 h-[2px] bg-[#373737] transition-all duration-300 group-hover:w-full'></span>
+                </Link>
               </li>
               <li className='group relative cursor-pointer'>
                 Terms & Conditions
@@ -62,16 +65,20 @@ const Footer = () => {
             </h4>
             <ul className='text-[18px] text-[#373737] mt-[18px] space-y-2'>
               <li className='group relative cursor-pointer'>
-                About Us
-                <span className='absolute bottom-0 left-0 w-0 h-[2px] bg-[#373737] transition-all duration-300 group-hover:w-full'></span>
+                <Link href='/about-us'>
+                  About Us
+                  <span className='absolute bottom-0 left-0 w-0 h-[2px] bg-[#373737] transition-all duration-300 group-hover:w-full'></span>
+                </Link>
               </li>
               <li className='group relative cursor-pointer'>
                 Categories
                 <span className='absolute bottom-0 left-0 w-0 h-[2px] bg-[#373737] transition-all duration-300 group-hover:w-full'></span>
               </li>
               <li className='group relative cursor-pointer'>
-                Products
-                <span className='absolute bottom-0 left-0 w-0 h-[2px] bg-[#373737] transition-all duration-300 group-hover:w-full'></span>
+                <Link href='/product-detail'>
+                  Products
+                  <span className='absolute bottom-0 left-0 w-0 h-[2px] bg-[#373737] transition-all duration-300 group-hover:w-full'></span>
+                </Link>
               </li>
             </ul>
           </div>
@@ -103,35 +110,15 @@ const Footer = () => {
             </div>
           </div>
         </div>
+        <div className='mt-[72px] flex justify-center items-center'>
+          <Link
+            href='/'
+            className='text-[100px] font-bold text-yellow-600 text-opacity-40'
+          >
+            D E C O R D U K A A N
+          </Link>
+        </div>
       </div>
-
-      {/* <div className='flex justify-between gap-[24px]'>
-        <div>
-          <Image
-            src='/images/logo.png'
-            alt='Company Logo'
-            width={90}
-            height={90}
-          />
-          <div className='flex items-center justify-start gap-3 mt-[24px]'>
-            <FaInstagram color='orange' size={30} />
-            <RiFacebookCircleLine color='orange' size={30} />
-            <FaWhatsapp color='orange' size={30} />
-          </div>
-        </div>
-        <div>
-          <ul className='text-[18px] text-[#373737]'>
-            <li>About us</li>
-            <li>Categories</li>
-            <li>Products</li>
-            <li>Contact us</li>
-          </ul>
-        </div>
-        <div>
-          <h2>Bring Your Dream Space to Life with Decor Dukaan!</h2>
-          <button>Shop now</button>
-        </div>
-      </div> */}
     </footer>
   );
 };

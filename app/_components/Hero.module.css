@@ -1,9 +1,9 @@
 .card {
-  height: 440px;
+  height: 580px;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
-  align-items: flex-start;
+  justify-content: center;
+  align-items: center;
   background-size: cover;
   background-position: center;
 }
@@ -12,7 +12,7 @@
   font-weight: 900;
   color: var(--mantine-color-white);
   line-height: 1.2;
-  font-size: 32px;
+  font-size: 52px;
   margin-top: var(--mantine-spacing-xs);
   cursor: default;
 }
@@ -29,3 +29,7 @@
   bottom: 200px;
  }
 }
+
+/* .btn:hover{
+
+} */

@@ -21,7 +21,6 @@
     height: 42px;
     width: 100%;
   }
-
   /* Hover effect */
   &:hover {
     background-color: light-dark(

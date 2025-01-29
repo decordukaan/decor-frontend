@@ -3,44 +3,72 @@ import { Carousel } from '@mantine/carousel';
 import '@mantine/carousel/styles.css';
 import Categories from './Categories';
 import { useFeaturedProducts } from '../_hooks/useFeaturedProducts';
-import { Skeleton, Paper, Text, Title, Button,  } from '@mantine/core';
+import { Skeleton, Paper, Text, Title, Button } from '@mantine/core';
 import classes from './Hero.module.css';
-
-
+import Link from 'next/link';
+import Autoplay from 'embla-carousel-autoplay';
+import { Transition } from '@mantine/core';
+import { useRef, useEffect } from 'react';
 
 const Hero = () => {
-
   const { products, loading, error } = useFeaturedProducts();
+  const autoplay = useRef(null); // ✅ Fix: Initialize as null
+
+  // useEffect(() => {
+  //   autoplay.current = Autoplay({ delay: 4000 });
+  // }, []);
+
 
   return (
-    <section className='mt-[20px]'>
+    <section>
       <div>
         {loading ? (
-          <Skeleton height={'50vh'} radius="md" />
+          <Skeleton />
         ) : error ? (
-          <div className="text-center text-red-500">Error loading featured products</div>
+          <div className='text-center text-red-500'>
+            Error loading featured products
+          </div>
         ) : (
-          <Carousel className='hero-carousel-container'  withControls={false} loop height={'50vh'} withIndicators={true}>
+          <Carousel
+            className='hero-carousel-container'
+            withControls={false}
+            loop
+            withIndicators={false}
+            plugins={autoplay.current ? [autoplay.current] : []}
+          >
             {products.map((product) => (
               <Carousel.Slide key={product.id}>
                 <Paper
-                  shadow="md"
-                  p="xl"
-                  radius="md"
-                  style={{ backgroundImage: `url(${product.attributes?.banner?.data?.attributes?.url || ''})` }}
+                  shadow='md'
+                  p='xl'
+                  radius={0}
+                  style={{
+                    backgroundImage: `url(${
+                      product.attributes?.banner?.data?.attributes?.url || ''
+                    })`,
+                  }}
                   className={classes.card}
                 >
-                  <div>
-                    <Text className={classes.category} size="xs">
+                  <div className='flex flex-col justify-center items-center'>
+                    <Text className={classes.category} size='xs'>
                       {product.attributes?.category || 'Category'}
                     </Text>
                     <Title order={3} className={classes.title}>
-                      {product.attributes?.banner?.data?.attributes?.caption || 'Product Name'}
+                      {product.attributes?.title || 'Product Name'}
                     </Title>
+                    <Link
+                      className='mt-[24px]'
+                      href={`/product-detail/${product.id}`}
+                    >
+                      <Button
+                        className={classes.btn}
+                        variant='white'
+                        color='dark'
+                      >
+                        View Product
+                      </Button>
+                    </Link>
                   </div>
-                  <Button variant="white" color="dark">
-                    View Product
-                  </Button>
                 </Paper>
               </Carousel.Slide>
             ))}

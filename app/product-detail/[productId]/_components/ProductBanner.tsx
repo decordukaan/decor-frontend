@@ -11,9 +11,10 @@ const ProductBanner = ({ product }: ProductIdProps) => {
       <Image
         src={product?.attributes?.banner?.data.attributes.url as string}
         alt='banner'
-        height={300}
-        width={350}
-        className='rounded-lg object-cover text-center'
+        height={0}
+        width={0}
+        sizes='100vw'
+        className='rounded-lg w-[450px] h-[300px] object-cover text-center'
       />
     </>
   );

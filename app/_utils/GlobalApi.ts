@@ -22,7 +22,9 @@ const getFeaturedProducts = () =>
 
 // get latest products
 const getLatestProducts = (limit: number = 10) =>
-  axiosClient.get(`/products?sort=createdAt:desc&pagination[limit]=${limit}&populate=*`);
+  axiosClient.get(
+    `/products?sort=createdAt:desc&pagination[limit]=${limit}&populate=*`
+  );
 
 // Add to cart collection
 const addToCart = (data: {
@@ -30,17 +32,29 @@ const addToCart = (data: {
     userName: string | null;
     email: string | undefined;
     products: number | undefined;
+    quantity: number | undefined;
+    price: number | undefined;
   };
 }) => axiosClient.post('/carts', data);
+
+// Update cart item
+const updateCartItem = (id: number, data: {
+  data: {
+    quantity?: number;
+    price?:number;
+  };
+}) => axiosClient.put(`/carts/${id}`, data);
 
 // get user cart items
 const getUserCartItems = (email: string) =>
   axiosClient.get(
-    '/carts?populate[products][populate][0]=banner&filters[email][$eq]=' + email
+    '/carts?populate[products][populate][0]=banner&populate[products][populate][1]=id&filters[email][$eq]=' + email
   );
 
 // delete item from cart
 const deleteCartItem = (id: number) => axiosClient.delete('/carts/' + id);
+
+const getCategoryList = () => axiosClient.get('/product-categories?populate=*');
 
 export default {
   getAllProducts,
@@ -50,4 +64,6 @@ export default {
   addToCart,
   getUserCartItems,
   deleteCartItem,
+  getCategoryList,
+  updateCartItem
 };
