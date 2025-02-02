@@ -41,7 +41,7 @@ interface CategoryImage {
     };
   }
 
-  interface Category {
+  export interface Category {
     id: number;
     attributes: {
       description: string;
@@ -52,5 +52,7 @@ interface CategoryImage {
       image: CategoryImage;
     };
   }
+
+
 
   export type CategoryList = Category[];

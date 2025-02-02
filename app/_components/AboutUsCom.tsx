@@ -4,7 +4,7 @@ import { Timeline, Text } from '@mantine/core';
 
 function AboutUsCom() {
   return (
-    <div className='bg-gray-50 text-gray-800 min-h-screen'>
+    <div className='bg-gray-50  min-h-screen'>
       {/* Hero Section */}
       <section
         style={{

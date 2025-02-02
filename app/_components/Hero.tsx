@@ -51,7 +51,7 @@ const Hero = () => {
                 >
                   <div className='flex flex-col justify-center items-center'>
                     <Text className={classes.category} size='xs'>
-                      {product.attributes?.category || 'Category'}
+                      {product?.attributes?.product_category?.data?.attributes.title || ''}
                     </Text>
                     <Title order={3} className={classes.title}>
                       {product.attributes?.title || 'Product Name'}

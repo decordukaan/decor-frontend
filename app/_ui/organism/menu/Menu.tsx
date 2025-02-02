@@ -1,16 +1,15 @@
-// src/components/Menu/Menu.tsx
-
 import Image from 'next/image';
 import { UserButton, useUser } from '@clerk/nextjs';
-import { ShoppingCart } from 'lucide-react';
+import { ShoppingCart, Heart } from 'lucide-react';
 import { Box, Burger, Button, Drawer, Group, Text } from '@mantine/core';
 import classes from './Menu.module.css';
 import { useCart } from '@/app/_hooks/useCart';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useDrawer } from '@/app/_hooks/useDrawer';
 import Navigation from '../../molecules/Navigation';
 import Cart from '@/app/_components/Cart';
 import Link from 'next/link';
+// import { useWishList } from '@/app/_hooks/useWishList';
 
 interface MenuProps {
   isLogin: boolean;
@@ -19,26 +18,15 @@ interface MenuProps {
 }
 
 const Menu = ({ isLogin, setIsLogin, navigationItems }: MenuProps) => {
-  const { cart, setCart } = useCart(); // Get cart state from custom hook
+  const { cart } = useCart(); // Get cart state from custom hook
   const { user, isLoaded } = useUser();
   const { drawerOpened, toggleDrawer } = useDrawer(); // Get drawer state from custom hook
   const [openCart, setOpenCart] = useState(false);
+  // const { wishList } = useWishList();
 
-  useEffect(() => {
-    if (isLoaded && user) {
-      const userData = {
-        id: user.id,
-        firstName: user.firstName,
-        lastName: user.lastName,
-        email: user.primaryEmailAddress?.emailAddress,
-        // Add any other user properties you want to store
-      };
-      console.log('User data loaded:', userData);
-      localStorage.setItem('userData', JSON.stringify(userData));
-    } else if (isLoaded && !user) {
-      localStorage.removeItem('userData');
-    }
-  }, [isLoaded, user]);
+
+
+
 
   return (
     !isLogin && (
@@ -46,12 +34,12 @@ const Menu = ({ isLogin, setIsLogin, navigationItems }: MenuProps) => {
         <header className={classes.header}>
           <Group justify='space-between' h='100%'>
             <Link href='/'>
-            <Image
-              src='/images/logo.png'
-              alt='Company Logo'
-              width={90}
-              height={90}
-            />
+              <Image
+                src='/images/logo.png'
+                alt='Company Logo'
+                width={90}
+                height={90}
+              />
             </Link>
 
             {/* Desktop Navigation */}
@@ -80,15 +68,33 @@ const Menu = ({ isLogin, setIsLogin, navigationItems }: MenuProps) => {
                 </Group>
               ) : (
                 <Group>
+                  {/* Wishlist Icon */}
+                  <Link href='/wishlist' className='flex gap-1 cursor-pointer'>
+                    {/* <Heart
+                      className={`h-5 w-5 ${
+                        wishList.length > 0 ? 'text-red-500' : 'text-gray-500'
+                      }`}
+                    /> */}
+                    {/* Display the number of items in the wishlist */}
+                    {/* {wishList.length > 0 && (
+                      <Text size='sm' className='text-red-500'>
+                        ({wishList.length})
+                      </Text>
+                    )} */}
+                  </Link>
+
+                  {/* Shopping Cart Icon */}
                   <Text
                     className='flex gap-1 cursor-pointer'
                     onClick={() => {
                       setOpenCart(!openCart);
-                      console.log('hellooooooo');
                     }}
                   >
-                    <ShoppingCart />({cart?.length})
+                    <ShoppingCart />
+                    {cart && cart.length > 0 && `(${cart.length})`}
                   </Text>
+
+                  {/* User Button */}
                   <UserButton />
                 </Group>
               )}

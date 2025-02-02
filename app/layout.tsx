@@ -25,6 +25,7 @@ import {
   mantineHtmlProps,
 } from '@mantine/core';
 import { Notifications } from '@mantine/notifications';
+import { WishListContext } from './_context/WishListContext';
 
 const outfit = Outfit({ subsets: ['latin'] });
 
@@ -39,24 +40,28 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   const [cart, setCart] = useState([]);
+  const [wishList, setWishList] = useState([]);
 
   return (
     <ClerkProvider>
       <CartContext.Provider value={{ cart, setCart }}>
-        <html lang='en' {...mantineHtmlProps}>
-          <head>
-            <ColorSchemeScript />
-          </head>
-          <body className={outfit.className}>
-            <MantineProvider>
-              <Notifications />
-              <Header />
-              {children}
-              <Footer />
-            </MantineProvider>
-          </body>
-        </html>
+        <WishListContext.Provider value={{ wishList, setWishList }}>
+          <html lang='en' {...mantineHtmlProps}>
+            <head>
+              <ColorSchemeScript />
+            </head>
+            <body className={outfit.className}>
+              <MantineProvider>
+                <Notifications />
+                <Header />
+                {children}
+                <Footer />
+              </MantineProvider>
+            </body>
+          </html>
+        </WishListContext.Provider>
       </CartContext.Provider>
     </ClerkProvider>
   );
 }
+

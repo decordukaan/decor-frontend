@@ -1,14 +1,31 @@
-import { useContext } from 'react';
+import { useContext, useEffect, useRef } from 'react';
 import { CartContext } from '../_context/CartContext';
 import { Product } from '../types/products';
 
 const Cart = ({ openCart, setOpenCart }: any) => {
   const { cart, setCart } = useContext(CartContext);
+  const cartRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (cartRef.current && !cartRef.current.contains(event.target as Node)) {
+        setOpenCart(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [setOpenCart]);
+
+  if (!openCart) return null;
 
   return (
-    <div className='h-[300px] w-[250px] bg-gray-100 z-10 rounded-md absolute mx-10 right-10 top-12 p-5 border shadow-sm overflow-auto'>
+    <div ref={cartRef} className='h-[300px] w-[250px] bg-gray-100 z-10 rounded-md absolute mx-10 right-10 top-12 p-5 border shadow-sm overflow-auto'>
+      {/* Rest of the cart content */}
       <div className='mt-4 space-y-6'>
-        <ul className='space-y-4'>
+      <ul className='space-y-4'>
           {cart.map((item: any, index: number) => (
             <li key={index} className='flex items-center gap-4'>
               <img
@@ -40,7 +57,7 @@ const Cart = ({ openCart, setOpenCart }: any) => {
 
                   <div>
                     <dt className='inline font-semibold'>
-                      Total: ₹ {(item?.product?.attributes?.pricing * item.quantity).toFixed(2)}
+                      Total: ₹ {Number((item?.product?.attributes?.pricing * item.quantity).toFixed(2))}
                     </dt>
                   </div>
                 </dl>

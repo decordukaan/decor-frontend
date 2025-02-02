@@ -1,4 +1,5 @@
 import { StaticImport } from 'next/dist/shared/lib/get-img-props';
+import { Category } from './categoryList';
 
 export interface Product {
   id?: number;
@@ -12,8 +13,18 @@ export interface Product {
       }>;
     }>;
     pricing?: number;
-    category?: string;
-    createdAt?: string;
+    product_category?: {
+      data: {
+        id: number;
+        attributes: {
+          description: string;
+          createdAt: string;
+          updatedAt: string;
+          publishedAt: string;
+          title: string;
+        }
+      }
+    };
     updatedAt?: string;
     publishedAt?: string;
     banner?: {
@@ -58,7 +69,8 @@ export interface Product {
         };
       };
     };
-    featured:boolean
+    featured:boolean;
+    stock_quantity: number;
   };
 }
 

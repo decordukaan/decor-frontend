@@ -1,13 +1,12 @@
 import { Product } from '@/app/types/products';
-import { ShoppingCart, Minus, Plus } from 'lucide-react';
+import { ShoppingCart, Minus, Plus, Check, X } from 'lucide-react';
 import { useUser } from '@clerk/nextjs';
-import { useRouter } from 'next/navigation';
 import GlobalApi from '@/app/_utils/GlobalApi';
 import { useContext, useState } from 'react';
 import { CartContext } from '@/app/_context/CartContext';
 import { notifications } from '@mantine/notifications';
 import { Button } from '@mantine/core';
-import { Check, X } from 'lucide-react';
+import Link from 'next/link';
 
 interface ProductInfoProps {
   product: Product | undefined;
@@ -18,7 +17,6 @@ const ProductInfo = ({ product }: ProductInfoProps) => {
     product?.attributes?.description?.[0]?.children?.[0]?.text || '';
 
   const { user } = useUser();
-  const router = useRouter();
   const { cart, setCart } = useContext(CartContext);
 
   const [quantity, setQuantity] = useState(1);
@@ -44,10 +42,7 @@ const ProductInfo = ({ product }: ProductInfoProps) => {
   };
 
   const onAddToCartClick = async () => {
-    if (!user) {
-      router.push('/sign-in');
-      return;
-    }
+    if (!user) return;
 
     setLoading(true); // Show loading spinner
 
@@ -133,7 +128,7 @@ const ProductInfo = ({ product }: ProductInfoProps) => {
     <div>
       <h2 className='text-[20px]'>{product?.attributes?.title}</h2>
       <h2 className='text-[15px] text-gray-400'>
-        {product?.attributes?.category}
+        {product?.attributes?.product_category?.data?.attributes.title || ''}
       </h2>
       <p className='text-[15px] mt-5 text-gray-700'>{descriptionText}</p>
       <h2 className='text-[32px] text-[#373737] font-medium mt-5'>
@@ -158,17 +153,30 @@ const ProductInfo = ({ product }: ProductInfoProps) => {
         </button>
       </div>
 
-      {/* Mantine Button with Loading State */}
-      <Button
-        className="flex gap-2 mt-5 px-8 py-3 bg-yellow-500 hover:bg-yellow-500 hover:bg-opacity-30 hover:text-yellow-600 text-white font-semibold rounded-lg"
-        leftSection={<ShoppingCart />}
-        loading={loading}
-        onClick={onAddToCartClick}
-      >
-        Add to cart
-      </Button>
+      {/* Sign-in Button if User is Not Logged In */}
+      {!user ? (
+        <Link href="/sign-in" passHref>
+          <Button
+            className="flex gap-2 mt-5 px-8 py-3 bg-yellow-500 hover:bg-yellow-500 hover:bg-opacity-30 hover:text-yellow-600 text-white font-semibold rounded-lg"
+            leftSection={<ShoppingCart />}
+            color='yellow'
+          >
+            Sign in to Add to Cart
+          </Button>
+        </Link>
+      ) : (
+        <Button
+          className="flex gap-2 mt-5 px-8 py-3 bg-yellow-500 hover:bg-yellow-500 hover:bg-opacity-30 hover:text-yellow-600 text-white font-semibold rounded-lg"
+          leftSection={<ShoppingCart />}
+          loading={loading}
+          onClick={onAddToCartClick}
+          color='yellow'
+        >
+          Add to cart
+        </Button>
+      )}
 
-      <div>Cart Item Price for this item: {price}</div>
+      <div className='text-gray-500 mt-4'>Cart Item Price for this item: {price}</div>
     </div>
   );
 };

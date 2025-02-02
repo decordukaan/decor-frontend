@@ -6,6 +6,7 @@ import GlobalApi from '../_utils/GlobalApi';
 import { useUser } from '@clerk/nextjs';
 import { Box, Button, Skeleton } from '@mantine/core';
 import { IconTrash, IconMinus, IconPlus } from '@tabler/icons-react';
+import Link from 'next/link';
 
 const Cart = () => {
   const { user } = useUser();
@@ -110,11 +111,17 @@ const Cart = () => {
                     </Skeleton>
                   </div>
                   <div className='flex items-center gap-2'>
-                    <Box style={{ width: '80px', textAlign: 'right' }}>
-                      <Skeleton visible={updatingItems.includes(item.id)}>
-                        <dt className='inline'>₹ {item.price}</dt>
-                      </Skeleton>
-                    </Box>
+                    <Button
+                      color='red'
+                      size='xs'
+                      onClick={() => deleteCartItem(item.id)}
+                      disabled={
+                        loadingItems.includes(item.id) ||
+                        updatingItems.includes(item.id)
+                      }
+                    >
+                      <IconTrash size={24} />
+                    </Button>
                     <div className='flex items-center gap-1'>
                       <Button
                         size='xs'
@@ -142,17 +149,11 @@ const Cart = () => {
                         <IconPlus size={16} />
                       </Button>
                     </div>
-                    <Button
-                      color='red'
-                      size='xs'
-                      onClick={() => deleteCartItem(item.id)}
-                      disabled={
-                        loadingItems.includes(item.id) ||
-                        updatingItems.includes(item.id)
-                      }
-                    >
-                      <IconTrash size={24} />
-                    </Button>
+                    <Box style={{ width: '80px', textAlign: 'right' }}>
+                      <Skeleton visible={updatingItems.includes(item.id)}>
+                        <dt className='inline'>₹ {item.price}</dt>
+                      </Skeleton>
+                    </Box>
                   </div>
                 </li>
               ))}
@@ -166,9 +167,11 @@ const Cart = () => {
                   </div>
                 </dl>
                 <div className='flex justify-end mt-[24px]'>
-                  <Button fullWidth color='yellow'>
-                    Checkout
-                  </Button>
+                  <Link href='/checkout'>
+                    <Button fullWidth color='yellow'>
+                      Checkout
+                    </Button>
+                  </Link>
                 </div>
               </div>
             </div>

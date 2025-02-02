@@ -1,8 +1,5 @@
-import { ProductListProps } from "../types/products";
-import ProductItem from "./ProductItem";
-
-
-
+import { ProductListProps } from '../types/products';
+import ProductItem from './ProductItem';
 
 const ProductList = ({ productList }: ProductListProps) => {
   return (
@@ -13,5 +10,5 @@ const ProductList = ({ productList }: ProductListProps) => {
     </div>
   );
 };
-export default ProductList;
 
+export default ProductList;
