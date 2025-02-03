@@ -3,7 +3,7 @@ import { CartContext } from '../_context/CartContext';
 import { Product } from '../types/products';
 
 const Cart = ({ openCart, setOpenCart }: any) => {
-  const { cart, setCart } = useContext(CartContext);
+  const { cart, totalPrice } = useContext(CartContext);
   const cartRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -21,11 +21,16 @@ const Cart = ({ openCart, setOpenCart }: any) => {
 
   if (!openCart) return null;
 
+  // Calculate total price if it's not provided by the context
+  const calculatedTotalPrice = totalPrice ?? cart.reduce((total: number, item: { product: { attributes: { pricing: any; }; }; quantity: number; }) => {
+    return total + (item.product?.attributes?.pricing || 0) * item.quantity;
+  }, 0);
+
   return (
     <div ref={cartRef} className='h-[300px] w-[250px] bg-gray-100 z-10 rounded-md absolute mx-10 right-10 top-12 p-5 border shadow-sm overflow-auto'>
       {/* Rest of the cart content */}
       <div className='mt-4 space-y-6'>
-      <ul className='space-y-4'>
+        <ul className='space-y-4'>
           {cart.map((item: any, index: number) => (
             <li key={index} className='flex items-center gap-4'>
               <img
@@ -55,10 +60,8 @@ const Cart = ({ openCart, setOpenCart }: any) => {
                     </dt>
                   </div>
 
-                  <div>
-                    <dt className='inline font-semibold'>
-                      Total: ₹ {Number((item?.product?.attributes?.pricing * item.quantity).toFixed(2))}
-                    </dt>
+                  <div className='text-sm font-semibold'>
+                    Total: ₹ {((item?.product?.attributes?.pricing || 0) * item.quantity).toFixed(2)}
                   </div>
                 </dl>
               </div>
@@ -68,7 +71,7 @@ const Cart = ({ openCart, setOpenCart }: any) => {
 
         <div className='space-y-4 text-center'>
           <div className='text-sm font-semibold'>
-            Total: ₹ {cart.reduce((total: number, item: any) => total + (item?.product?.attributes?.pricing * item.quantity), 0).toFixed(2)}
+            Total: ₹ {calculatedTotalPrice.toFixed(2)}
           </div>
           <a
             href='/cart'

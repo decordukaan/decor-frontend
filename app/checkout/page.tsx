@@ -1,18 +1,24 @@
 'use client';
 
-import { Button, Select, Stepper } from '@mantine/core';
+import { Accordion, Button, Select, Stepper } from '@mantine/core';
 import { useUser } from '@clerk/nextjs';
 import ConfirmCart from '../_components/ConfirmCart';
 import { useFormState } from '../_hooks/useFormState';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { submitOrder } from '../_utils/checkoutApi';
 import ContactInformationForm from '../_ui/molecules/ContactInformationForm';
 import ShippingDetailsForm from '../_ui/molecules/ShippingDetailsForm';
 import PaymentForm from '../_ui/molecules/PaymentForm';
+import { useCart } from '../_hooks/useCart';
+import CartTable from '../_components/CartTable';
+import { useRouter } from 'next/navigation';
 
 const Checkout = () => {
   const { user, isSignedIn } = useUser();
+  const { cart } = useCart(); // Add this line to use the useCart hook
+  const router = useRouter(); // Initialize router
+
   const initialContactInfo = {
     userName: '',
     email: '',
@@ -33,8 +39,12 @@ const Checkout = () => {
   };
 
   const [contactInfo, handleContactChange] = useFormState(initialContactInfo);
-  const [shippingDetails, handleShippingChange] = useFormState(initialShippingDetails);
-  const [paymentDetails, handlePaymentChange] = useFormState(initialPaymentDetails);
+  const [shippingDetails, handleShippingChange] = useFormState(
+    initialShippingDetails
+  );
+  const [paymentDetails, handlePaymentChange] = useFormState(
+    initialPaymentDetails
+  );
   const [activeStep, setActiveStep] = useState(0);
   const [loading, setLoading] = useState(false);
 
@@ -60,14 +70,55 @@ const Checkout = () => {
     }
   };
 
+  const totalPrice = cart.reduce(
+    (
+      total: number,
+      item: { product: { attributes: { pricing: any } }; quantity: number }
+    ) => {
+      return total + (item.product?.attributes?.pricing || 0) * item.quantity;
+    },
+    0
+  );
+
+  // Redirect user to home if cart is empty or user not signed in
+  useEffect(() => {
+    if (!isSignedIn || cart.length === 0 || totalPrice === 0) {
+      router.push('/'); // Redirect to home page
+    }
+  }, [isSignedIn, cart, totalPrice, router]);
 
   return (
     <>
-      {user && isSignedIn && (
+      {isSignedIn && cart.length > 0 && totalPrice > 0 && (
         <div className='max-w-3xl mx-auto pt-8 pb-16'>
-          <h1 className='text-[38px] font-bold text-center'>Checkout</h1>
-
-          <Stepper mt={48} active={activeStep} onStepClick={setActiveStep}>
+          <h1 className='text-[38px] font-bold text-center'>
+            Checkout Total: ₹{totalPrice.toFixed(2)}{' '}
+          </h1>
+          <Accordion
+            styles={{
+              control: {
+                background: '#f1f3f5',
+                borderRadius: '4px',
+                cursor: 'pointer',
+              },
+            }}
+            defaultValue='checkout'
+          >
+            {/* Order Summary Section */}
+            <Accordion.Item value='order-summary'>
+              <Accordion.Control>Order Summary</Accordion.Control>
+              <Accordion.Panel>
+                <CartTable cart={cart} />
+              </Accordion.Panel>
+            </Accordion.Item>
+          </Accordion>
+          <Stepper
+            mt={48}
+            active={activeStep}
+            onStepClick={setActiveStep}
+            allowNextStepsSelect={false}
+          >
+            {/* Step 1: Contact Information */}
             <Stepper.Step color='yellow' label='Contact Information'>
               <ContactInformationForm
                 contactInfo={contactInfo}
@@ -76,6 +127,7 @@ const Checkout = () => {
               />
             </Stepper.Step>
 
+            {/* Step 2: Shipping Details */}
             <Stepper.Step color='yellow' label='Shipping Details'>
               <ShippingDetailsForm
                 shippingDetails={shippingDetails}
@@ -84,17 +136,20 @@ const Checkout = () => {
               />
             </Stepper.Step>
 
+            {/* Step 3: Payment */}
             <Stepper.Step color='yellow' label='Payment'>
               <PaymentForm
                 paymentDetails={paymentDetails}
-                email={user.emailAddresses[0].emailAddress} // Pass the email here
+                email={user.emailAddresses[0].emailAddress}
                 onChange={handlePaymentChange}
                 onSubmit={handleSubmit}
               />
             </Stepper.Step>
 
+            {/* Step Completed */}
             <Stepper.Completed>
-              Order has been placed successfully! Thank you for shopping with us.
+              Order has been placed successfully! Thank you for shopping with
+              us.
             </Stepper.Completed>
           </Stepper>
         </div>
