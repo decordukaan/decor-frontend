@@ -28,9 +28,7 @@ const Profile = () => {
 
   return (
     <div className='container mx-auto mt-12 mb-16'>
-      <h1 className='text-[38px] font-bold mb-6'>
-        Profile:
-      </h1>
+      <h1 className='text-[38px] font-bold mb-6'>Profile:</h1>
       <div>
         <Tabs defaultValue='contact'>
           <Tabs.List>
@@ -63,10 +61,11 @@ const Profile = () => {
                   state: '',
                   postal_code: '',
                   country: '',
-                  email:''
+                  email: '',
                 }}
                 onNext={handleShippingDetailsSubmit}
                 profile={true}
+                onChange={(info) => console.log('Contact info changed:', info)}
               />
             </div>
           </Tabs.Panel>

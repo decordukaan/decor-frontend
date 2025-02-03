@@ -14,11 +14,12 @@ interface ShippingDetailsFormProps {
     postal_code: string;
     country: string;
     email: string;
-
   };
   onNext: (processedShippingDetails: ShippingDetailsFormProps['shippingDetails']) => void;
+  onChange: (info: ShippingDetailsFormProps['shippingDetails']) => void;
   profile?: boolean;
 }
+
 
 const ShippingDetailsForm = ({ shippingDetails, onNext,profile = false }: ShippingDetailsFormProps) => {
   const { user } = useUser();

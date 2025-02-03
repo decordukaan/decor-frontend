@@ -84,7 +84,7 @@ const ContactInformationForm = ({ contactInfo, onChange, onNext, profile = false
       await GlobalApi.updateContactInformationByEmail(values.email, processedContactInfo);
       if (profile) {
         // If it's a profile update, we might want to show a success message or update local state
-        console.log("Profile updated successfully");
+        onNext(processedContactInfo);
       } else {
         onNext(processedContactInfo);
       }

@@ -31,6 +31,7 @@ const Checkout = () => {
     state: 'Kerala',
     postal_code: '',
     country: 'India',
+    email:'string'
   };
   const initialPaymentDetails = {
     payment_method: '',
@@ -122,7 +123,11 @@ const Checkout = () => {
             <Stepper.Step color='yellow' label='Contact Information'>
               <ContactInformationForm
                 contactInfo={contactInfo}
-                onChange={handleContactChange}
+                onChange={(newContactInfo) => {
+                  Object.entries(newContactInfo).forEach(([key, value]) => {
+                    handleContactChange(key as keyof typeof contactInfo, value);
+                  });
+                }}
                 onNext={() => setActiveStep(1)}
               />
             </Stepper.Step>
@@ -131,7 +136,11 @@ const Checkout = () => {
             <Stepper.Step color='yellow' label='Shipping Details'>
               <ShippingDetailsForm
                 shippingDetails={shippingDetails}
-                onChange={handleShippingChange}
+                onChange={(newShippinDetailInfo) => {
+                  Object.entries(newShippinDetailInfo).forEach(([key, value]) => {
+                    handleShippingChange(key as keyof typeof shippingDetails, value as string)
+                  });
+                }}
                 onNext={() => setActiveStep(2)}
               />
             </Stepper.Step>
