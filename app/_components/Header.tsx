@@ -19,7 +19,9 @@ const Header = () => {
         { label: 'Clock', href: '#' },
       ],
     },
-    { label: 'Contact Us', href: '/contact-us' },
+    { label: 'Profile', href: '/profile' },
+    { label: 'Contact Us', href: '/contact-us' }
+
   ];
 
   return (

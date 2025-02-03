@@ -185,11 +185,11 @@ const addContactInformation = async (data:ContactInformation) => {
     throw error;
   }
 };
-const addShippingDetails = async (data:ShippingDetails) => {
+const addShippingDetails = async (data: ShippingDetails & { email: string }) => {
   try {
-    const response = await axiosClient.post('/shipping-details', {
-      data,
-    });
+    console.log('Adding new shipping details:', data);
+    const response = await axiosClient.post('/shipping-details', { data });
+    console.log('Add shipping details response:', response.data);
     return response;
   } catch (error) {
     console.error('Error adding shipping details:', error);
@@ -205,6 +205,130 @@ const addPaymentDetails = async (data:PaymentDetails) => {
     return response;
   } catch (error) {
     console.error('Error adding payment details:', error);
+    throw error;
+  }
+};
+
+// Get contact information by email
+const getContactInformationByEmail = async (email: string) => {
+  console.log('passed email to getContact information by email:',email)
+  try {
+    console.log("Fetching:", `/contact-informations?filters[email][$eq]=${encodeURIComponent(email)}`);
+    const response = await axiosClient.get(
+      `/contact-informations?filters[email][$eq]=${encodeURIComponent(email)}`
+    );
+    console.log("API Response getContactInformationByEmail:", response.data);
+    return response.data;
+  } catch (error:any) {
+    console.error("API Error getContactInformationByEmail:", error.response?.data || error.message);
+  }
+};
+
+
+
+// Get shipping details by email
+const getShippingDetailsByEmail = async (email: string) => {
+  try {
+    console.log(`Fetching shipping details for email: ${email}`);
+    const response = await axiosClient.get(`/shipping-details?filters[email][$eq]=${encodeURIComponent(email)}&populate=*`);
+    console.log('Shipping details response:', response.data);
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching shipping details:', error);
+    throw error;
+  }
+};
+
+// Get payment details by email
+const getPaymentDetailsByEmail = (email: string) =>
+  axiosClient.get(`/payment-steps?filters[email][$eq]=${email}`);
+
+// Update contact information by email
+// Update or create contact information by email
+const updateContactInformationByEmail = async (email: string, data: ContactInformation) => {
+  try {
+    console.log('Updating/Creating contact information for email:', email);
+    console.log('New contact data:', data);
+
+    const existingInfo = await getContactInformationByEmail(email);
+    console.log('Existing contact information:', existingInfo);
+
+    if (!existingInfo || !existingInfo.data || existingInfo.data.length === 0) {
+      console.log('No existing contact information found, creating new entry');
+      return await addContactInformation(data);
+    }
+
+    const contactInfo = existingInfo.data[0];
+    if (!contactInfo || !contactInfo.id) {
+      console.error('Invalid contact information structure:', contactInfo);
+      throw new Error('Invalid contact information structure');
+    }
+
+    console.log('Updating contact information with ID:', contactInfo.id);
+    const response = await axiosClient.put(`/contact-informations/${contactInfo.id}`, {
+      data: {
+        ...data,
+        email // Ensure email is included in the update
+      }
+    });
+    console.log('Update response:', response.data);
+    return response;
+  } catch (error) {
+    console.error('Error updating/creating contact information:', error);
+    throw error;
+  }
+};
+
+// Update shipping details by email
+// Update shipping details by email
+const updateOrCreateShippingDetailsByEmail = async (email: string, data: ShippingDetails) => {
+  try {
+    console.log('Updating/Creating shipping details for email:', email);
+    console.log('New shipping data:', data);
+
+    const existingDetails = await getShippingDetailsByEmail(email);
+    console.log('Existing shipping details:', existingDetails);
+
+    if (!existingDetails.data || existingDetails.data.length === 0) {
+      console.log('No existing shipping details found, creating new entry');
+      return await addShippingDetails({ ...data, email });
+    }
+
+    const shippingDetails = existingDetails.data[0];
+    if (!shippingDetails || !shippingDetails.id) {
+      console.error('Invalid shipping details structure:', shippingDetails);
+      throw new Error('Invalid shipping details structure');
+    }
+
+    console.log('Updating shipping details with ID:', shippingDetails.id);
+    const response = await axiosClient.put(`/shipping-details/${shippingDetails.id}`, {
+      data: {
+        ...data,
+        email // Ensure email is included in the update
+      }
+    });
+    console.log('Update response:', response.data);
+    return response;
+  } catch (error) {
+    console.error('Error updating/creating shipping details:', error);
+    throw error;
+  }
+};
+
+// Update payment details by email
+const updatePaymentDetailsByEmail = async (email: string, data: PaymentDetails) => {
+  try {
+    const existingDetails = await getPaymentDetailsByEmail(email);
+    if (!existingDetails.data || existingDetails.data.length === 0) {
+      throw new Error('No existing payment details found');
+    }
+    const id = existingDetails.data[0].id;
+    const response = await axiosClient.put(`/payment-steps/${id}`, {
+      data,
+    });
+    return response;
+  } catch (error) {
+    console.error('Error updating payment details:', error);
     throw error;
   }
 };
@@ -230,4 +354,10 @@ export default {
   addContactInformation,
   addShippingDetails,
   addPaymentDetails,
+  getContactInformationByEmail,
+  getShippingDetailsByEmail,
+  getPaymentDetailsByEmail,
+  updateContactInformationByEmail,
+  updateOrCreateShippingDetailsByEmail,
+  updatePaymentDetailsByEmail,
 };
