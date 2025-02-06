@@ -1,11 +1,9 @@
 import { Table, Image, ScrollArea } from '@mantine/core';
+import { useCart } from '../_hooks/useCart';
 
 const CartTable: React.FC<{ cart: any[] }> = ({ cart }) => {
-  const totalPrice = cart.reduce(
-    (total, item) =>
-      total + (item.product?.attributes?.pricing || 0) * item.quantity,
-    0
-  );
+
+  const {totalPrice} = useCart()
 
   const rows = cart.map((item, index) => (
     <Table.Tr key={index}>
@@ -36,7 +34,7 @@ const CartTable: React.FC<{ cart: any[] }> = ({ cart }) => {
           <Table.Th>Item</Table.Th>
           <Table.Th>Price</Table.Th>
           <Table.Th>Quantity</Table.Th>
-          <Table.Th></Table.Th>
+          <Table.Th style={{textAlign:"right"}}>Total</Table.Th>
         </Table.Tr>
       </Table.Thead>
       <Table.Tbody>{rows}</Table.Tbody>
@@ -46,7 +44,7 @@ const CartTable: React.FC<{ cart: any[] }> = ({ cart }) => {
             colSpan={4}
             style={{ textAlign: 'right', fontWeight: 'bold' }}
           >
-            Total:
+            Total Price:
           </Table.Td>
           <Table.Td style={{ fontWeight: 'bold',textAlign:"right" }}>
             ₹{totalPrice.toFixed(2)}

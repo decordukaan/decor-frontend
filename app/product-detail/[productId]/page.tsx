@@ -45,7 +45,7 @@ const ProductDetail = ({ params }: ProductDetailProps) => {
         <ProductBanner product={productDetail} />
         <ProductInfo product={productDetail} />
       </div>
-      {/* <ProductList  /> */}
+      
     </div>
   );
 };

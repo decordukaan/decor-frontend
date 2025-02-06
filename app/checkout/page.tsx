@@ -13,11 +13,15 @@ import PaymentForm from '../_ui/molecules/PaymentForm';
 import { useCart } from '../_hooks/useCart';
 import CartTable from '../_components/CartTable';
 import { useRouter } from 'next/navigation';
+import { notifications } from '@mantine/notifications';
+import { IconCheck, IconX } from '@tabler/icons-react';
 
 const Checkout = () => {
   const { user, isSignedIn } = useUser();
-  const { cart } = useCart(); // Add this line to use the useCart hook
+  const { cart,clearCart,setCart } = useCart(); // Add this line to use the useCart hook
   const router = useRouter(); // Initialize router
+  const {totalPrice} = useCart()
+
 
   const initialContactInfo = {
     userName: '',
@@ -53,38 +57,48 @@ const Checkout = () => {
     setLoading(true);
 
     try {
-      const email = user?.emailAddresses[0].emailAddress || ''; // Ensure email is a string
-      const { contactData, shippingData, paymentData } = await submitOrder(
-        user,
-        contactInfo,
-        shippingDetails,
+      const email = user?.emailAddresses[0].emailAddress || '';
+      const cartItems = cart; // Assuming you have access to the cart items
+
+      const orderData = await submitOrder(
+        email,
         paymentDetails,
-        email
+        cartItems
       );
-      console.log('API Responses:', contactData, shippingData, paymentData);
-      alert('Order Placed Successfully');
+
+      console.log('Order submitted successfully:', orderData);
+
+      notifications.show({
+        title: 'Order Placed Successfully',
+        message: 'Thank you for your purchase!',
+        color: 'green',
+        icon: <IconCheck size="1.1rem" />,
+        autoClose: 5000,
+      });
+
+      // Clear the cart and redirect to a confirmation page
+      setCart([]); // Assuming you have a setCart function to update the cart state
+      // router.push('/order-confirmation');
     } catch (error) {
-      console.error('Error submitting data:', error);
-      alert('Failed to place order. Please try again.');
+      console.error('Error submitting order:', error);
+
+      notifications.show({
+        title: 'Order Placement Failed',
+        message: 'There was an error placing your order. Please try again.',
+        color: 'red',
+        icon: <IconX size="1.1rem" />,
+        autoClose: 5000,
+      });
     } finally {
       setLoading(false);
     }
   };
 
-  const totalPrice = cart.reduce(
-    (
-      total: number,
-      item: { product: { attributes: { pricing: any } }; quantity: number }
-    ) => {
-      return total + (item.product?.attributes?.pricing || 0) * item.quantity;
-    },
-    0
-  );
 
   // Redirect user to home if cart is empty or user not signed in
   useEffect(() => {
     if (!isSignedIn || cart.length === 0 || totalPrice === 0) {
-      router.push('/'); // Redirect to home page
+      // router.push('/'); // Redirect to home page
     }
   }, [isSignedIn, cart, totalPrice, router]);
 

@@ -3,7 +3,7 @@ import Image from 'next/image';
 import { Product } from '../types/products';
 import { ChevronRightSquare, Heart } from 'lucide-react';
 import Link from 'next/link';
-import { useWishlist } from '../_hooks/useWishList';
+import { useWishList } from '../_hooks/useWishList';
 import { useUser } from '@clerk/nextjs';
 import { showNotification } from '@mantine/notifications';
 
@@ -13,7 +13,7 @@ interface ProductItemProps {
 
 const ProductItem = ({ product }: ProductItemProps) => {
   console.log('Product Item rendered', product);
-  const { isInWishlist, toggleWishlistItem } = useWishlist();
+  const { isInWishList, toggleWishListItem } = useWishList();
   const { user, isLoaded } = useUser();
 
   const handleToggleFavorite = async () => {
@@ -28,7 +28,7 @@ const ProductItem = ({ product }: ProductItemProps) => {
             <Link href='/sign-in' className='text-blue-500 underline'>
               sign in
             </Link>{' '}
-            to add items to your wishlist.
+            to add items to your wishList.
           </div>
         ),
         color: 'yellow',
@@ -36,25 +36,25 @@ const ProductItem = ({ product }: ProductItemProps) => {
       return;
     }
 
-    const wasInWishlist = isInWishlist(product.id!);
-    await toggleWishlistItem(product.id!);
+    const wasInWishList = isInWishList(product.id!);
+    await toggleWishListItem(product.id!);
 
     // Show notification based on the action
     showNotification({
-      title: wasInWishlist ? 'Removed from Wishlist' : 'Added to Wishlist',
-      message: wasInWishlist
-        ? 'This product has been removed from your wishlist.'
-        : 'This product has been added to your wishlist.',
-      color: wasInWishlist ? 'red' : 'green',
+      title: wasInWishList ? 'Removed from WishList' : 'Added to WishList',
+      message: wasInWishList
+        ? 'This product has been removed from your wishList.'
+        : 'This product has been added to your wishList.',
+      color: wasInWishList ? 'red' : 'green',
     });
   };
 
   return (
     <div className='hover:border p-1 rounded-lg border-yellow-500 relative'>
-      {/* Wishlist Toggle Button */}
+      {/* WishList Toggle Button */}
       <div
         className={`absolute top-2 right-2 cursor-pointer p-1 ${
-          isLoaded && user && isInWishlist(product.id!)
+          isLoaded && user && isInWishList(product.id!)
             ? 'text-red-500'
             : 'text-gray-500'
         }`}

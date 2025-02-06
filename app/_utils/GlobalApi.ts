@@ -1,4 +1,9 @@
-import { ContactInformation, PaymentDetails, ShippingDetails } from "../types/checkout";
+import {
+  ContactInformation,
+  PaymentDetails,
+  ShippingDetails,
+} from '../types/checkout';
+import { OrderValidationResult } from '../types/order';
 
 // import { ProductList } from '@/app/_components/ProductList';
 const { default: axios } = require('axios');
@@ -61,6 +66,26 @@ const getUserCartItems = (email: string) =>
 // delete item from cart
 const deleteCartItem = (id: number) => axiosClient.delete('/carts/' + id);
 
+// Clear user Cart
+const clearUserCart = async (email: string) => {
+  try {
+    // First, get all cart items for the user
+    const cartResponse = await getUserCartItems(email);
+    const cartItems = cartResponse.data.data;
+
+    // Delete each cart item
+    const deletePromises = cartItems.map((item: any) =>
+      deleteCartItem(item.id)
+    );
+    await Promise.all(deletePromises);
+
+    return { success: true, message: 'Cart cleared successfully' };
+  } catch (error) {
+    console.error('Error clearing user cart:', error);
+    throw error;
+  }
+};
+
 // getting category list
 const getCategoryList = () => axiosClient.get('/product-categories?populate=*');
 
@@ -100,72 +125,74 @@ const updateUserDeliveryDetails = (
   }
 ) => axiosClient.put(`/user-delivery-details/${userId}`, data);
 
-const addToWishlist = async (
+const addToWishList = async (
   email: string,
   user: string,
   productId: number
 ) => {
   try {
-    const response = await getWishlistProductList(email);
-    let wishlist = response.data.data[0];
+    const response = await getWishListProductList(email);
+    let wishList = response.data.data[0];
 
-    if (!wishlist) {
-      // Create wishlist if it doesn't exist
-      const newWishlist = await axiosClient.post('/wishlists', {
+    if (!wishList) {
+      // Create wishList if it doesn't exist
+      const newWishList = await axiosClient.post('/wishlists', {
         data: {
           userName: user,
           email: email,
           products: [productId],
         },
       });
-      return newWishlist.data;
+      return newWishList.data;
     } else {
-      // Update existing wishlist
+      // Update existing wishList
       const updatedProducts = [
-        ...wishlist.attributes.products.data.map((p: any) => p.id),
+        ...wishList.attributes.products.data.map((p: any) => p.id),
         productId,
       ];
-      const updatedWishlist = await axiosClient.put(
-        `/wishlists/${wishlist.id}`,
+      const updatedWishList = await axiosClient.put(
+        `/wishlists/${wishList.id}`,
         {
           data: { products: updatedProducts },
         }
       );
-      return updatedWishlist.data;
+      return updatedWishList.data;
     }
   } catch (error) {
-    console.error('Error adding to wishlist:', error);
+    console.error('Error adding to wishList:', error);
     throw error;
   }
 };
 
-const removeFromWishlist = async (email: string, productId: number) => {
+const removeFromWishList = async (email: string, productId: number) => {
   try {
-    const response = await getWishlistProductList(email);
-    let wishlist = response.data.data[0];
+    const response = await getWishListProductList(email);
+    let wishList = response.data.data[0];
 
-    if (wishlist) {
-      const updatedProducts = wishlist.attributes.products.data
+    if (wishList) {
+      const updatedProducts = wishList.attributes.products.data
         .filter((p: any) => p.id !== productId)
         .map((p: any) => p.id);
 
-      const updatedWishlist = await axiosClient.put(
-        `/wishlists/${wishlist.id}`,
+      const updatedWishList = await axiosClient.put(
+        `/wishlists/${wishList.id}`,
         {
           data: { products: updatedProducts },
         }
       );
-      return updatedWishlist.data;
+      return updatedWishList.data;
     }
   } catch (error) {
-    console.error('Error removing from wishlist:', error);
+    console.error('Error removing from wishList:', error);
     throw error;
   }
 };
 
-// get wishlist ProductList
-const getWishlistProductList = (email: string) =>
-  axiosClient.get(`/wishlists?filters[email][$eq]=${email}&populate=products`);
+// get wishList ProductList
+const getWishListProductList = (email: string) =>
+  axiosClient.get(
+    `/wishlists?filters[email][$eq]=${email}&populate=products.banner`
+  );
 
 // To get products by category
 
@@ -174,7 +201,7 @@ const getProductsByCategory = (categoryId: string) =>
     `/products?filters[product_category][id][$eq]=${categoryId}&populate[banner]=*&populate[images]=*&populate[description]=*&populate[other_relations]=*`
   );
 
-const addContactInformation = async (data:ContactInformation) => {
+const addContactInformation = async (data: ContactInformation) => {
   try {
     const response = await axiosClient.post('/contact-informations', {
       data,
@@ -185,7 +212,9 @@ const addContactInformation = async (data:ContactInformation) => {
     throw error;
   }
 };
-const addShippingDetails = async (data: ShippingDetails & { email: string }) => {
+const addShippingDetails = async (
+  data: ShippingDetails & { email: string }
+) => {
   try {
     console.log('Adding new shipping details:', data);
     const response = await axiosClient.post('/shipping-details', { data });
@@ -197,7 +226,7 @@ const addShippingDetails = async (data: ShippingDetails & { email: string }) => 
   }
 };
 
-const addPaymentDetails = async (data:PaymentDetails) => {
+const addPaymentDetails = async (data: PaymentDetails) => {
   try {
     const response = await axiosClient.post('/payment-steps', {
       data,
@@ -211,26 +240,34 @@ const addPaymentDetails = async (data:PaymentDetails) => {
 
 // Get contact information by email
 const getContactInformationByEmail = async (email: string) => {
-  console.log('passed email to getContact information by email:',email)
+  console.log('passed email to getContact information by email:', email);
   try {
-    console.log("Fetching:", `/contact-informations?filters[email][$eq]=${encodeURIComponent(email)}`);
+    console.log(
+      'Fetching:',
+      `/contact-informations?filters[email][$eq]=${encodeURIComponent(email)}`
+    );
     const response = await axiosClient.get(
       `/contact-informations?filters[email][$eq]=${encodeURIComponent(email)}`
     );
-    console.log("API Response getContactInformationByEmail:", response.data);
+    console.log('API Response getContactInformationByEmail:', response.data);
     return response.data;
-  } catch (error:any) {
-    console.error("API Error getContactInformationByEmail:", error.response?.data || error.message);
+  } catch (error: any) {
+    console.error(
+      'API Error getContactInformationByEmail:',
+      error.response?.data || error.message
+    );
   }
 };
-
-
 
 // Get shipping details by email
 const getShippingDetailsByEmail = async (email: string) => {
   try {
     console.log(`Fetching shipping details for email: ${email}`);
-    const response = await axiosClient.get(`/shipping-details?filters[email][$eq]=${encodeURIComponent(email)}&populate=*`);
+    const response = await axiosClient.get(
+      `/shipping-details?filters[email][$eq]=${encodeURIComponent(
+        email
+      )}&populate=*`
+    );
     console.log('Shipping details response:', response.data);
     return response.data;
   } catch (error) {
@@ -240,12 +277,30 @@ const getShippingDetailsByEmail = async (email: string) => {
 };
 
 // Get payment details by email
-const getPaymentDetailsByEmail = (email: string) =>
-  axiosClient.get(`/payment-steps?filters[email][$eq]=${email}`);
+const getPaymentDetailsByEmail = async (email: string) => {
+  try {
+    const response = await axiosClient.get('/payment-steps', {
+      params: {
+        filters: {
+          email: {
+            $eq: email,
+          },
+        },
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching payment details:', error);
+    throw error;
+  }
+};
 
 // Update contact information by email
 // Update or create contact information by email
-const updateContactInformationByEmail = async (email: string, data: ContactInformation) => {
+const updateContactInformationByEmail = async (
+  email: string,
+  data: ContactInformation
+) => {
   try {
     console.log('Updating/Creating contact information for email:', email);
     console.log('New contact data:', data);
@@ -265,12 +320,15 @@ const updateContactInformationByEmail = async (email: string, data: ContactInfor
     }
 
     console.log('Updating contact information with ID:', contactInfo.id);
-    const response = await axiosClient.put(`/contact-informations/${contactInfo.id}`, {
-      data: {
-        ...data,
-        email // Ensure email is included in the update
+    const response = await axiosClient.put(
+      `/contact-informations/${contactInfo.id}`,
+      {
+        data: {
+          ...data,
+          email, // Ensure email is included in the update
+        },
       }
-    });
+    );
     console.log('Update response:', response.data);
     return response;
   } catch (error) {
@@ -281,7 +339,10 @@ const updateContactInformationByEmail = async (email: string, data: ContactInfor
 
 // Update shipping details by email
 // Update shipping details by email
-const updateOrCreateShippingDetailsByEmail = async (email: string, data: ShippingDetails) => {
+const updateOrCreateShippingDetailsByEmail = async (
+  email: string,
+  data: ShippingDetails
+) => {
   try {
     console.log('Updating/Creating shipping details for email:', email);
     console.log('New shipping data:', data);
@@ -301,12 +362,15 @@ const updateOrCreateShippingDetailsByEmail = async (email: string, data: Shippin
     }
 
     console.log('Updating shipping details with ID:', shippingDetails.id);
-    const response = await axiosClient.put(`/shipping-details/${shippingDetails.id}`, {
-      data: {
-        ...data,
-        email // Ensure email is included in the update
+    const response = await axiosClient.put(
+      `/shipping-details/${shippingDetails.id}`,
+      {
+        data: {
+          ...data,
+          email, // Ensure email is included in the update
+        },
       }
-    });
+    );
     console.log('Update response:', response.data);
     return response;
   } catch (error) {
@@ -316,19 +380,115 @@ const updateOrCreateShippingDetailsByEmail = async (email: string, data: Shippin
 };
 
 // Update payment details by email
-const updatePaymentDetailsByEmail = async (email: string, data: PaymentDetails) => {
+// Create or update payment details by email
+const createOrUpdatePaymentDetails = async (
+  email: string,
+  data: PaymentDetails
+) => {
   try {
+    console.log('Creating/Updating payment details for email:', email);
+    console.log('Payment data:', data);
+
+    // Check if payment details already exist for this email
     const existingDetails = await getPaymentDetailsByEmail(email);
-    if (!existingDetails.data || existingDetails.data.length === 0) {
-      throw new Error('No existing payment details found');
+
+    let response;
+    if (
+      !existingDetails ||
+      !existingDetails.data ||
+      existingDetails.data.length === 0
+    ) {
+      // Create new payment details
+      response = await axiosClient.post('/payment-steps', {
+        data: {
+          ...data,
+          email,
+        },
+      });
+      console.log('Created new payment details');
+    } else {
+      // Update existing payment details
+      const id = existingDetails.data[0]?.id;
+      if (!id) {
+        throw new Error('Existing payment details found but no id available');
+      }
+      response = await axiosClient.put(`/payment-steps/${id}`, {
+        data: {
+          ...data,
+          email,
+        },
+      });
+      console.log('Updated existing payment details');
     }
-    const id = existingDetails.data[0].id;
-    const response = await axiosClient.put(`/payment-steps/${id}`, {
-      data,
-    });
+
+    console.log('Payment details response:', response.data);
     return response;
   } catch (error) {
-    console.error('Error updating payment details:', error);
+    console.error('Error creating/updating payment details:', error);
+    throw error;
+  }
+};
+
+const createOrder = async (orderData: any) => {
+  try {
+    const response = await axiosClient.post('/orders', { data: orderData });
+    return response;
+  } catch (error) {
+    console.error('Error creating order:', error);
+    throw error;
+  }
+};
+
+const validateLastOrder = async (
+  email: string
+): Promise<OrderValidationResult> => {
+  try {
+    // Fetch the most recent order for the given email
+    const response = await axiosClient.get('/orders', {
+      params: {
+        'filters[contact_information][email][$eq]': email,
+        'sort[0]': 'createdAt:desc',
+        populate: '*',
+        'pagination[limit]': 1,
+      },
+    });
+
+    if (response.data.data.length === 0) {
+      return { isValid: false };
+    }
+
+    const order = response.data.data[0];
+
+    // Check if the order was created within the last hour
+    const oneHourAgo = new Date(Date.now() - 60 * 60 * 1000);
+    if (new Date(order.attributes.createdAt) < oneHourAgo) {
+      return { isValid: false };
+    }
+
+    // Check if the payment status is completed
+    if (
+      order.attributes.payment_step?.data?.attributes?.status !== 'completed'
+    ) {
+      return { isValid: false };
+    }
+
+    return {
+      isValid: true,
+      orderDetails: {
+        totalPrice: order.attributes.totalPrice,
+        orderId: order.id,
+        createdAt: order.attributes.createdAt,
+        status: order.attributes.status,
+        items: order.attributes.items.map((item: any) => ({
+          id: item.id,
+          name: item.name,
+          quantity: item.quantity,
+          price: item.price,
+        })),
+      },
+    };
+  } catch (error) {
+    console.error('Error validating last order:', error);
     throw error;
   }
 };
@@ -341,14 +501,15 @@ export default {
   addToCart,
   getUserCartItems,
   deleteCartItem,
+  clearUserCart,
   getCategoryList,
   updateCartItem,
   addUserDeliveryDetails,
   getUserDeliveryDetails,
   updateUserDeliveryDetails,
-  addToWishlist,
-  removeFromWishlist,
-  getWishlistProductList,
+  addToWishList,
+  removeFromWishList,
+  getWishListProductList,
   getProductsByCategory,
   getCategoryById,
   addContactInformation,
@@ -359,5 +520,7 @@ export default {
   getPaymentDetailsByEmail,
   updateContactInformationByEmail,
   updateOrCreateShippingDetailsByEmail,
-  updatePaymentDetailsByEmail,
+  createOrUpdatePaymentDetails,
+  createOrder,
+  validateLastOrder,
 };

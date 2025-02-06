@@ -9,7 +9,7 @@ import { useDrawer } from '@/app/_hooks/useDrawer';
 import Navigation from '../../molecules/Navigation';
 import Cart from '@/app/_components/Cart';
 import Link from 'next/link';
-// import { useWishList } from '@/app/_hooks/useWishList';
+import { useWishList } from '@/app/_hooks/useWishList';
 
 interface MenuProps {
   isLogin: boolean;
@@ -22,11 +22,7 @@ const Menu = ({ isLogin, setIsLogin, navigationItems }: MenuProps) => {
   const { user, isLoaded } = useUser();
   const { drawerOpened, toggleDrawer } = useDrawer(); // Get drawer state from custom hook
   const [openCart, setOpenCart] = useState(false);
-  // const { wishList } = useWishList();
-
-
-
-
+  const { wishListItems } = useWishList();
 
   return (
     !isLogin && (
@@ -68,19 +64,21 @@ const Menu = ({ isLogin, setIsLogin, navigationItems }: MenuProps) => {
                 </Group>
               ) : (
                 <Group>
-                  {/* Wishlist Icon */}
+                  {/* WishList Icon */}
                   <Link href='/wishlist' className='flex gap-1 cursor-pointer'>
-                    {/* <Heart
+                    <Heart
                       className={`h-5 w-5 ${
-                        wishList.length > 0 ? 'text-red-500' : 'text-gray-500'
+                        wishListItems.length > 0
+                          ? 'text-red-500'
+                          : 'text-gray-500'
                       }`}
-                    /> */}
-                    {/* Display the number of items in the wishlist */}
-                    {/* {wishList.length > 0 && (
+                    />
+                    {/* Display the number of items in the wishList */}
+                    {wishListItems.length > 0 && (
                       <Text size='sm' className='text-red-500'>
-                        ({wishList.length})
+                        ({wishListItems.length})
                       </Text>
-                    )} */}
+                    )}
                   </Link>
 
                   {/* Shopping Cart Icon */}

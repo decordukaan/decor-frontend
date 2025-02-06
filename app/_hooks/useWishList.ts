@@ -1,54 +1,78 @@
-import { useState, useEffect } from 'react';
 import { useUser } from '@clerk/nextjs';
 import GlobalApi from '../_utils/GlobalApi';
+import { useState, useEffect, useCallback, useContext } from 'react';
+import { WishListContext } from '../_context/WishListContext';
 
-export const useWishlist = () => {
+export const useWishList = () => {
+  const { wishListItems, setWishListItems } = useContext(WishListContext);
   const { user, isLoaded } = useUser();
-  const [wishlistItems, setWishlistItems] = useState<number[]>([]);
+
+  const isInWishList = useCallback(
+    (productId: number) => wishListItems.includes(productId),
+    [wishListItems]
+  );
 
   useEffect(() => {
-    const fetchWishlist = async () => {
+    const fetchWishList = async () => {
       if (isLoaded && user?.primaryEmailAddress?.emailAddress) {
         try {
-          const res = await GlobalApi.getWishlistProductList(user.primaryEmailAddress.emailAddress);
+          const res = await GlobalApi.getWishListProductList(
+            user.primaryEmailAddress.emailAddress
+          );
           if (res.status === 200) {
-            const usersWishlistData = res.data.data;
-            const wishlistProductIds = usersWishlistData[0]?.attributes.products.data.map((product: any) => product.id) || [];
-            setWishlistItems(wishlistProductIds);
+            const usersWishListData = res.data.data;
+            const wishListProductIds =
+              usersWishListData[0]?.attributes.products.data.map(
+                (product: any) => product.id
+              ) || [];
+            setWishListItems(wishListProductIds);
           }
         } catch (error) {
-          console.error('Error fetching wishlist:', error);
+          console.error('Error fetching wishList:', error);
         }
       } else if (isLoaded && !user) {
-        setWishlistItems([]);
+        setWishListItems([]);
       }
     };
 
-    fetchWishlist();
-  }, [user, isLoaded]);
+    fetchWishList();
+  }, [user, isLoaded, setWishListItems]); // Remove isInWishList from dependencies
 
-  const isInWishlist = (productId: number) => wishlistItems.includes(productId);
-
-  const toggleWishlistItem = async (productId: number) => {
+  const toggleWishListItem = async (productId: number) => {
     if (!user?.primaryEmailAddress?.emailAddress) return;
 
+    const isCurrentlyInWishList = isInWishList(productId);
+
+    // Optimistically update the state
+    setWishListItems((prevItems: any[]) =>
+      isCurrentlyInWishList
+        ? prevItems.filter((id) => id !== productId)
+        : [...prevItems, productId]
+    );
+
     try {
-      if (isInWishlist(productId)) {
-        await GlobalApi.removeFromWishlist(user.primaryEmailAddress.emailAddress, productId);
-        setWishlistItems(wishlistItems.filter(id => id !== productId));
+      if (isCurrentlyInWishList) {
+        await GlobalApi.removeFromWishList(
+          user.primaryEmailAddress.emailAddress,
+          productId
+        );
       } else {
-        await GlobalApi.addToWishlist(
+        await GlobalApi.addToWishList(
           user.primaryEmailAddress.emailAddress,
           user.fullName ?? '',
           productId
         );
-        setWishlistItems([...wishlistItems, productId]);
       }
     } catch (error) {
-      console.error('Error updating wishlist:', error);
+      console.error('Error updating wishList:', error);
+      // Revert the optimistic update if the API call fails
+      setWishListItems((prevItems: any[]) =>
+        isCurrentlyInWishList
+          ? [...prevItems, productId]
+          : prevItems.filter((id) => id !== productId)
+      );
     }
   };
 
-
-  return { wishlistItems, isInWishlist, toggleWishlistItem };
+  return { wishListItems, isInWishList, toggleWishListItem };
 };

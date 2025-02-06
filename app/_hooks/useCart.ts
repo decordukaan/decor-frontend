@@ -4,14 +4,30 @@ import GlobalApi from '@/app/_utils/GlobalApi';
 import { useUser } from '@clerk/nextjs';
 
 export const useCart = () => {
-  const { cart, setCart, totalPrice, updateTotalPrice } = useContext(CartContext);
+  const { cart, setCart } = useContext(CartContext);
   const { user, isLoaded } = useUser();
 
-  const calculateTotalPrice = useCallback((cartItems:any) => {
-    return cartItems.reduce((total: number, item: { price: number; quantity: number; }) => {
-      return total + (item.price * item.quantity);
+  const calculateTotalPrice = useCallback((cartItems: any) => {
+    return cartItems.reduce((total: number, item: any) => {
+      return total + (item.product?.attributes?.pricing || 0) * item.quantity;
     }, 0);
   }, []);
+
+  const updateTotalPrice = useCallback(() => {
+    const total = calculateTotalPrice(cart);
+    return total;
+  }, [cart, calculateTotalPrice]);
+
+  const clearCart = useCallback(async () => {
+    if (user?.primaryEmailAddress?.emailAddress) {
+      try {
+        await GlobalApi.clearUserCart(user.primaryEmailAddress.emailAddress);
+        setCart([]);
+      } catch (error) {
+        console.error('Error clearing cart:', error);
+      }
+    }
+  }, [user, setCart]);
 
   useEffect(() => {
     const fetchCartItems = async () => {
@@ -22,10 +38,9 @@ export const useCart = () => {
             id: item.id,
             product: item.attributes.products.data[0],
             quantity: item.attributes.quantity,
-            price: parseFloat(item.attributes.price) || 0, // Ensure price is a number
+            price: parseFloat(item.attributes.price) || 0,
           }));
           setCart(cartItems);
-          updateTotalPrice(calculateTotalPrice(cartItems));
         } catch (error) {
           console.error('Error fetching cart items:', error);
         }
@@ -33,7 +48,7 @@ export const useCart = () => {
     };
 
     fetchCartItems();
-  }, [isLoaded, user, setCart, updateTotalPrice, calculateTotalPrice]);
+  }, [isLoaded, user, setCart]);
 
-  return { cart, setCart, totalPrice, updateTotalPrice };
+  return { cart, setCart, totalPrice: updateTotalPrice(), clearCart };
 };

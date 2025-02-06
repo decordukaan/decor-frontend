@@ -76,4 +76,5 @@ export interface Product {
 
 export interface ProductListProps {
   productList: Product[];
+  onToggleWishList?: (productId: number) => Promise<void>;
 }

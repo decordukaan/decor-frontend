@@ -40,12 +40,12 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   const [cart, setCart] = useState([]);
-  const [wishList, setWishList] = useState([]);
+  const [wishListItems, setWishListItems] = useState([]);
 
   return (
     <ClerkProvider>
       <CartContext.Provider value={{ cart, setCart }}>
-        <WishListContext.Provider value={{ wishList, setWishList }}>
+      <WishListContext.Provider value={{wishListItems,setWishListItems}}>
           <html lang='en' {...mantineHtmlProps}>
             <head>
               <ColorSchemeScript />
@@ -64,4 +64,3 @@ export default function RootLayout({
     </ClerkProvider>
   );
 }
-
