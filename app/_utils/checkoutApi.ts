@@ -4,7 +4,8 @@ import { PaymentDetails } from './../types/checkout'; // Adjust the import path 
 export const submitOrder = async (
   email: string,
   paymentDetails: PaymentDetails,
-  cartItems: any[]
+  cartItems: any[],
+  totalPrice: number
 ) => {
   try {
     // Fetch contact information
@@ -15,41 +16,65 @@ export const submitOrder = async (
     const shippingDetailsResponse = await GlobalApi.getShippingDetailsByEmail(email);
     const shippingDetail = shippingDetailsResponse?.data?.[0]?.id || null;
 
-    console.log('this is cart items ooooooooooooooooooooooooooooooooooooooooooooooooooooooooo',cartItems)
+    console.log('payment method:', paymentDetails.payment_method);
 
-    // Create the order
-    const orderData = {
-      contact_information: contactInformation,
-      shipping_detail: shippingDetail,
-      orderItemList: cartItems.map(item => ({
-        product: item.product.id, // Ensure this matches the Strapi component field
-        quantity: item.quantity,
-        price: item.price,
-      })),
-      totalPrice: cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0),
-      payment_step: {
-        payment_method: paymentDetails.payment_method,
-        transaction_id: paymentDetails.transaction_id,
-        status: paymentDetails.status,
-      },
-      status: 'pending',
-    };
-
-    console.log('Order created::::::::', orderData);
-
-    const orderResponse = await GlobalApi.createOrder(orderData);
-
-    // Update payment details after creating the order
+    // Update payment details before creating the order
+    let paymentCreateResponse;
     try {
-      await GlobalApi.createOrUpdatePaymentDetails(email, paymentDetails);
+      paymentCreateResponse = await GlobalApi.createPaymentDetails(email, paymentDetails);
+      console.log('this is payment update detail :)))))',paymentCreateResponse)
     } catch (paymentError) {
       console.error('Error updating payment details:', paymentError);
+      throw paymentError; // Throw the error to stop the order process if payment details update fails
     }
 
-    // Clear the user's cart after successful order creation
-    await GlobalApi.clearUserCart(email);
+    // Check if payment update was successful
+    if (paymentCreateResponse.status === 200) {
+      // Create the order asynchronously
+      const createOrderAsync = async () => {
+        const orderData = {
+          contact_information: contactInformation,
+          shipping_detail: shippingDetail,
+          order_items_list: cartItems.map(item => ({
+            product: item.product.id,
+            quantity: item.quantity,
+            price: item.price,
+          })),
+          total_price: totalPrice,
+          payment_step: paymentCreateResponse.data.data.id,
+          status: 'pending',
+        };
 
-    return orderResponse;
+        console.log('Order data:', orderData);
+
+        const orderResponse = await GlobalApi.createOrder(orderData);
+        console.log('Order created successfully:', orderResponse);
+
+        // Check if the order creation was successful (status 200)
+        if (orderResponse.status === 200) {
+          // Clear the user's cart only if the order was created successfully
+          await GlobalApi.clearUserCart(email);
+          console.log('User cart cleared successfully');
+        } else {
+          console.warn('Order creation response was not 200. Cart not cleared.');
+        }
+
+        return orderResponse;
+      };
+
+      // Start the asynchronous order creation process
+      createOrderAsync().catch(error => {
+        console.error('Error in asynchronous order creation:', error);
+        // Handle the error as needed (e.g., notify the user, retry, etc.)
+      });
+
+      // Return immediately after starting the asynchronous process
+      return { message: 'Order processing started' };
+    } else {
+      console.error('Payment update failed. Order not created.');
+      throw new Error('Payment update failed');
+    }
+
   } catch (error) {
     console.error('Error submitting order:', error);
     throw error;

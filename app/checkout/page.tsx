@@ -63,7 +63,8 @@ const Checkout = () => {
       const orderData = await submitOrder(
         email,
         paymentDetails,
-        cartItems
+        cartItems,
+        totalPrice
       );
 
       console.log('Order submitted successfully:', orderData);

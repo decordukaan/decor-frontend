@@ -379,52 +379,81 @@ const updateOrCreateShippingDetailsByEmail = async (
   }
 };
 
-// Update payment details by email
-// Create or update payment details by email
-const createOrUpdatePaymentDetails = async (
-  email: string,
-  data: PaymentDetails
-) => {
+// Create new payment details
+const createPaymentDetails = async (email: string, data: PaymentDetails) => {
   try {
-    console.log('Creating/Updating payment details for email:', email);
+    console.log('Creating new payment details for email:', email);
     console.log('Payment data:', data);
 
-    // Check if payment details already exist for this email
+    const response = await axiosClient.post('/payment-steps', {
+      data: {
+        ...data,
+        email,
+      },
+    });
+
+    console.log('Created new payment details');
+    console.log('Payment details response:', response.data);
+    return response;
+  } catch (error) {
+    console.error('Error creating payment details:', error);
+    throw error;
+  }
+};
+
+// Update existing payment details
+const updatePaymentDetails = async (email: string, data: PaymentDetails) => {
+  try {
+    console.log('Updating payment details for email:', email);
+    console.log('Payment data:', data);
+
     const existingDetails = await getPaymentDetailsByEmail(email);
 
-    let response;
     if (
       !existingDetails ||
       !existingDetails.data ||
       existingDetails.data.length === 0
     ) {
-      // Create new payment details
-      response = await axiosClient.post('/payment-steps', {
-        data: {
-          ...data,
-          email,
-        },
-      });
-      console.log('Created new payment details');
-    } else {
-      // Update existing payment details
-      const id = existingDetails.data[0]?.id;
-      if (!id) {
-        throw new Error('Existing payment details found but no id available');
-      }
-      response = await axiosClient.put(`/payment-steps/${id}`, {
-        data: {
-          ...data,
-          email,
-        },
-      });
-      console.log('Updated existing payment details');
+      throw new Error('No existing payment details found for update');
     }
 
+    const id = existingDetails.data[0]?.id;
+    if (!id) {
+      throw new Error('Existing payment details found but no id available');
+    }
+
+    const response = await axiosClient.put(`/payment/${id}`, {
+      data: {
+        ...data,
+        email,
+      },
+    });
+
+    console.log('Updated existing payment details');
     console.log('Payment details response:', response.data);
     return response;
   } catch (error) {
-    console.error('Error creating/updating payment details:', error);
+    console.error('Error updating payment details:', error);
+    throw error;
+  }
+};
+
+// Function to determine whether to create or update payment details
+const handlePaymentDetails = async (email: string, data: PaymentDetails) => {
+  try {
+    const existingDetails = await getPaymentDetailsByEmail(email);
+
+    if (
+      !existingDetails ||
+      !existingDetails.data ||
+      existingDetails.data.length === 0
+    ) {
+      return await createPaymentDetails(email, data);
+    } else {
+      return await updatePaymentDetails(email, data);
+    }
+  } catch (error) {
+    console.error('Error handling payment details:', error);
     throw error;
   }
 };
@@ -520,7 +549,8 @@ export default {
   getPaymentDetailsByEmail,
   updateContactInformationByEmail,
   updateOrCreateShippingDetailsByEmail,
-  createOrUpdatePaymentDetails,
+  createPaymentDetails,
+  updatePaymentDetails,
   createOrder,
   validateLastOrder,
 };

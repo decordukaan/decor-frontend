@@ -2,34 +2,25 @@ import { StaticImport } from 'next/dist/shared/lib/get-img-props';
 import { Category } from './categoryList';
 
 export interface Product {
-  id?: number;
-  attributes?: {
-    title?: string;
-    description?: Array<{
+  id: number;
+  attributes: {
+    title: string;
+    description: Array<{
       type: string;
       children: Array<{
         text: string;
         type: string;
       }>;
     }>;
-    pricing?: number;
-    product_category?: {
-      data: {
-        id: number;
-        attributes: {
-          description: string;
-          createdAt: string;
-          updatedAt: string;
-          publishedAt: string;
-          title: string;
-        }
-      }
-    };
-    updatedAt?: string;
-    publishedAt?: string;
-    banner?: {
-      data: {
-        id: number;
+    pricing: number;
+    createdAt: string;
+    updatedAt: string;
+    publishedAt: string;
+    featured: boolean;
+    stock_quantity: number;
+    banner: {
+      id: number;
+      data:{
         attributes: {
           name: string;
           alternativeText: string | null;
@@ -37,13 +28,54 @@ export interface Product {
           width: number;
           height: number;
           formats: {
-            [key: string]: {
+            large: {
               ext: string;
               url: string;
               hash: string;
               mime: string;
               name: string;
-              path: string | null;
+              size: number;
+              width: number;
+              height: number;
+              provider_metadata: {
+                public_id: string;
+                resource_type: string;
+              };
+            };
+            small: {
+              ext: string;
+              url: string;
+              hash: string;
+              mime: string;
+              name: string;
+              size: number;
+              width: number;
+              height: number;
+              provider_metadata: {
+                public_id: string;
+                resource_type: string;
+              };
+            };
+            medium: {
+              ext: string;
+              url: string;
+              hash: string;
+              mime: string;
+              name: string;
+              size: number;
+              width: number;
+              height: number;
+              provider_metadata: {
+                public_id: string;
+                resource_type: string;
+              };
+            };
+            thumbnail: {
+              ext: string;
+              url: string;
+              hash: string;
+              mime: string;
+              name: string;
               size: number;
               width: number;
               height: number;
@@ -57,7 +89,7 @@ export interface Product {
           ext: string;
           mime: string;
           size: number;
-          url: string | StaticImport | undefined;
+          url: string;
           previewUrl: string | null;
           provider: string;
           provider_metadata: {
@@ -67,10 +99,103 @@ export interface Product {
           createdAt: string;
           updatedAt: string;
         };
+      }
+    };
+    product_category: {
+      data: {
+        id: number;
+        attributes: {
+          description: string;
+          createdAt: string;
+          updatedAt: string;
+          publishedAt: string;
+          title: string;
+        };
       };
     };
-    featured:boolean;
-    stock_quantity: number;
+    images: {
+      data: Array<{
+        id: number;
+        attributes: {
+          name: string;
+          alternativeText: string | null;
+          caption: string | null;
+          width: number;
+          height: number;
+          formats: {
+            large: {
+              ext: string;
+              url: string;
+              hash: string;
+              mime: string;
+              name: string;
+              size: number;
+              width: number;
+              height: number;
+              provider_metadata: {
+                public_id: string;
+                resource_type: string;
+              };
+            };
+            small: {
+              ext: string;
+              url: string;
+              hash: string;
+              mime: string;
+              name: string;
+              size: number;
+              width: number;
+              height: number;
+              provider_metadata: {
+                public_id: string;
+                resource_type: string;
+              };
+            };
+            medium: {
+              ext: string;
+              url: string;
+              hash: string;
+              mime: string;
+              name: string;
+              size: number;
+              width: number;
+              height: number;
+              provider_metadata: {
+                public_id: string;
+                resource_type: string;
+              };
+            };
+            thumbnail: {
+              ext: string;
+              url: string;
+              hash: string;
+              mime: string;
+              name: string;
+              size: number;
+              width: number;
+              height: number;
+              provider_metadata: {
+                public_id: string;
+                resource_type: string;
+              };
+            };
+          };
+          hash: string;
+          ext: string;
+          mime: string;
+          size: number;
+          url: string;
+          previewUrl: string | null;
+          provider: string;
+          provider_metadata: {
+            public_id: string;
+            resource_type: string;
+          };
+          createdAt: string;
+          updatedAt: string;
+        };
+      }>;
+    };
   };
 }
 
