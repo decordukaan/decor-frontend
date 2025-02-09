@@ -7,7 +7,7 @@ const Header = () => {
   const [isLogin, setIsLogin] = useState(false);
   const navigationItems = [
     { label: 'About Us', href: '/about-us' },
-    { label: 'Products', href: '/product-detail' },
+    { label: 'Products', href: '/all-products' },
     {
       label: 'Categories',
       href: '#',

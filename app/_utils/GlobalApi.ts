@@ -18,7 +18,11 @@ const axiosClient = axios.create({
   },
 });
 
-const getAllProducts = () => axiosClient.get('/products?populate=*');
+const getAllProducts = (currentPage: number = 1, pageSize: number = 25) => {
+  return axiosClient.get(
+    `/products?populate=*&pagination[page]=${currentPage}&pagination[pageSize]=${pageSize}`
+  );
+};
 
 // get product by id
 const getProductById = (id: number | string) =>
