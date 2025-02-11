@@ -1,9 +1,17 @@
 import { Table, Image, ScrollArea } from '@mantine/core';
 import { useCart } from '../_hooks/useCart';
 
-const CartTable: React.FC<{ cart: any[] }> = ({ cart }) => {
-
-  const {totalPrice} = useCart()
+const CartTable: React.FC<{ cart: any[]; orderPrice?: any }> = ({
+  cart,
+  orderPrice,
+}) => {
+  let totalPriceInCart;
+  if (!orderPrice) {
+    const {totalPrice } = useCart();
+    totalPriceInCart =totalPrice;
+  } else {
+    totalPriceInCart = orderPrice;
+  }
 
   const rows = cart.map((item, index) => (
     <Table.Tr key={index}>
@@ -27,33 +35,34 @@ const CartTable: React.FC<{ cart: any[] }> = ({ cart }) => {
 
   return (
     <ScrollArea>
-    <Table withRowBorders={false} withColumnBorders={false}  mt='md'>
-      <Table.Thead>
-        <Table.Tr>
-          <Table.Th></Table.Th>
-          <Table.Th>Item</Table.Th>
-          <Table.Th>Price</Table.Th>
-          <Table.Th>Quantity</Table.Th>
-          <Table.Th style={{textAlign:"right"}}>Total</Table.Th>
-        </Table.Tr>
-      </Table.Thead>
-      <Table.Tbody>{rows}</Table.Tbody>
-      <Table.Tfoot>
-        <Table.Tr>
-          <Table.Td
-            colSpan={4}
-            style={{ textAlign: 'right', fontWeight: 'bold' }}
-          >
-            Total Price:
-          </Table.Td>
-          <Table.Td style={{ fontWeight: 'bold',textAlign:"right" }}>
-            ₹{totalPrice.toFixed(2)}
-          </Table.Td>
-        </Table.Tr>
-      </Table.Tfoot>
-    </Table>
+      <Table withRowBorders={false} withColumnBorders={false} mt='md'>
+        <Table.Thead>
+          <Table.Tr>
+            <Table.Th></Table.Th>
+            <Table.Th>Item</Table.Th>
+            <Table.Th>Price</Table.Th>
+            <Table.Th>Quantity</Table.Th>
+            <Table.Th style={{ textAlign: 'right' }}>Total</Table.Th>
+          </Table.Tr>
+        </Table.Thead>
+        <Table.Tbody>{rows}</Table.Tbody>
+        <Table.Tfoot>
+          <Table.Tr>
+            <Table.Td
+              colSpan={4}
+              style={{ textAlign: 'right', fontWeight: 'bold' }}
+            >
+              Total Price:
+            </Table.Td>
+            <Table.Td style={{ fontWeight: 'bold', textAlign: 'right' }}>
+              ₹{totalPriceInCart}
+            </Table.Td>
+          </Table.Tr>
+        </Table.Tfoot>
+      </Table>
     </ScrollArea>
   );
 };
 
 export default CartTable;
+

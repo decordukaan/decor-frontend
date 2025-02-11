@@ -41,7 +41,7 @@ export const useCart = () => {
             price: parseFloat(item.attributes.price) || 0,
           }));
           setCart(cartItems);
-        } catch (error) {
+        } catch (error){
           console.error('Error fetching cart items:', error);
         }
       }

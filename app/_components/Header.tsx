@@ -21,6 +21,7 @@ const Header = () => {
     },
     { label: 'Profile', href: '/profile' },
     { label: 'Contact Us', href: '/contact-us' }
+    
 
   ];
 

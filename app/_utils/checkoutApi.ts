@@ -43,6 +43,7 @@ export const submitOrder = async (
           total_price: totalPrice,
           payment_step: paymentCreateResponse.data.data.id,
           status: 'pending',
+          email:email
         };
 
         console.log('Order data:', orderData);
@@ -80,3 +81,5 @@ export const submitOrder = async (
     throw error;
   }
 };
+
+

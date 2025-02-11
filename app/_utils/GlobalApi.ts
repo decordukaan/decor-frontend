@@ -526,6 +526,29 @@ const validateLastOrder = async (
   }
 };
 
+const getUserOrderItems = (email: string, page: number = 1) =>
+  axiosClient.get('/orders', {
+    params: {
+      populate: {
+        order_items_list: {
+          populate: {
+            product: {
+              populate: ['banner'], // Ensures product images are included
+            },
+          },
+        },
+        shipping_detail: '*',
+        contact_information: '*',
+        payment_step: '*',
+      },
+      'filters[email][$eq]': email,
+      pagination: {
+        page,
+        pageSize: 10, // Change this to the required page size
+      },
+    },
+  });
+
 export default {
   getAllProducts,
   getProductById,
@@ -557,4 +580,5 @@ export default {
   updatePaymentDetails,
   createOrder,
   validateLastOrder,
+  getUserOrderItems,
 };
