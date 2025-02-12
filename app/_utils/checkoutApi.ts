@@ -43,7 +43,8 @@ export const submitOrder = async (
           total_price: totalPrice,
           payment_step: paymentCreateResponse.data.data.id,
           status: 'pending',
-          email:email
+          email:email,
+          order_status:"unfulfilled"
         };
 
         console.log('Order data:', orderData);

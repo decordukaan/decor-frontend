@@ -20,9 +20,8 @@ const Header = () => {
       ],
     },
     { label: 'Profile', href: '/profile' },
-    { label: 'Contact Us', href: '/contact-us' }
-    
-
+    { label: 'Contact Us', href: '/contact-us' },
+    { label: 'Order Details', href: '/order-details' },
   ];
 
   return (

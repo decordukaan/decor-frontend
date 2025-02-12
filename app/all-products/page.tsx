@@ -8,78 +8,120 @@ import MainPagination from '../_components/MainPagination';
 import { Product } from '@/app/types/products';
 
 function AllProducts() {
-  const [allProducts, setAllProducts] = useState<Product[]>([]);
-  const [productsByCategory, setProductsByCategory] = useState<{
-    [key: string]: Product[];
-  }>({});
+  const [products, setProducts] = useState<{ [key: string]: Product[] }>({});
+  const [categories, setCategories] = useState<{ id: string; title: string }[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [totalProducts, setTotalProducts] = useState(0);
+  const [currentPage, setCurrentPage] = useState<{ [key: string]: number }>({ All: 1 });
+  const [totalProducts, setTotalProducts] = useState<{ [key: string]: number }>({ All: 0 });
+  const [activeTab, setActiveTab] = useState('All');
+
   const pageSize = 25;
 
   useEffect(() => {
-    const fetchAllProducts = async () => {
+    const fetchCategories = async () => {
       try {
-        setLoading(true);
-        const res = await GlobalApi.getAllProducts(currentPage, pageSize);
-        const products = res.data.data;
-        setAllProducts(products);
-        setTotalProducts(res.data.meta.pagination.total);
+        const res = await GlobalApi.getCategoryList();
+        const categoryList = res.data.data.map((cat: any) => ({
+          id: cat.id, // Store category ID
+          title: cat.attributes.title,
+        }));
+        setCategories(categoryList);
 
-        const groupedProducts: { [key: string]: Product[] } = {};
-        products.forEach((product: Product) => {
-          const categoryName =
-            product.attributes?.product_category?.data?.attributes?.title ||
-            'Uncategorized';
-          if (!groupedProducts[categoryName]) {
-            groupedProducts[categoryName] = [];
-          }
-          groupedProducts[categoryName].push(product);
-        });
+        // Initialize pagination for each category
+        const paginationInit = categoryList.reduce((acc: { [key: string]: number }, category: { title: string | number; }) => {
+          acc[category.title] = 1;
+          return acc;
+        }, {});
 
-        setProductsByCategory(groupedProducts);
+        setCurrentPage((prev) => ({ ...prev, ...paginationInit }));
       } catch (err) {
-        setError('Failed to fetch products');
-        console.error('Error fetching products:', err);
-      } finally {
-        setLoading(false);
+        console.error('Error fetching categories:', err);
       }
     };
 
-    fetchAllProducts();
-  }, [currentPage]);
+    fetchCategories();
+  }, []);
 
-  const handlePageChange = (page: number) => {
-    setCurrentPage(page);
+
+  // Fetch products when the tab changes or pagination changes
+  useEffect(() => {
+    fetchProducts(activeTab, currentPage[activeTab] || 1);
+  }, [activeTab, currentPage]);
+
+  // Fetch products (All or by category)
+  const fetchProducts = async (category: string, page: number) => {
+    try {
+      setLoading(true);
+      let res;
+
+      if (category === 'All') {
+        res = await GlobalApi.getAllProducts(page, pageSize);
+      } else {
+        // Get category ID from the state
+        const categoryObj = categories.find((c) => c.title === category);
+        if (!categoryObj) return console.error(`Category "${category}" not found`);
+
+        res = await GlobalApi.getProductsByCategory(categoryObj.id, page, pageSize);
+      }
+
+      console.log(`Fetched products for ${category}:`, res.data);
+
+      const total = res.data.meta?.pagination?.total || 0;
+
+      setProducts((prev) => ({ ...prev, [category]: res.data.data || [] }));
+      setTotalProducts((prev) => ({ ...prev, [category]: total }));
+    } catch (err) {
+      setError(`Failed to fetch products for ${category}`);
+      console.error(`Error fetching category ${category}:`, err);
+    } finally {
+      setLoading(false);
+    }
   };
 
-  if (loading) return <div className='text-center'>Loading...</div>;
-  if (error) return <div className='text-center text-red-500'>{error}</div>;
+
+  // Handle pagination changes
+  const handlePageChange = (page: number) => {
+    setCurrentPage((prev) => ({ ...prev, [activeTab]: page }));
+  };
 
   return (
     <div className='container mx-auto my-[52px]'>
-      <Tabs defaultValue='All Products'>
+      <Tabs value={activeTab} onChange={(tab) => setActiveTab(tab || 'All')}>
         <Tabs.List>
-          <Tabs.Tab value='All Products'>All Products</Tabs.Tab>
-          {Object.keys(productsByCategory).map((categoryName) => (
-            <Tabs.Tab key={categoryName} value={categoryName}>
-              {categoryName}
+          <Tabs.Tab value='All'>All Products</Tabs.Tab>
+          {categories.map((category) => (
+            <Tabs.Tab key={category.id} value={category.title}>
+              {category.title}
             </Tabs.Tab>
           ))}
         </Tabs.List>
-
-        <Tabs.Panel value='All Products'>
-          <ProductList productList={allProducts} />
+        <Tabs.Panel value="All">
+          {loading ? (
+            <div className="text-center">Loading...</div>
+          ) : (
+            <ProductList productList={products['All'] || []} />
+          )}
           <MainPagination
-            total={Math.ceil(totalProducts / pageSize)}
-            page={currentPage}
+            total={Math.ceil((totalProducts['All'] || 0) / pageSize)}
+            page={currentPage['All']}
             onChange={handlePageChange}
           />
         </Tabs.Panel>
-        {Object.keys(productsByCategory).map((categoryName) => (
-          <Tabs.Panel key={categoryName} value={categoryName}>
-            <ProductList productList={productsByCategory[categoryName]} />
+
+
+        {categories.map((category) => (
+          <Tabs.Panel key={category.id} value={category.title}>
+            {loading ? (
+              <div className='text-center'>Loading...</div>
+            ) : (
+              <ProductList productList={products[category.title] || []} />
+            )}
+            <MainPagination
+              total={Math.ceil((totalProducts[category.title] || 0) / pageSize)}
+              page={currentPage[category.title] || 1}
+              onChange={handlePageChange}
+            />
           </Tabs.Panel>
         ))}
       </Tabs>

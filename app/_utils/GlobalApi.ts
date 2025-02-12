@@ -20,9 +20,10 @@ const axiosClient = axios.create({
 
 const getAllProducts = (currentPage: number = 1, pageSize: number = 25) => {
   return axiosClient.get(
-    `/products?populate=*&pagination[page]=${currentPage}&pagination[pageSize]=${pageSize}`
+    `/products?populate=*&pagination[page]=${currentPage}&pagination[pageSize]=${pageSize}&sort=createdAt:desc&sort=updatedAt:desc`
   );
 };
+
 
 // get product by id
 const getProductById = (id: number | string) =>
@@ -200,10 +201,24 @@ const getWishListProductList = (email: string) =>
 
 // To get products by category
 
-const getProductsByCategory = (categoryId: string) =>
-  axiosClient.get(
-    `/products?filters[product_category][id][$eq]=${categoryId}&populate[banner]=*&populate[images]=*&populate[description]=*&populate[other_relations]=*`
-  );
+const getProductsByCategory = async (categoryId: string, page = 1, pageSize = 25) => {
+  try {
+    const categoryRes = await getCategoryById(categoryId);
+    if (!categoryRes.data || !categoryRes.data.data) {
+      console.error(`Category with ID ${categoryId} not found`);
+      return { data: [] };
+    }
+
+    return axiosClient.get(
+      `/products?filters[product_category][id][$eq]=${categoryId}&populate=*` +
+      `&pagination[page]=${page}&pagination[pageSize]=${pageSize}` +
+      `&sort=createdAt:desc,updatedAt:desc`
+    );
+  } catch (error) {
+    console.error('Error fetching products by category:', error);
+    return { data: [] };
+  }
+};
 
 const addContactInformation = async (data: ContactInformation) => {
   try {
@@ -216,6 +231,7 @@ const addContactInformation = async (data: ContactInformation) => {
     throw error;
   }
 };
+
 const addShippingDetails = async (
   data: ShippingDetails & { email: string }
 ) => {
@@ -549,6 +565,22 @@ const getUserOrderItems = (email: string, page: number = 1) =>
     },
   });
 
+// Function to Submit Contact Form
+const addContactForm = async (data: {
+  name: string;
+  email: string;
+  phone: string;
+  message: string;
+}) => {
+  try {
+    const response = await axiosClient.post('/contact-forms', { data });
+    return response;
+  } catch (error) {
+    console.error('Error adding contact information:', error);
+    throw error;
+  }
+};
+
 export default {
   getAllProducts,
   getProductById,
@@ -581,4 +613,5 @@ export default {
   createOrder,
   validateLastOrder,
   getUserOrderItems,
+  addContactForm,
 };

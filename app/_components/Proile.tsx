@@ -3,10 +3,9 @@
 import React from 'react';
 import { Tabs } from '@mantine/core';
 import { notifications } from '@mantine/notifications';
-
 import ContactInformationForm from '../_ui/molecules/ContactInformationForm';
 import ShippingDetailsForm from '../_ui/molecules/ShippingDetailsForm';
-import OrderDetails from './orderDetails';
+
 
 const Profile = () => {
   const handleContactInfoSubmit = (values: any) => {
@@ -35,7 +34,6 @@ const Profile = () => {
           <Tabs.List>
             <Tabs.Tab value='contact'>Contact Information</Tabs.Tab>
             <Tabs.Tab value='shipping'>Shipping Details</Tabs.Tab>
-            <Tabs.Tab value='order'>Order Details</Tabs.Tab>
           </Tabs.List>
 
           <Tabs.Panel value='contact' pt='xs'>
@@ -69,12 +67,6 @@ const Profile = () => {
                 profile={true}
                 onChange={(info) => console.log('Contact info changed:', info)}
               />
-            </div>
-          </Tabs.Panel>
-
-          <Tabs.Panel value='order' pt='xs'>
-            <div>
-              <OrderDetails />
             </div>
           </Tabs.Panel>
         </Tabs>

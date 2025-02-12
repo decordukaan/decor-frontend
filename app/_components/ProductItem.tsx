@@ -12,7 +12,7 @@ interface ProductItemProps {
 }
 
 const ProductItem = ({ product }: ProductItemProps) => {
-  console.log('Product Item rendered', product);
+  // console.log('Product Item rendered', product);
   const { isInWishList, toggleWishListItem } = useWishList();
   const { user, isLoaded } = useUser();
 

@@ -64,7 +64,7 @@ const Checkout = () => {
         email,
         paymentDetails,
         cartItems,
-        totalPrice
+        totalPrice,
       );
 
       console.log('Order submitted successfully:', orderData);
