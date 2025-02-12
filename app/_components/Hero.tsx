@@ -46,8 +46,9 @@ const Hero = () => {
                     backgroundImage: `url(${
                       product.attributes?.banner?.data?.attributes?.url || ''
                     })`,
+                    
                   }}
-                  className={classes.card}
+                  className={`sm:h-[780px] h-[360px] ${classes.card}`}
                 >
                   <div className='flex flex-col justify-center items-center'>
                     <Text className={classes.category} size='xs'>
@@ -75,12 +76,12 @@ const Hero = () => {
           </Carousel>
         )}
       </div>
-      <div className='mt-[140px]'>
-        <h1 className='text-[46px] flex flex-col items-center leading-[46px] font-bold text-[#373737]'>
+      <div className='mt-[64px] sm:mt-[140px] mx-[20px] sm:mx-0'>
+        <h1 className='sm:text-[46px] text-[32px] leading-[32px] flex flex-col items-center text-center sm:leading-[46px] font-bold text-[#373737]'>
           Transform Your Home into a Heaven –{' '}
-          <span className='text-yellow-500'>Welcome to Decor Dukaan</span>
+          <span className='text-yellow-500 text-center'>Welcome to Decor Dukaan</span>
         </h1>
-        <p className='text-[20px] text-center mt-[24px] leading-[24px] text-[#373737]'>
+        <p className='sm:text-[20px] text-[16px] leading-[18px] text-center mt-[24px] sm:leading-[24px] text-[#373737]'>
           "Curate a space that resonates with your soul –
           <br className='sm:block hidden' /> with our exclusive, handcrafted
           home decor that blends
@@ -93,7 +94,9 @@ const Hero = () => {
           <br className='sm:block hidden' /> uniquely yours."
         </p>
       </div>
+      <div className='mx-[20px] sm:mx-0'>
       <Categories />
+      </div>
     </section>
   );
 };

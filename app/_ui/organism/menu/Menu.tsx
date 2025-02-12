@@ -48,7 +48,7 @@ const Menu = ({ isLogin, setIsLogin, navigationItems }: MenuProps) => {
                     component='a'
                     href='/sign-in'
                     variant='filled'
-                    color='blue'
+                    color='yellow'
                   >
                     Login
                   </Button>
@@ -56,7 +56,7 @@ const Menu = ({ isLogin, setIsLogin, navigationItems }: MenuProps) => {
                     component='a'
                     href='/sign-in'
                     variant='outline'
-                    color='blue'
+                    color='yellow'
                     className='hidden sm:block'
                   >
                     Register

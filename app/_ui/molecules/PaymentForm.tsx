@@ -11,7 +11,10 @@ interface PaymentFormProps {
     field: keyof PaymentFormProps['paymentDetails'],
     value: string
   ) => void;
-  onSubmit: (payload: { email: string; paymentDetails: PaymentFormProps['paymentDetails'] }) => void;
+  onSubmit: (payload: {
+    email: string;
+    paymentDetails: PaymentFormProps['paymentDetails'];
+  }) => void;
 }
 
 const PaymentForm = ({
@@ -28,9 +31,8 @@ const PaymentForm = ({
         value={paymentDetails.payment_method}
         onChange={(value) => onChange('payment_method', value || '')}
         data={[
-          { value: 'Credit Card', label: 'Credit Card' },
-          { value: 'Debit Card', label: 'Debit Card' },
-          { value: 'UPI', label: 'UPI' },
+          { value: 'razor_pay', label: 'RazorPay' },
+          { value: 'cod', label: 'Pay on Delivery' },
         ]}
       />
       {/* Add other form fields for transaction_id and status if needed */}

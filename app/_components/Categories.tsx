@@ -26,32 +26,32 @@ const Categories = () => {
   }, []);
 
   return (
-    <div className='container mx-auto mt-[72px]'>
+    <div className='container mx-auto  mt-[52px] sm:mt-[72px]'>
       <h2 className='text-[#373737] font-semibold text-[38px]'>Categories</h2>
       <div className='mt-[24px]'>
         <Carousel
           withIndicators={false}
-          slideSize={{ base: '100%', sm: '50%', md: '33.333333%' }}
+          slideSize={{ base: '100%', sm: '50%', md: '33.3333%' }} // Mobile: 100%, Small Screens: 100%, Medium & Above: 3 Slides
           slideGap={{ base: 0, sm: 'md' }}
           loop
           align='start'
         >
           {categoryList.map((item) => (
             <Carousel.Slide key={item.id}>
-              <Link href={`products/category/${item.id}`} className="block">
+              <Link href={`products/category/${item.id}`} className='block'>
                 <div className='group relative h-[450px] rounded-lg block bg-black cursor-pointer'>
                   <img
                     alt={item.attributes?.title}
                     src={item.attributes.image.data.attributes.url}
-                    className='absolute inset-0 h-[450px] rounded-lg w-full object-cover opacity-75 transition-opacity group-hover:opacity-50'
+                    className='absolute inset-0 sm:h-[450px] h-[250px] rounded-lg w-full object-cover opacity-75 transition-opacity group-hover:opacity-50'
                   />
                   <div className='relative p-4 sm:p-6 lg:p-8'>
-                    <p className='text-xl font-bold text-white sm:text-2xl'>
+                    <p className='text-[16px] font-bold text-white sm:text-2xl'>
                       {item.attributes?.title}
                     </p>
                     <div className='mt-32 sm:mt-48 lg:mt-64'>
                       <div className='translate-y-8 transform opacity-0 transition-all group-hover:translate-y-0 group-hover:opacity-100'>
-                        <p className='text-sm text-white'>
+                        <p className='sm:text-sm text-[12px] text-white'>
                           {item.attributes?.description}
                         </p>
                       </div>

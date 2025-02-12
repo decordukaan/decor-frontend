@@ -1,5 +1,11 @@
 import GlobalApi from './GlobalApi';
 import { PaymentDetails } from './../types/checkout'; // Adjust the import path as needed
+import Razorpay from 'razorpay';
+
+const razorpay = new Razorpay({
+  key_id: process.env.NEXT_PUBLIC_RAZORPAY_KEY!,
+  key_secret: process.env.NEXT_PUBLIC_RAZORPAY_SECRET,
+ });
 
 export const submitOrder = async (
   email: string,
@@ -77,6 +83,25 @@ export const submitOrder = async (
       throw new Error('Payment update failed');
     }
 
+  } catch (error) {
+    console.error('Error submitting order:', error);
+    throw error;
+  }
+};
+
+export const orderCreate = async (
+  amount: string,
+  currency: string,
+) => {
+  try {
+
+    var options = {
+      amount: amount,
+      currency: currency,
+      receipt: 'rcp1',
+     };
+     const order = await razorpay.orders.create(options);
+     return order;
   } catch (error) {
     console.error('Error submitting order:', error);
     throw error;

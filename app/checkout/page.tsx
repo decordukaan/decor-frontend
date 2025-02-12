@@ -6,7 +6,7 @@ import ConfirmCart from '../_components/ConfirmCart';
 import { useFormState } from '../_hooks/useFormState';
 
 import { useEffect, useState } from 'react';
-import { submitOrder } from '../_utils/checkoutApi';
+import { submitOrder, orderCreate } from '../_utils/checkoutApi';
 import ContactInformationForm from '../_ui/molecules/ContactInformationForm';
 import ShippingDetailsForm from '../_ui/molecules/ShippingDetailsForm';
 import PaymentForm from '../_ui/molecules/PaymentForm';
@@ -15,13 +15,13 @@ import CartTable from '../_components/CartTable';
 import { useRouter } from 'next/navigation';
 import { notifications } from '@mantine/notifications';
 import { IconCheck, IconX } from '@tabler/icons-react';
+import OrderDetails from '../_components/orderDetails';
 
 const Checkout = () => {
   const { user, isSignedIn } = useUser();
-  const { cart,clearCart,setCart } = useCart(); // Add this line to use the useCart hook
+  const { cart, clearCart, setCart } = useCart(); // Add this line to use the useCart hook
   const router = useRouter(); // Initialize router
-  const {totalPrice} = useCart()
-
+  const { totalPrice } = useCart();
 
   const initialContactInfo = {
     userName: '',
@@ -35,7 +35,7 @@ const Checkout = () => {
     state: 'Kerala',
     postal_code: '',
     country: 'India',
-    email:'string'
+    email: 'string',
   };
   const initialPaymentDetails = {
     payment_method: '',
@@ -57,44 +57,136 @@ const Checkout = () => {
     setLoading(true);
 
     try {
+      setLoading(true);
+
       const email = user?.emailAddresses[0].emailAddress || '';
-      const cartItems = cart; // Assuming you have access to the cart items
+      const razorpayKey = process.env.NEXT_PUBLIC_RAZORPAY_KEY;
+      const razorpaySecret = process.env.NEXT_PUBLIC_RAZORPAY_SECRET;
+      if (!razorpayKey) {
+        throw new Error('Razorpay key is not defined');
+      }
 
-      const orderData = await submitOrder(
-        email,
-        paymentDetails,
-        cartItems,
-        totalPrice,
-      );
-
-      console.log('Order submitted successfully:', orderData);
-
-      notifications.show({
-        title: 'Order Placed Successfully',
-        message: 'Thank you for your purchase!',
-        color: 'green',
-        icon: <IconCheck size="1.1rem" />,
-        autoClose: 5000,
+      const response = await fetch('/api/create-razorpay-order', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          amount: totalPrice * 100, // Amount in paise
+          currency: 'INR',
+          receipt: 'receipt#1',
+        }),
       });
 
+      const orderData = await response.json();
+      console.log(orderData, 'orderData');
+
+      const options = {
+        key: process.env.key_id,
+        amount: parseFloat(totalPrice) * 100,
+        currency: 'INR',
+        name: 'name',
+        description: 'description',
+        order_id: orderData.id,
+        handler: async function (response: any) {
+          console.log(response, 'response');
+          debugger;
+          const data = {
+            orderCreationId: orderData.id,
+            razorpayPaymentId: response.razorpay_payment_id,
+            razorpayOrderId: response.razorpay_order_id,
+            razorpaySignature: response.razorpay_signature,
+          };
+          paymentDetails.transaction_id = response.razorpay_payment_id;
+
+          const result = await fetch('/api/verify', {
+            method: 'POST',
+            body: JSON.stringify(data),
+            headers: { 'Content-Type': 'application/json' },
+          });
+          const res = await result.json();
+          if (res.isOk) {
+            const email = user?.emailAddresses[0].emailAddress || '';
+            const cartItems = cart; // Assuming you have access to the cart items
+
+            const orderData = await submitOrder(
+              email,
+              paymentDetails,
+              cartItems,
+              totalPrice
+            );
+
+            console.log('Order submitted successfully:', orderData);
+
+            notifications.show({
+              title: 'Order Placed Successfully',
+              message: 'Thank you for your purchase!',
+              color: 'green',
+              icon: <IconCheck size='1.1rem' />,
+              autoClose: 5000,
+            });
+
+            //Clear the cart and redirect to a confirmation page
+            setCart([]); // Assuming you have a setCart function to update the cart state
+            console.log('this is order details', OrderDetails);
+            // router.push('/order-confirmation');
+          } else {
+            alert(res.message);
+          }
+        },
+        prefill: {
+          name: contactInfo.userName,
+          email: contactInfo.email,
+        },
+        theme: {
+          color: '#3399cc',
+        },
+      };
+      const paymentObject = new window.Razorpay(options);
+      paymentObject.on('payment.failed', function (response: any) {
+        alert(response.error.description);
+      });
+      paymentObject.open();
+
+      // const orderData = await orderCreate(totalPrice, 'INR');
+      // console.log(orderData, 'orderData');
+
+      // const email = user?.emailAddresses[0].emailAddress || '';
+      // const cartItems = cart; // Assuming you have access to the cart items
+
+      // const orderData = await submitOrder(
+      //   email,
+      //   paymentDetails,
+      //   cartItems,
+      //   totalPrice,
+      // );
+
+      // console.log('Order submitted successfully:', orderData);
+
+      // notifications.show({
+      //   title: 'Order Placed Successfully',
+      //   message: 'Thank you for your purchase!',
+      //   color: 'green',
+      //   icon: <IconCheck size="1.1rem" />,
+      //   autoClose: 5000,
+      // });
+
       // Clear the cart and redirect to a confirmation page
-      setCart([]); // Assuming you have a setCart function to update the cart state
+      //setCart([]); // Assuming you have a setCart function to update the cart state
       // router.push('/order-confirmation');
     } catch (error) {
       console.error('Error submitting order:', error);
-
       notifications.show({
         title: 'Order Placement Failed',
         message: 'There was an error placing your order. Please try again.',
         color: 'red',
-        icon: <IconX size="1.1rem" />,
+        icon: <IconX size='1.1rem' />,
         autoClose: 5000,
       });
     } finally {
       setLoading(false);
     }
   };
-
 
   // Redirect user to home if cart is empty or user not signed in
   useEffect(() => {
@@ -152,9 +244,14 @@ const Checkout = () => {
               <ShippingDetailsForm
                 shippingDetails={shippingDetails}
                 onChange={(newShippinDetailInfo) => {
-                  Object.entries(newShippinDetailInfo).forEach(([key, value]) => {
-                    handleShippingChange(key as keyof typeof shippingDetails, value as string)
-                  });
+                  Object.entries(newShippinDetailInfo).forEach(
+                    ([key, value]) => {
+                      handleShippingChange(
+                        key as keyof typeof shippingDetails,
+                        value as string
+                      );
+                    }
+                  );
                 }}
                 onNext={() => setActiveStep(2)}
               />

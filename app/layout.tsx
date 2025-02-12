@@ -26,6 +26,8 @@ import {
 } from '@mantine/core';
 import { Notifications } from '@mantine/notifications';
 import { WishListContext } from './_context/WishListContext';
+import { StockProvider } from './_context/StockContext';
+import Script from 'next/script';
 
 const outfit = Outfit({ subsets: ['latin'] });
 
@@ -44,23 +46,29 @@ export default function RootLayout({
 
   return (
     <ClerkProvider>
-      <CartContext.Provider value={{ cart, setCart }}>
-      <WishListContext.Provider value={{wishListItems,setWishListItems}}>
-          <html lang='en' {...mantineHtmlProps}>
-            <head>
-              <ColorSchemeScript />
-            </head>
-            <body className={outfit.className}>
-              <MantineProvider>
-                <Notifications />
-                <Header />
-                {children}
-                <Footer />
-              </MantineProvider>
-            </body>
-          </html>
-        </WishListContext.Provider>
-      </CartContext.Provider>
+      <StockProvider>
+        <CartContext.Provider value={{ cart, setCart }}>
+          <WishListContext.Provider value={{ wishListItems, setWishListItems }}>
+            <html lang='en' {...mantineHtmlProps}>
+              <head>
+                <ColorSchemeScript />
+                <Script
+                  id='razorpay-checkout-js'
+                  src='https://checkout.razorpay.com/v1/checkout.js'
+                />
+              </head>
+              <body className={outfit.className}>
+                <MantineProvider>
+                  <Notifications />
+                  <Header />
+                  {children}
+                  <Footer />
+                </MantineProvider>
+              </body>
+            </html>
+          </WishListContext.Provider>
+        </CartContext.Provider>
+      </StockProvider>
     </ClerkProvider>
   );
 }

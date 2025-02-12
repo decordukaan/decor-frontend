@@ -7,6 +7,8 @@ import { CartContext } from '@/app/_context/CartContext';
 import { notifications } from '@mantine/notifications';
 import { Button, Tooltip } from '@mantine/core';
 import Link from 'next/link';
+import { useCart } from '@/app/_hooks/useCart';
+
 
 interface ProductInfoProps {
   product: Product | undefined;
@@ -17,22 +19,28 @@ const ProductInfo = ({ product }: ProductInfoProps) => {
     product?.attributes?.description?.[0]?.children?.[0]?.text || '';
 
   const { user } = useUser();
-  const { cart, setCart } = useContext(CartContext);
+  const {  setCart } = useContext(CartContext);
 
   const [quantity, setQuantity] = useState(1);
   const [price, setPrice] = useState(product?.attributes?.pricing || 0);
   const [loading, setLoading] = useState(false);
   const [stockQuantity, setStockQuantity] = useState<number | null>(null);
   const [showTooltip, setShowTooltip] = useState(false);
+   const {cart,totalPrice } = useCart();
 
-  useEffect(() => {
+   useEffect(() => {
     const fetchStockQuantity = async () => {
       if (product) {
         try {
           const stock = await GlobalApi.getStockByProductId(product.id);
 
-          console.log('Stock:::::::::', stock);
-          setStockQuantity(stock);
+          // Find the product in the cart
+          const cartItem = cart.find((item: any) => item.product.id === product.id);
+
+          // Adjust stock quantity based on cart quantity
+          const adjustedStock = cartItem ? stock - cartItem.quantity : stock;
+
+          setStockQuantity(adjustedStock);
         } catch (error) {
           console.error('Error fetching stock quantity:', error);
         }
@@ -40,7 +48,7 @@ const ProductInfo = ({ product }: ProductInfoProps) => {
     };
 
     fetchStockQuantity();
-  }, [product]);
+  }, [product, cart]);
 
   const onIncreaseQuantity = () => {
     if (stockQuantity !== null && quantity >= stockQuantity) {

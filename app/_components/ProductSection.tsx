@@ -14,7 +14,7 @@ const ProductSection = () => {
 
   if (latestLoading) {
     return (
-      <div className='container mx-auto mt-[72px]'>
+      <div className='container mx-auto mt-[52px] sm:mt-[72px]'>
         <h2 className='text-[#3a3a3a] font-semibold text-[38px]'>
           Latest collections
         </h2>
@@ -32,7 +32,7 @@ const ProductSection = () => {
   }
 
   return (
-    <div className='container mx-auto my-[72px] '>
+    <div className='container mx-auto mt-[52px] sm:my-[72px] '>
       <h2 className='text-[#3a3a3a] font-semibold text-[38px]'>
         Latest collections
       </h2>

@@ -27,7 +27,7 @@ const Navigation = ({ navigationItems, isMobile }: NavigationProps) => {
 
       {/* Mobile Navigation */}
       {isMobile && (
-        <div className='flex lg:hidden'>
+        <div className='flex lg:hidden text-yellow-600'>
           <Stack w='100%'>
             {navigationItems.map((item, index) => (
               <MobileNavItem key={index} item={item} />
@@ -129,7 +129,7 @@ const MobileNavItem = ({ item }: { item: NavigationItem }) => {
                 display: 'block',
                 padding: '4px 0',
                 textDecoration: 'none',
-                color: 'inherit',
+                color: '#CA8A04',
               }}
             >
               {subItem.label}
