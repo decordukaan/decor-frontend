@@ -4,7 +4,7 @@ import { useContext, useEffect, useState } from 'react';
 import { CartContext } from '../_context/CartContext';
 import GlobalApi from '../_utils/GlobalApi';
 import { useUser } from '@clerk/nextjs';
-import { Box, Button, Skeleton } from '@mantine/core';
+import { Box, Button, Skeleton, Tooltip } from '@mantine/core';
 import { IconTrash, IconMinus, IconPlus } from '@tabler/icons-react';
 import Link from 'next/link';
 
@@ -139,15 +139,24 @@ const Cart = () => {
                           {item.quantity}
                         </Skeleton>
                       </Box>
-                      <Button
-                        size='xs'
-                        onClick={() =>
-                          updateCartItem(item.id, item.quantity + 1)
-                        }
-                        disabled={updatingItems.includes(item.id)}
-                      >
-                        <IconPlus size={16} />
-                      </Button>
+                      {item.quantity >=
+                      item.product.attributes.stock_quantity ? (
+                        <Tooltip label='Out of stock' withArrow>
+                          <Button size='xs' disabled>
+                            <IconPlus size={16} />
+                          </Button>
+                        </Tooltip>
+                      ) : (
+                        <Button
+                          size='xs'
+                          onClick={() =>
+                            updateCartItem(item.id, item.quantity + 1)
+                          }
+                          disabled={updatingItems.includes(item.id)}
+                        >
+                          <IconPlus size={16} />
+                        </Button>
+                      )}
                     </div>
                     <Box style={{ width: '80px', textAlign: 'right' }}>
                       <Skeleton visible={updatingItems.includes(item.id)}>
