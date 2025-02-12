@@ -581,6 +581,24 @@ const addContactForm = async (data: {
   }
 };
 
+const getStockByProductId = async (id: number) => {
+  try {
+    const response = await axiosClient.get('/products/' + id, {
+      params: {
+        fields: ['stock_quantity'], // Specify the fields to retrieve
+      },
+    });
+
+    const product = response.data.data;
+
+    // Return the stock quantity
+    return product.attributes.stock_quantity;
+  } catch (error) {
+    console.error('Error fetching stock quantity:', error);
+    throw error;
+  }
+};
+
 export default {
   getAllProducts,
   getProductById,
@@ -614,4 +632,5 @@ export default {
   validateLastOrder,
   getUserOrderItems,
   addContactForm,
+  getStockByProductId,
 };
