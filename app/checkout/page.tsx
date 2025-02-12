@@ -142,7 +142,8 @@ const Checkout = () => {
           color: '#3399cc',
         },
       };
-      const paymentObject = new window.Razorpay(options);
+      const paymentObject = new (window as any).Razorpay(options); 
+
       paymentObject.on('payment.failed', function (response: any) {
         alert(response.error.description);
       });
