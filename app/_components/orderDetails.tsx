@@ -36,7 +36,7 @@ const OrderDetails = () => {
 
       try {
         const response = await GlobalApi.getUserOrderItems(
-          user?.primaryEmailAddress?.emailAddress,
+          user?.primaryEmailAddress?.emailAddress || '',
           page
         );
 
