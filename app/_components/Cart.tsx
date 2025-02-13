@@ -1,6 +1,7 @@
 import { useContext, useEffect, useRef } from 'react';
 import { CartContext } from '../_context/CartContext';
 import { Product } from '../types/products';
+import { Button } from '@mantine/core';
 
 const Cart = ({ openCart, setOpenCart }: any) => {
   const { cart, totalPrice } = useContext(CartContext);
@@ -73,12 +74,15 @@ const Cart = ({ openCart, setOpenCart }: any) => {
           <div className='text-sm font-semibold'>
             Total: ₹ {calculatedTotalPrice.toFixed(2)}
           </div>
-          <a
+          <Button
+            component='a'
             href='/cart'
-            className='block rounded bg-yellow-500 hover:bg-yellow-500 hover:bg-opacity-30 hover:text-yellow-600 text-white  px-5 py-3 text-sm transition '
+            fullWidth
+            color='yellow'
+            className='hover:bg-opacity-30 hover:text-yellow-600'
           >
             View my cart ({cart?.length})
-          </a>
+          </Button>
 
           <a
             className='inline-block text-sm text-gray-500 underline underline-offset-4 transition hover:text-gray-600'

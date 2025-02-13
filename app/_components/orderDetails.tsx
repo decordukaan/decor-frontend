@@ -65,7 +65,9 @@ const OrderDetails = () => {
         <p>Loading orders...</p>
       ) : orders.length > 0 ? (
         <>
-          <Accordion defaultValue={`order-${orders[0].id}`} variant="contained">
+          <Accordion styles={{item:{
+            border:'none'
+          }}} defaultValue={`order-${orders[0].id}`} variant="contained">
             {orders.map((order) => {
               const currentStatus = order.attributes.order_status;
               const currentStep = getStatusStep(currentStatus);
@@ -78,9 +80,8 @@ const OrderDetails = () => {
                   radius="md"
                   p="md"
                   mt="md"
-                  withBorder
                 >
-                  <Accordion.Item value={`order-${order.id}`}>
+                  <Accordion.Item  value={`order-${order.id}`}>
                     <Accordion.Control>
                       <h3>
                         Order ID: {order.id} | Total Price: ₹

@@ -58,7 +58,11 @@ export default function RootLayout({
                 />
               </head>
               <body className={outfit.className}>
-                <MantineProvider>
+                <MantineProvider
+                  theme={{
+                    primaryColor: 'yellow', // Set yellow as default
+                  }}
+                >
                   <Notifications />
                   <Header />
                   {children}

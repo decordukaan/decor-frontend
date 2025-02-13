@@ -2,6 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
+
 .embla {
     max-width: 48rem;
     margin: auto;
