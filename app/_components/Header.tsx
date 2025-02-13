@@ -8,17 +8,17 @@ const Header = () => {
   const navigationItems = [
     { label: 'About Us', href: '/about-us' },
     { label: 'Products', href: '/all-products' },
-    {
-      label: 'Categories',
-      href: '#',
-      subItems: [
-        { label: 'Wall Art', href: '#' },
-        { label: 'Cushions & Throws', href: '#' },
-        { label: 'Lighting', href: '#' },
-        { label: 'Vases & Planters', href: '#' },
-        { label: 'Clock', href: '#' },
-      ],
-    },
+    // {
+    //   label: 'Categories',
+    //   href: '#',
+    //   subItems: [
+    //     { label: 'Wall Art', href: '#' },
+    //     { label: 'Cushions & Throws', href: '#' },
+    //     { label: 'Lighting', href: '#' },
+    //     { label: 'Vases & Planters', href: '#' },
+    //     { label: 'Clock', href: '#' },
+    //   ],
+    // },
     { label: 'Profile', href: '/profile' },
     { label: 'Contact Us', href: '/contact-us' },
     { label: 'Order Details', href: '/order-details' },

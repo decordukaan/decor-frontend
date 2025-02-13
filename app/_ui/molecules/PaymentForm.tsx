@@ -31,7 +31,7 @@ const PaymentForm = ({
         value={paymentDetails.payment_method}
         onChange={(value) => onChange('payment_method', value || '')}
         data={[
-          { value: 'razor_pay', label: 'RazorPay' },
+          { value: 'razor_pay', label: 'UPI / Card/ Net Banking' },
           { value: 'cod', label: 'Pay on Delivery' },
         ]}
       />
