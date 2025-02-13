@@ -1,5 +1,5 @@
-import React from 'react';
-import { Pagination } from '@mantine/core';
+import React from "react";
+import { Pagination } from "@mantine/core";
 
 interface MainPaginationProps {
   total?: number;
@@ -13,13 +13,9 @@ const MainPagination: React.FC<MainPaginationProps> = ({
   onChange = () => {},
 }) => {
   return (
-    <Pagination
-      total={total}
-      value={page}
-      onChange={onChange}
-      size="md"
-      radius="md"
-    />
+    <div className="flex justify-center my-6">
+      <Pagination total={total} value={page} onChange={onChange} size="md" radius="md" />
+    </div>
   );
 };
 

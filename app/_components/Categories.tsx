@@ -39,13 +39,13 @@ const Categories = () => {
           {categoryList.map((item) => (
             <Carousel.Slide key={item.id}>
               <Link href={`products/category/${item.id}`} className='block'>
-                <div className='group relative h-[450px] rounded-lg block bg-black cursor-pointer'>
+                <div className='group relative min-h-[250px] md:h-[450px] rounded-lg block bg-black cursor-pointer'>
                   <img
                     alt={item.attributes?.title}
                     src={item.attributes.image.data.attributes.url}
                     className='absolute inset-0 sm:h-[450px] h-[250px] rounded-lg w-full object-cover opacity-75 transition-opacity group-hover:opacity-50'
                   />
-                  <div className='relative p-4 sm:p-6 lg:p-8'>
+                  <div className='h-full p-4 sm:p-6 lg:p-8'>
                     <p className='text-[16px] font-bold text-white sm:text-2xl'>
                       {item.attributes?.title}
                     </p>

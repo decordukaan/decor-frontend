@@ -85,41 +85,41 @@ function ContactUsCom() {
         }}
         className='text-[#373737] flex flex-col justify-center items-center'
       >
-        <h1 className='text-[38px] font-bold text-[#373737]'>
+        <h1 className='sm:text-[38px] text-[28px] text-center font-bold text-[#373737] sm:mx-0 mx-[20px]'>
           We'd Love to Hear from You!
         </h1>
-        <p className='text-[20px] leading-[24px] text-center font-medium mt-[24px] text-[#373737] max-w-3xl mx-auto'>
+        <p className='sm:text-[20px] text-[18px] leading-[24px] text-center font-medium mt-[24px] text-[#373737] sm:max-w-3xl sm:mx-auto mx-[20px]'>
           Reach out to us for any queries, feedback, or assistance. Our team is
           here to help you make your home truly special.
         </p>
       </section>
 
       {/* Contact Information */}
-      <section className='py-16 px-8 md:px-20 grid grid-cols-1 md:grid-cols-3 gap-12'>
-        <div className='bg-yellow-600 bg-opacity-10 shadow-lg rounded-lg p-6 text-center'>
-          <h2 className='text-xl font-semibold mb-4'>Email Us</h2>
-          <p className='text-gray-600'>support@decordukaan.com</p>
+      <section className='sm:py-16 px-[20px] py-[52px] md:px-20 grid grid-cols-1 md:grid-cols-3 sm:gap-12 gap-[24px]'>
+        <div className='bg-yellow-600 bg-opacity-10 shadow-lg rounded-lg sm:p-6 p-3 text-center'>
+          <h2 className='sm:text-xl text-[18px] font-semibold sm:mb-4 mb-2'>Email Us</h2>
+          <p className='text-gray-600 sm:text-[18px] text-[16px]'>support@decordukaan.com</p>
         </div>
-        <div className='bg-yellow-600 bg-opacity-10 shadow-lg rounded-lg p-6 text-center'>
-          <h2 className='text-xl font-semibold mb-4'>Call Us</h2>
-          <p className='text-gray-600'>+91 98765 43210</p>
+        <div className='bg-yellow-600 bg-opacity-10 shadow-lg rounded-lg sm:p-6 p-3 text-center'>
+          <h2 className='sm:text-xl text-[18px] font-semibold sm:mb-4 mb-2'>Call Us</h2>
+          <p className='text-gray-600 sm:text-[18px] text-[16px]'>+91 98765 43210</p>
         </div>
-        <div className='bg-yellow-600 bg-opacity-10 shadow-lg rounded-lg p-6 text-center'>
-          <h2 className='text-xl font-semibold mb-4'>Visit Us</h2>
-          <p className='text-gray-600'>123 Decor Street, Home City, HC 56789</p>
+        <div className='bg-yellow-600 bg-opacity-10 shadow-lg rounded-lg sm:p-6 p-3 text-center'>
+          <h2 className='sm:text-xl text-[18px] font-semibold sm:mb-4 mb-2'>Visit Us</h2>
+          <p className='text-gray-600 sm:text-[18px] text-[16px]'>123 Decor Street, Home City, HC 56789</p>
         </div>
       </section>
 
       {/* Contact Form */}
-      <section className='pt-16 pb-20 bg-yellow-700 bg-opacity-20'>
-        <div className='container mx-auto'>
-          <h2 className='text-[38px] font-semibold text-center'>
+      <section className='sm:pt-16 pt-[52px] sm:pb-20 bg-yellow-700 bg-opacity-20 '>
+        <div className='container mx-auto '>
+          <h2 className='sm:text-[38px] text-[28px] font-semibold text-center'>
             Send Us a Message
           </h2>
-          <div className='grid grid-cols-1 md:grid-cols-2 gap-8 mt-[42px]'>
-            <div className='bg-white shadow-lg rounded-lg p-8'>
+          <div className='grid grid-cols-1 md:grid-cols-2 gap-8 sm:mt-[42px] mt-[38px] sm:mx-0 mx-[20px]'>
+            <div className='bg-white shadow-lg rounded-lg sm:p-8 p-6'>
               <form className='space-y-6' onSubmit={handleSubmit}>
-                <div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
+                <div className='grid grid-cols-1 md:grid-cols-2 sm:gap-6 gap-3'>
                   <div>
                     <label className='block text-gray-700 mb-2' htmlFor='name'>
                       Name
@@ -127,7 +127,7 @@ function ContactUsCom() {
                     <input
                       type='text'
                       id='name'
-                      className='w-full border border-gray-300 rounded-lg p-3'
+                      className='w-full border border-gray-300 rounded-lg sm:p-3 p-2'
                       placeholder='Enter your name'
                       value={formData.name}
                       onChange={handleChange}
@@ -141,7 +141,7 @@ function ContactUsCom() {
                     <input
                       type='email'
                       id='email'
-                      className='w-full border border-gray-300 rounded-lg p-3'
+                      className='w-full border border-gray-300 rounded-lg sm:p-3 p-2'
                       placeholder='Enter your email'
                       value={formData.email}
                       onChange={handleChange}
@@ -159,7 +159,7 @@ function ContactUsCom() {
                   <input
                     type='text'
                     id='phone'
-                    className='w-full border border-gray-300 rounded-lg p-3'
+                    className='w-full border border-gray-300 rounded-lg sm:p-3 p-2'
                     placeholder='Enter your phone number'
                     value={formData.phone}
                     onChange={handleChange}
@@ -175,7 +175,7 @@ function ContactUsCom() {
                   </label>
                   <textarea
                     id='message'
-                    className='w-full border border-gray-300 rounded-lg p-3'
+                    className='w-full border border-gray-300 rounded-lg sm:p-3 p-2'
                     rows={5}
                     placeholder='Write your message here'
                     value={formData.message}
@@ -186,7 +186,7 @@ function ContactUsCom() {
                 <div className='text-center'>
                   <button
                     type='submit'
-                    className='px-8 py-3 bg-yellow-500 hover:bg-yellow-600 text-white font-semibold rounded-lg'
+                    className='sm:px-8 sm:py-3 py-2 px-4 bg-yellow-500 hover:bg-yellow-600 text-white font-semibold rounded-lg'
                   >
                     Send Message
                   </button>

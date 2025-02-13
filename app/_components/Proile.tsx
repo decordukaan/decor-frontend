@@ -27,9 +27,9 @@ const Profile = () => {
   };
 
   return (
-    <div className='container mx-auto mt-12 mb-16'>
-      <h1 className='text-[38px] font-bold mb-6'>Profile:</h1>
-      <div>
+    <div className='sm:container sm:mx-auto mx-[20px] mt-12 mb-16'>
+      <h1 className='sm:text-[38px] text-[28px] font-bold mb-6'>Profile</h1>
+      <div >
         <Tabs defaultValue='contact'>
           <Tabs.List>
             <Tabs.Tab value='contact'>Contact Information</Tabs.Tab>

@@ -25,7 +25,7 @@ const ProductItem = ({ product }: ProductItemProps) => {
         message: (
           <div>
             Please{' '}
-            <Link href='/sign-in' className='text-blue-500 underline'>
+            <Link href='/sign-in' className='text-yellow-600 underline'>
               sign in
             </Link>{' '}
             to add items to your wishList.
@@ -60,7 +60,7 @@ const ProductItem = ({ product }: ProductItemProps) => {
         }`}
         onClick={handleToggleFavorite}
       >
-        <Heart className='h-5 w-5' />
+        <Heart className='sm:h-5 sm:w-5 h-[10px] w-[10px]' />
       </div>
 
       {/* Product Link */}
@@ -68,21 +68,22 @@ const ProductItem = ({ product }: ProductItemProps) => {
         <Image
           src={product.attributes?.banner?.data?.attributes?.url || ''}
           alt={product.attributes?.title || 'Product image'}
-          width={500}
-          height={350}
-          className='rounded-t-lg object-cover h-[280px]'
+          width={0}
+          height={0}
+          sizes='100vw'
+          className='rounded-t-lg object-cover sm:w-[400px] w-full sm:h-[300px] h-[150px]'
         />
-        <div className='flex justify-between items-center bg-gray-50 p-3 rounded-b-lg'>
-          <div className='p-2'>
-            <h2 className='text-[12px] font-medium'>
+        <div className='flex justify-between sm:items-center items-start bg-gray-50 p-3 rounded-b-lg'>
+          <div className='sm:p-2'>
+            <h2 className='text-[12px] sm:text-[16px] font-medium'>
               {product.attributes?.title}
             </h2>
-            <h2 className='text-[10px] text-gray-400 flex gap-2'>
+            <h2 className='text-[10px] sm:text-[14px] mt-[6px] text-gray-400 flex gap-1 sm:gap-2'>
               <ChevronRightSquare className='h-4 w-4' />
               {product.attributes?.product_category?.data?.attributes.title}
             </h2>
           </div>
-          <h2 className='font-medium'>₹{product.attributes?.pricing}</h2>
+          <h2 className='font-medium text-[12px] sm:text-[16px] '>₹{product.attributes?.pricing}</h2>
         </div>
       </Link>
     </div>

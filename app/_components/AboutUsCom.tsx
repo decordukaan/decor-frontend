@@ -16,10 +16,10 @@ function AboutUsCom() {
         }}
         className='flex flex-col justify-center items-center'
       >
-        <h1 className='text-[38px] font-bold text-[#373737]'>
+        <h1 className='sm:text-[38px] text-[28px] font-bold text-[#373737]'>
           About Decor Dukaan
         </h1>
-        <p className='text-[20px] leading-[24px] text-center font-medium mt-[24px] text-[#373737] max-w-3xl mx-auto'>
+        <p className='sm:text-[20px] text-[18px] leading-[24px] text-center font-medium mt-[24px] text-[#373737] sm:max-w-3xl sm:mx-auto mx-[20px]'>
           Crafting homes with one-of-a-kind, aesthetically designed, and
           handcrafted home decor pieces. Transform your space into a serene
           haven with timeless elegance and natural charm.
@@ -27,7 +27,7 @@ function AboutUsCom() {
       </section>
 
       {/* Mission and Vision */}
-      <section className='py-16 px-8 md:px-20 grid grid-cols-1 md:grid-cols-2 gap-12 text-[#373737]'>
+      <section className='sm:py-16 py-[52px]  px-[20px] md:px-20 grid grid-cols-1 md:grid-cols-2 gap-12 text-[#373737]'>
         <div>
           <h2 className='text-[24px] font-semibold mb-4'>Our Mission</h2>
           <p className='leading-[24px] text-[18px]'>
@@ -50,27 +50,27 @@ function AboutUsCom() {
 
       {/* Why Choose Us */}
       <section className='bg-yellow-600 bg-opacity-15 py-16 px-8 md:px-20 text-[#373737]'>
-        <h2 className='text-[38px]  font-semibold text-center '>
+        <h2 className='sm:text-[38px] text-[28px] leading-[30px] sm:leading-[38px] font-semibold text-center '>
           Why Choose Decor Dukaan?
         </h2>
         <div className='grid grid-cols-1 md:grid-cols-3 gap-8 text-center mt-[52px]'>
-          <div className='p-10  bg-zinc-100 shadow rounded-lg'>
-            <h3 className='text-[24px] font-bold '>Handcrafted Designs</h3>
-            <p className='text-[18px] leading-[24px] mt-[20px]'>
+          <div className='sm:p-10 p-5 bg-zinc-100 shadow rounded-lg'>
+            <h3 className='sm:text-[24px] text-[20px] font-bold '>Handcrafted Designs</h3>
+            <p className='text-[18px]  leading-[24px] mt-[16px] sm:mt-[20px]'>
               Each piece is crafted with care, ensuring it’s unique and adds
               character to your space.
             </p>
           </div>
-          <div className='p-10  bg-zinc-100 shadow rounded-lg'>
-            <h3 className='text-[24px] font-bold '>Natural Inspiration</h3>
-            <p className='text-[18px] leading-[24px] mt-[20px]'>
+          <div className='sm:p-10 p-5 bg-zinc-100 shadow rounded-lg'>
+            <h3 className='sm:text-[24px] text-[20px] font-bold '>Natural Inspiration</h3>
+            <p className='text-[18px]  leading-[24px] mt-[16px] sm:mt-[20px]'>
               Drawing from the beauty of nature, our designs bring serenity and
               warmth into your home.
             </p>
           </div>
-          <div className='p-10  bg-zinc-100 shadow rounded-lg'>
-            <h3 className='text-[24px] font-bold '>Affordable Luxury</h3>
-            <p className='text-[18px] leading-[24px] mt-[20px]'>
+          <div className='sm:p-10 p-5 bg-zinc-100 shadow rounded-lg'>
+            <h3 className='sm:text-[24px] text-[20px] font-bold '>Affordable Luxury</h3>
+            <p className='text-[18px]  leading-[24px] mt-[16px] sm:mt-[20px]'>
               Experience the perfect balance of elegance and affordability with
               every purchase.
             </p>
@@ -79,11 +79,11 @@ function AboutUsCom() {
       </section>
 
       {/* How to Buy Products Section */}
-      <section className='py-16 px-8 md:px-20 bg-white '>
-        <h2 className='text-[38px] font-semibold text-center text-[#373737]'>
+      <section className='sm:py-16 py-[52px] px-[20px] md:px-20 bg-white '>
+        <h2 className='sm:text-[38px] text-[28px] leading-[30px] sm:leading-[38px] font-semibold text-center text-[#373737]'>
           How to Buy Our Products
         </h2>
-        <div className='relative max-w-fit mx-auto mt-[52px]'>
+        <div className='relative sm:max-w-fit mx-auto mt-[52px]'>
           <Timeline color='yellow' active={2} bulletSize={24}>
             <Timeline.Item title='1'>
               <Text style={{ color: '#ebac24' }} size='20px' mt={10}>
