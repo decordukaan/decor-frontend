@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { Tabs } from '@mantine/core';
+import { Tabs, Skeleton } from '@mantine/core';
 import GlobalApi from '../_utils/GlobalApi';
 import ProductList from '../_components/ProductList';
 import MainPagination from '../_components/MainPagination';
@@ -98,7 +98,11 @@ function AllProducts() {
         </Tabs.List>
         <Tabs.Panel value="All">
           {loading ? (
-            <div className="text-center">Loading...</div>
+            <div className='grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4 mt-6'>
+              {Array.from({ length: 8}).map((_, index) => (
+                <Skeleton key={index} height={200} radius="md" />
+              ))}
+            </div>
           ) : (
             <ProductList productList={products['All'] || []} />
           )}
@@ -109,11 +113,14 @@ function AllProducts() {
           />
         </Tabs.Panel>
 
-
         {categories.map((category) => (
           <Tabs.Panel key={category.id} value={category.title}>
             {loading ? (
-              <div className='text-center'>Loading...</div>
+              <div className='grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4 mt-6'>
+                {Array.from({ length: 8}).map((_, index) => (
+                  <Skeleton key={index} height={200} radius="md" />
+                ))}
+              </div>
             ) : (
               <ProductList productList={products[category.title] || []} />
             )}

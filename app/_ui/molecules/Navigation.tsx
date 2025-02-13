@@ -17,7 +17,7 @@ const Navigation = ({ navigationItems, isMobile }: NavigationProps) => {
   return (
     <>
       {/* Desktop Navigation */}
-      <div className='lg:flex bg-yellow-600 bg-opacity-20 py-3 px-6 rounded-full hidden '>
+      <div className='lg:flex bg-[#f8f9fa] py-3 px-6 rounded-full hidden '>
         <Group align='center'>
           {navigationItems.map((item, index) => (
             <NavItem key={index} item={item} />
@@ -51,10 +51,10 @@ const NavItem = ({ item }: { item: NavigationItem }) => {
       <Group align='center'>
         <Anchor
           style={{
-            backgroundColor: '#f4f4f5',
+            backgroundColor: '#ffffff',
             padding: '8px 18px',
             borderRadius: '100px',
-            color: '#CA8A04',
+            color: '#fab005',
             fontSize: '16px',
             display:
               item.subItems && item.subItems.length > 0
@@ -93,7 +93,7 @@ const NavItem = ({ item }: { item: NavigationItem }) => {
                 display: 'block',
                 padding: '4px 4px',
                 textDecoration: 'none',
-                color: '#CA8A04',
+                color: '#fab005',
               }}
             >
               {subItem.label}

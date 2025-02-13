@@ -1,4 +1,4 @@
-'use client';
+"use client"
 
 import { useContext, useEffect, useState } from 'react';
 import { CartContext } from '../_context/CartContext';
@@ -13,6 +13,7 @@ const Cart = () => {
   const { cart, setCart } = useContext(CartContext);
   const [loadingItems, setLoadingItems] = useState<number[]>([]);
   const [updatingItems, setUpdatingItems] = useState<number[]>([]);
+  const [isLoading, setIsLoading] = useState(true); // New loading state
 
   const getTotalAmount = () => {
     return cart.reduce((total: number, item: any) => {
@@ -69,6 +70,7 @@ const Cart = () => {
             }))
             .sort((a, b) => a.id - b.id); // Sort by id to maintain consistent order
           setCart(sortedCart);
+          setIsLoading(false); // Set loading to false after fetching
         }
       );
     }
@@ -77,6 +79,27 @@ const Cart = () => {
   useEffect(() => {
     getCartItem();
   }, [user]);
+
+  if (isLoading) {
+    return (
+      <div className="max-w-2xl mx-auto p-8">
+        <Skeleton height={40} width="100%" mb="xl" />
+        <Skeleton height={20} width="60%" mb="md" />
+        <Skeleton height={20} width="80%" mb="md" />
+        <Skeleton height={20} width="70%" mb="md" />
+        <Skeleton height={20} width="90%" mb="md" />
+        <Skeleton height={20} width="50%" />
+      </div>
+    );
+  }
+
+  if (!cart.length) {
+    return (
+      <div className="max-w-2xl mx-auto p-8">
+        <h2 className="text-2xl font-bold mb-6 text-center">Your cart is empty</h2>
+      </div>
+    );
+  }
 
   return (
     <section>
