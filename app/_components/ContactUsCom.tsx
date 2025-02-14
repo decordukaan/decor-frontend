@@ -1,72 +1,51 @@
 'use client';
 
+import { useForm } from '@mantine/form';
+import {
+  TextInput,
+  Textarea,
+  Button,
+  Container,
+  Grid,
+  Paper,
+  Title,
+  Group,
+  Text,
+} from '@mantine/core';
 import { useState } from 'react';
 import GlobalApi from '../_utils/GlobalApi';
 
 function ContactUsCom() {
-  const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    phone: '',
-    message: '',
-  });
-
-  const [errors, setErrors] = useState({
-    email: '',
-    phone: '',
-  });
-
-  // Regex Patterns
-  const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-  const phoneRegex = /^[6-9]\d{9}$/; // Indian phone number validation
-
-  // Handle Input Change
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => {
-    const { id, value } = e.target;
-    setFormData((prev) => ({ ...prev, [id]: value }));
-
-    // Validation
-    if (id === 'email') {
-      setErrors((prev) => ({
-        ...prev,
-        email: emailRegex.test(value) ? '' : 'Invalid email format',
-      }));
-    }
-    if (id === 'phone') {
-      setErrors((prev) => ({
-        ...prev,
-        phone: phoneRegex.test(value)
-          ? ''
+  const form = useForm({
+    initialValues: {
+      name: '',
+      email: '',
+      phone: '',
+      message: '',
+    },
+    validateInputOnChange: true, // Ensures validation runs on every input change
+    validate: {
+      email: (value) =>
+        /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(value)
+          ? null
+          : 'Invalid email format',
+      phone: (value) =>
+        /^[6-9]\d{9}$/.test(value)
+          ? null
           : 'Enter a valid 10-digit phone number',
-      }));
-    }
-  };
+    },
+  });
 
-  // Handle Form Submission
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-
-    if (
-      !formData.name ||
-      !formData.email ||
-      !formData.phone ||
-      !formData.message
-    ) {
-      alert('All fields are required!');
-      return;
-    }
-
-    if (errors.email || errors.phone) {
-      alert('Please fix the errors before submitting!');
-      return;
-    }
-
+  const handleSubmit = async (values: {
+    name: string;
+    email: string;
+    phone: string;
+    message: string;
+  }) => {
     try {
-      await GlobalApi.addContactForm(formData);
+      await GlobalApi.addContactForm(values);
       alert('Message sent successfully!');
-      setFormData({ name: '', email: '', phone: '', message: '' }); // Reset form
+      form.reset();
     } catch (error) {
       alert('Failed to send message. Please try again.');
     }
@@ -97,16 +76,28 @@ function ContactUsCom() {
       {/* Contact Information */}
       <section className='sm:py-16 px-[20px] py-[52px] md:px-20 grid grid-cols-1 md:grid-cols-3 sm:gap-12 gap-[24px]'>
         <div className='bg-yellow-600 bg-opacity-10 shadow-lg rounded-lg sm:p-6 p-3 text-center'>
-          <h2 className='sm:text-xl text-[18px] font-semibold sm:mb-4 mb-2'>Email Us</h2>
-          <p className='text-gray-600 sm:text-[18px] text-[16px]'>support@decordukaan.com</p>
+          <h2 className='sm:text-xl text-[18px] font-semibold sm:mb-4 mb-2'>
+            Email Us
+          </h2>
+          <p className='text-gray-600 sm:text-[18px] text-[16px]'>
+            support@decordukaan.com
+          </p>
         </div>
         <div className='bg-yellow-600 bg-opacity-10 shadow-lg rounded-lg sm:p-6 p-3 text-center'>
-          <h2 className='sm:text-xl text-[18px] font-semibold sm:mb-4 mb-2'>Call Us</h2>
-          <p className='text-gray-600 sm:text-[18px] text-[16px]'>+91 98765 43210</p>
+          <h2 className='sm:text-xl text-[18px] font-semibold sm:mb-4 mb-2'>
+            Call Us
+          </h2>
+          <p className='text-gray-600 sm:text-[18px] text-[16px]'>
+            +91 98765 43210
+          </p>
         </div>
         <div className='bg-yellow-600 bg-opacity-10 shadow-lg rounded-lg sm:p-6 p-3 text-center'>
-          <h2 className='sm:text-xl text-[18px] font-semibold sm:mb-4 mb-2'>Visit Us</h2>
-          <p className='text-gray-600 sm:text-[18px] text-[16px]'>123 Decor Street, Home City, HC 56789</p>
+          <h2 className='sm:text-xl text-[18px] font-semibold sm:mb-4 mb-2'>
+            Visit Us
+          </h2>
+          <p className='text-gray-600 sm:text-[18px] text-[16px]'>
+            123 Decor Street, Home City, HC 56789
+          </p>
         </div>
       </section>
 
@@ -116,93 +107,63 @@ function ContactUsCom() {
           <h2 className='sm:text-[38px] text-[28px] font-semibold text-center'>
             Send Us a Message
           </h2>
-          <div className='grid grid-cols-1 md:grid-cols-2 gap-8 sm:mt-[42px] mt-[38px] sm:mx-0 mx-[20px]'>
-            <div className='bg-white shadow-lg rounded-lg sm:p-8 p-6'>
-              <form className='space-y-6' onSubmit={handleSubmit}>
-                <div className='grid grid-cols-1 md:grid-cols-2 sm:gap-6 gap-3'>
-                  <div>
-                    <label className='block text-gray-700 mb-2' htmlFor='name'>
-                      Name
-                    </label>
-                    <input
-                      type='text'
-                      id='name'
-                      className='w-full border border-gray-300 rounded-lg sm:p-3 p-2'
+          <div className='sm:mt-[42px] mt-[38px] sm:mx-0 mx-[20px]'>
+            <Grid gutter='xl'>
+              <Grid.Col span={{ base: 12, md: 6 }}>
+                <Paper shadow='sm' radius='md' p='lg'>
+                  <form onSubmit={form.onSubmit(handleSubmit)}>
+                    <TextInput
+                      label='Name'
                       placeholder='Enter your name'
-                      value={formData.name}
-                      onChange={handleChange}
+                      {...form.getInputProps('name')}
                       required
                     />
-                  </div>
-                  <div>
-                    <label className='block text-gray-700 mb-2' htmlFor='email'>
-                      Email
-                    </label>
-                    <input
-                      type='email'
-                      id='email'
-                      className='w-full border border-gray-300 rounded-lg sm:p-3 p-2'
+                    <TextInput
+                      mt='md'
+                      label='Email'
                       placeholder='Enter your email'
-                      value={formData.email}
-                      onChange={handleChange}
+                      {...form.getInputProps('email')}
                       required
                     />
-                    {errors.email && (
-                      <p className='text-red-500 text-sm'>{errors.email}</p>
-                    )}
-                  </div>
-                </div>
-                <div>
-                  <label className='block text-gray-700 mb-2' htmlFor='phone'>
-                    Phone Number
-                  </label>
-                  <input
-                    type='text'
-                    id='phone'
-                    className='w-full border border-gray-300 rounded-lg sm:p-3 p-2'
-                    placeholder='Enter your phone number'
-                    value={formData.phone}
-                    onChange={handleChange}
-                    required
-                  />
-                  {errors.phone && (
-                    <p className='text-red-500 text-sm'>{errors.phone}</p>
-                  )}
-                </div>
-                <div>
-                  <label className='block text-gray-700 mb-2' htmlFor='message'>
-                    Your Message
-                  </label>
-                  <textarea
-                    id='message'
-                    className='w-full border border-gray-300 rounded-lg sm:p-3 p-2'
-                    rows={5}
-                    placeholder='Write your message here'
-                    value={formData.message}
-                    onChange={handleChange}
-                    required
-                  ></textarea>
-                </div>
-                <div className='text-center'>
-                  <button
-                    type='submit'
-                    className='sm:px-8 sm:py-3 py-2 px-4 bg-yellow-500 hover:bg-yellow-600 text-white font-semibold rounded-lg'
-                  >
-                    Send Message
-                  </button>
-                </div>
-              </form>
-            </div>
+                    <TextInput
+                      mt='md'
+                      label='Phone Number'
+                      placeholder='Enter your phone number'
+                      {...form.getInputProps('phone')}
+                      required
+                    />
+                    <Textarea
+                      mt='md'
+                      label='Your Message'
+                      placeholder='Write your message here'
+                      {...form.getInputProps('message')}
+                      required
+                    />
+                    <div className='flex justify-center  sm:mt-[24px] mt-[20px]'>
+                      <Button type='submit' color='yellow'>
+                        Send Message
+                      </Button>
+                    </div>
+                  </form>
+                </Paper>
+              </Grid.Col>
 
-            {/* Map Section */}
-            <div className='rounded-lg overflow-hidden shadow-lg'>
-              <iframe
-                title='Decor Dukaan Location'
-                className='w-full h-full min-h-[400px]'
-                src='https://www.google.com/maps/embed/v1/place?q=123+Decor+Street,+Home+City,+HC+56789&key=YOUR_GOOGLE_MAPS_API_KEY'
-                allowFullScreen
-              ></iframe>
-            </div>
+              {/* Map Section */}
+              <Grid.Col span={{ base: 12, md: 6 }}>
+                <Paper shadow='sm' radius='md'>
+                  <iframe
+                    title='Decor Dukaan Location'
+                    style={{
+                      width: '100%',
+                      minHeight: '420px',
+                      border: 'none',
+                    }}
+                    src='https://www.google.com/maps/embed/v1/place?q=123+Decor+Street,+Home+City,+HC+56789&key=YOUR_GOOGLE_MAPS_API_KEY'
+                    allowFullScreen
+                  ></iframe>
+                </Paper>
+              </Grid.Col>
+            </Grid>
           </div>
         </div>
       </section>

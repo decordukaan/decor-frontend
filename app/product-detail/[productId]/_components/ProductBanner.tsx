@@ -30,7 +30,7 @@ const ProductBanner = ({ product }: ProductIdProps) => {
         <Image
           src={slides[0].url}
           alt="Product image"
-          className='h-[400px] w-[450px] object-cover object-center mx-auto'
+          className='h-[400px] w-auto object-cover object-center mx-auto'
           height={0}
           width={0}
           sizes='100vw'

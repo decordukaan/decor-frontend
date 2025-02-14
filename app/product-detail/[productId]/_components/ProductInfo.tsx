@@ -180,12 +180,12 @@ const ProductInfo = ({ product }: ProductInfoProps) => {
 
   return (
     <div>
-      <h2 className='text-[20px]'>{product?.attributes?.title}</h2>
-      <h2 className='text-[15px] text-gray-400'>
+      <h2 className='text-[22px]'>{product?.attributes?.title}</h2>
+      <h2 className='text-[16px] text-gray-400'>
         {product?.attributes?.product_category?.data?.attributes.title || ''}
       </h2>
-      <p className='text-[15px] mt-5 text-gray-700'>{descriptionText}</p>
-      <h2 className='text-[32px] text-[#373737] font-medium mt-5'>
+      <p className='text-[18px] mt-5 text-gray-700 max-w-xl'>{descriptionText}</p>
+      <h2 className='text-[22px] text-[#373737] font-medium mt-5'>
         ₹{product?.attributes?.pricing}
       </h2>
 
@@ -234,7 +234,7 @@ const ProductInfo = ({ product }: ProductInfoProps) => {
       {!user ? (
         <Link href='/sign-in' passHref>
           <Button
-            className='flex gap-2 mt-5 px-8 py-3 bg-yellow-500 hover:bg-yellow-500 hover:bg-opacity-30 hover:text-yellow-600 text-white font-semibold rounded-lg'
+            className='flex gap-2 mt-[24px] px-8 py-3 bg-yellow-500 hover:bg-yellow-500 hover:bg-opacity-30 hover:text-yellow-600 text-white font-semibold rounded-lg'
             leftSection={<ShoppingCart />}
             color='yellow'
           >
@@ -243,7 +243,7 @@ const ProductInfo = ({ product }: ProductInfoProps) => {
         </Link>
       ) : (
         <Button
-          className='flex gap-2 mt-5 px-8 py-3 bg-yellow-500 hover:bg-yellow-500 hover:bg-opacity-30 hover:text-yellow-600 text-white font-semibold rounded-lg'
+          className='flex gap-2 mt-[24px] px-8 py-3 bg-yellow-500 hover:bg-yellow-500 hover:bg-opacity-30 hover:text-yellow-600 text-white font-semibold rounded-lg'
           leftSection={<ShoppingCart />}
           loading={loading}
           onClick={onAddToCartClick}
@@ -254,9 +254,6 @@ const ProductInfo = ({ product }: ProductInfoProps) => {
         </Button>
       )}
 
-      <div className='text-gray-500 mt-4'>
-        Cart Item Price for this item: {price}
-      </div>
       {stockQuantity === 0 && (
         <div className='text-red-500 mt-2'>
           This product is currently out of stock.

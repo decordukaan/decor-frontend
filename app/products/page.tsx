@@ -58,7 +58,7 @@ function ProductDetailPage() {
   if (error) return <div className='text-center text-red-500'>{error}</div>;
 
   return (
-    <div className='container mx-auto my-[52px]'>
+    <div className='container mx-auto my-[72px]'>
       <Tabs defaultValue='All Products'>
         <Tabs.List>
           <Tabs.Tab value='All Products'>All Products</Tabs.Tab>

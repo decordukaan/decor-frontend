@@ -142,7 +142,7 @@ const Checkout = () => {
           color: '#3399cc',
         },
       };
-      const paymentObject = new (window as any).Razorpay(options); 
+      const paymentObject = new (window as any).Razorpay(options);
 
       paymentObject.on('payment.failed', function (response: any) {
         alert(response.error.description);
@@ -199,10 +199,7 @@ const Checkout = () => {
   return (
     <>
       {isSignedIn && cart.length > 0 && totalPrice > 0 && (
-        <div className='max-w-3xl mx-auto pt-8 pb-16'>
-          <h1 className='text-[38px] font-bold text-center'>
-            Checkout Total: ₹{totalPrice.toFixed(2)}{' '}
-          </h1>
+        <div className='max-w-3xl mx-auto py-[72px]'>
           <Accordion
             styles={{
               control: {

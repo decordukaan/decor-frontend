@@ -49,7 +49,7 @@ function AboutUsCom() {
       </section>
 
       {/* Why Choose Us */}
-      <section className='bg-yellow-600 bg-opacity-15 py-16 px-8 md:px-20 text-[#373737]'>
+      <section className='bg-yellow-600 bg-opacity-15 sm:py-[72px] py-[52px] px-8 md:px-20 text-[#373737]'>
         <h2 className='sm:text-[38px] text-[28px] leading-[30px] sm:leading-[38px] font-semibold text-center '>
           Why Choose Decor Dukaan?
         </h2>

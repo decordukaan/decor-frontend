@@ -70,17 +70,16 @@ const OrderDetails = () => {
 
   return (
     <section>
-      <div className='mx-auto max-w-screen-xl px-4 py-8 sm:px-6 sm:pt-12 sm:pb-20 lg:px-8'>
+      <div className='mx-auto max-w-screen-xl px-4  sm:px-6   lg:px-8'>
         <div className='mx-auto max-w-3xl'>
           {loading ? (
             <Skeleton height={200} radius='md' animate />
           ) : orders.length > 0 ? (
             <>
-              <header className='text-center'>
-                <h1 className='text-[38px] font-bold text-[#373737] sm:text-3xl'>
-                  Order Details
-                </h1>
-              </header>
+              <h1 className='text-[28px] sm:mb-[38px] mb-[24px] font-bold text-[#373737] sm:text-[38px]'>
+                Your Order Details
+              </h1>
+
               <Accordion
                 styles={{ item: { border: 'none' } }}
                 defaultValue={`order-${orders[0].id}`}

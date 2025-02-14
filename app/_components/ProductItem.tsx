@@ -50,7 +50,7 @@ const ProductItem = ({ product }: ProductItemProps) => {
   };
 
   return (
-    <div className='hover:border p-1 rounded-lg border-yellow-500 relative'>
+    <div className='relative'>
       {/* WishList Toggle Button */}
       <div
         className={`absolute top-2 right-2 cursor-pointer p-1 ${

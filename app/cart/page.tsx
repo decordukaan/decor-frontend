@@ -1,4 +1,4 @@
-"use client"
+'use client';
 
 import { useContext, useEffect, useState } from 'react';
 import { CartContext } from '../_context/CartContext';
@@ -82,35 +82,36 @@ const Cart = () => {
 
   if (isLoading) {
     return (
-      <div className="max-w-2xl mx-auto p-8">
-        <Skeleton height={40} width="100%" mb="xl" />
-        <Skeleton height={20} width="60%" mb="md" />
-        <Skeleton height={20} width="80%" mb="md" />
-        <Skeleton height={20} width="70%" mb="md" />
-        <Skeleton height={20} width="90%" mb="md" />
-        <Skeleton height={20} width="50%" />
+      <div className='max-w-2xl mx-auto p-8'>
+        <Skeleton height={40} width='100%' mb='xl' />
+        <Skeleton height={20} width='60%' mb='md' />
+        <Skeleton height={20} width='80%' mb='md' />
+        <Skeleton height={20} width='70%' mb='md' />
+        <Skeleton height={20} width='90%' mb='md' />
+        <Skeleton height={20} width='50%' />
       </div>
     );
   }
 
   if (!cart.length) {
     return (
-      <div className="max-w-2xl mx-auto p-8">
-        <h2 className="text-2xl font-bold mb-6 text-center">Your cart is empty</h2>
+      <div className='max-w-2xl mx-auto p-8'>
+        <h2 className='text-2xl font-bold mb-6 text-center'>
+          Your cart is empty
+        </h2>
       </div>
     );
   }
 
   return (
     <section>
-      <div className='mx-auto max-w-screen-xl px-4 py-8 sm:px-6 sm:pt-12 sm:pb-20 lg:px-8'>
+      <div className='mx-auto max-w-screen-xl px-4 py-8 sm:px-6 sm:pt-[72px] sm:pb-20 lg:px-8'>
         <div className='mx-auto max-w-3xl'>
-          <header className='text-center'>
-            <h1 className='text-[38px] font-bold text-[#373737] sm:text-3xl'>
-              Your Cart
-            </h1>
-          </header>
-          <div className='mt-8'>
+          <h1 className='text-[28px] font-bold text-[#373737] sm:text-[38px]'>
+            Your Cart
+          </h1>
+
+          <div className='mt-[38px]'>
             <ul className='space-y-4'>
               {cart.map((item: any) => (
                 <li key={item.id} className='flex items-center gap-4'>
@@ -128,7 +129,7 @@ const Cart = () => {
                   )}
                   <div className='flex-grow'>
                     <Skeleton visible={loadingItems.includes(item.id)}>
-                      <h3 className='text-sm text-gray-900'>
+                      <h3 className='text-[16px] text-gray-900'>
                         {item.product?.attributes?.title} {item.id}
                       </h3>
                     </Skeleton>

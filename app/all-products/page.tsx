@@ -86,7 +86,7 @@ function AllProducts() {
   };
 
   return (
-    <div className='container mx-auto my-[52px]'>
+    <div className='container mx-auto my-[72px]'>
       <Tabs value={activeTab} onChange={(tab) => setActiveTab(tab || 'All')}>
         <Tabs.List>
           <Tabs.Tab value='All'>All Products</Tabs.Tab>

@@ -13,7 +13,7 @@ const MainPagination: React.FC<MainPaginationProps> = ({
   onChange = () => {},
 }) => {
   return (
-    <div className="flex justify-center my-6">
+    <div className="flex justify-center mt-[42px]">
       <Pagination total={total} value={page} onChange={onChange} size="md" radius="md" />
     </div>
   );
