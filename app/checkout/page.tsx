@@ -1,12 +1,12 @@
 'use client';
 
-import { Accordion, Button, Select, Stepper } from '@mantine/core';
+import { Accordion, Button, Select, Skeleton, Stepper } from '@mantine/core';
 import { useUser } from '@clerk/nextjs';
 import ConfirmCart from '../_components/ConfirmCart';
 import { useFormState } from '../_hooks/useFormState';
 
 import { useEffect, useState } from 'react';
-import { submitOrder, orderCreate } from '../_utils/checkoutApi';
+import { submitOrder } from '../_utils/checkoutApi';
 import ContactInformationForm from '../_ui/molecules/ContactInformationForm';
 import ShippingDetailsForm from '../_ui/molecules/ShippingDetailsForm';
 import PaymentForm from '../_ui/molecules/PaymentForm';
@@ -21,7 +21,7 @@ const Checkout = () => {
   const { user, isSignedIn } = useUser();
   const { cart, clearCart, setCart } = useCart(); // Add this line to use the useCart hook
   const router = useRouter(); // Initialize router
-  const { totalPrice } = useCart();
+  const { totalPrice,codCharge } = useCart();
 
   const initialContactInfo = {
     userName: '',
@@ -38,7 +38,7 @@ const Checkout = () => {
     email: 'string',
   };
   const initialPaymentDetails = {
-    payment_method: '',
+    payment_method: 'razory_pay',
     transaction_id: '',
     status: 'Pending',
   };
@@ -57,11 +57,36 @@ const Checkout = () => {
     setLoading(true);
 
     try {
-      setLoading(true);
-
       const email = user?.emailAddresses[0].emailAddress || '';
+
+      if (paymentDetails.payment_method === 'cod') {
+        // Handle Cash on Delivery logic here
+        console.log('Processing Cash on Delivery');
+
+        const orderData = await submitOrder(
+          email,
+          paymentDetails,
+          cart,
+          totalPrice+codCharge
+        );
+
+        console.log('Order submitted successfully:', orderData);
+
+        notifications.show({
+          title: 'Order Placed Successfully',
+          message: 'Thank you for your purchase!',
+          color: 'green',
+          icon: <IconCheck size='1.1rem' />,
+          autoClose: 5000,
+        });
+
+        // Clear the cart and redirect to a confirmation page
+        setCart([]);
+        router.push('/order-confirmation');
+        return;
+      }
+
       const razorpayKey = process.env.NEXT_PUBLIC_RAZORPAY_KEY;
-      const razorpaySecret = process.env.NEXT_PUBLIC_RAZORPAY_SECRET;
       if (!razorpayKey) {
         throw new Error('Razorpay key is not defined');
       }
@@ -74,7 +99,8 @@ const Checkout = () => {
         body: JSON.stringify({
           amount: totalPrice * 100, // Amount in paise
           currency: 'INR',
-          receipt: 'receipt#1',
+          phone: contactInfo.phone, // Include the phone number
+          userName: contactInfo.userName, // Include the user name
         }),
       });
 
@@ -85,12 +111,11 @@ const Checkout = () => {
         key: process.env.key_id,
         amount: parseFloat(totalPrice) * 100,
         currency: 'INR',
-        name: 'name',
+        name: 'Reforms Marketing Solutions',
         description: 'description',
         order_id: orderData.id,
         handler: async function (response: any) {
           console.log(response, 'response');
-          debugger;
           const data = {
             orderCreationId: orderData.id,
             razorpayPaymentId: response.razorpay_payment_id,
@@ -98,7 +123,7 @@ const Checkout = () => {
             razorpaySignature: response.razorpay_signature,
           };
           paymentDetails.transaction_id = response.razorpay_payment_id;
-
+          setLoading(true);
           const result = await fetch('/api/verify', {
             method: 'POST',
             body: JSON.stringify(data),
@@ -106,13 +131,11 @@ const Checkout = () => {
           });
           const res = await result.json();
           if (res.isOk) {
-            const email = user?.emailAddresses[0].emailAddress || '';
-            const cartItems = cart; // Assuming you have access to the cart items
-
+            paymentDetails.status = 'Completed';
             const orderData = await submitOrder(
               email,
               paymentDetails,
-              cartItems,
+              cart,
               totalPrice
             );
 
@@ -123,13 +146,12 @@ const Checkout = () => {
               message: 'Thank you for your purchase!',
               color: 'green',
               icon: <IconCheck size='1.1rem' />,
-              autoClose: 5000,
+              autoClose: 10000,
             });
 
-            //Clear the cart and redirect to a confirmation page
-            setCart([]); // Assuming you have a setCart function to update the cart state
-            console.log('this is order details', OrderDetails);
-            // router.push('/order-confirmation');
+            // Clear the cart and redirect to a confirmation page
+            setCart([]);
+            router.push('/order-confirmation');
           } else {
             alert(res.message);
           }
@@ -148,33 +170,6 @@ const Checkout = () => {
         alert(response.error.description);
       });
       paymentObject.open();
-
-      // const orderData = await orderCreate(totalPrice, 'INR');
-      // console.log(orderData, 'orderData');
-
-      // const email = user?.emailAddresses[0].emailAddress || '';
-      // const cartItems = cart; // Assuming you have access to the cart items
-
-      // const orderData = await submitOrder(
-      //   email,
-      //   paymentDetails,
-      //   cartItems,
-      //   totalPrice,
-      // );
-
-      // console.log('Order submitted successfully:', orderData);
-
-      // notifications.show({
-      //   title: 'Order Placed Successfully',
-      //   message: 'Thank you for your purchase!',
-      //   color: 'green',
-      //   icon: <IconCheck size="1.1rem" />,
-      //   autoClose: 5000,
-      // });
-
-      // Clear the cart and redirect to a confirmation page
-      //setCart([]); // Assuming you have a setCart function to update the cart state
-      // router.push('/order-confirmation');
     } catch (error) {
       console.error('Error submitting order:', error);
       notifications.show({
@@ -198,80 +193,92 @@ const Checkout = () => {
 
   return (
     <>
-      {isSignedIn && cart.length > 0 && totalPrice > 0 && (
-        <div className='max-w-3xl mx-auto py-[72px]'>
-          <Accordion
-            styles={{
-              control: {
-                background: '#f1f3f5',
-                borderRadius: '4px',
-                cursor: 'pointer',
-              },
-            }}
-            defaultValue='checkout'
-          >
-            {/* Order Summary Section */}
-            <Accordion.Item value='order-summary'>
-              <Accordion.Control>Order Summary</Accordion.Control>
-              <Accordion.Panel>
-                <CartTable cart={cart} />
-              </Accordion.Panel>
-            </Accordion.Item>
-          </Accordion>
-          <Stepper
-            mt={48}
-            active={activeStep}
-            onStepClick={setActiveStep}
-            allowNextStepsSelect={false}
-          >
-            {/* Step 1: Contact Information */}
-            <Stepper.Step color='yellow' label='Contact Information'>
-              <ContactInformationForm
-                contactInfo={contactInfo}
-                onChange={(newContactInfo) => {
-                  Object.entries(newContactInfo).forEach(([key, value]) => {
-                    handleContactChange(key as keyof typeof contactInfo, value);
-                  });
-                }}
-                onNext={() => setActiveStep(1)}
-              />
-            </Stepper.Step>
-
-            {/* Step 2: Shipping Details */}
-            <Stepper.Step color='yellow' label='Shipping Details'>
-              <ShippingDetailsForm
-                shippingDetails={shippingDetails}
-                onChange={(newShippinDetailInfo) => {
-                  Object.entries(newShippinDetailInfo).forEach(
-                    ([key, value]) => {
-                      handleShippingChange(
-                        key as keyof typeof shippingDetails,
-                        value as string
+      {loading ? (
+        <Skeleton height={500} width='100%' radius='md' />
+      ) : (
+        isSignedIn &&
+        cart.length > 0 &&
+        totalPrice > 0 && (
+          <div className='max-w-3xl mx-auto py-[72px]'>
+            <Accordion
+              styles={{
+                control: {
+                  background: '#f1f3f5',
+                  borderRadius: '4px',
+                  cursor: 'pointer',
+                },
+              }}
+              defaultValue='checkout'
+            >
+              {/* Order Summary Section */}
+              <Accordion.Item value='order-summary'>
+                <Accordion.Control>Order Summary</Accordion.Control>
+                <Accordion.Panel>
+                  <CartTable cart={cart} />
+                </Accordion.Panel>
+              </Accordion.Item>
+            </Accordion>
+            <Stepper
+              mt={48}
+              active={activeStep}
+              onStepClick={setActiveStep}
+              allowNextStepsSelect={false}
+            >
+              {/* Step 1: Contact Information */}
+              <Stepper.Step color='yellow' label='Contact Information'>
+                <ContactInformationForm
+                  contactInfo={contactInfo}
+                  onChange={(newContactInfo) => {
+                    Object.entries(newContactInfo).forEach(([key, value]) => {
+                      handleContactChange(
+                        key as keyof typeof contactInfo,
+                        value
                       );
-                    }
-                  );
-                }}
-                onNext={() => setActiveStep(2)}
-              />
-            </Stepper.Step>
+                    });
+                  }}
+                  onNext={() => setActiveStep(1)}
+                />
+              </Stepper.Step>
 
-            {/* Step 3: Payment */}
-            <Stepper.Step color='yellow' label='Payment'>
-              <PaymentForm
-                paymentDetails={paymentDetails}
-                email={user.emailAddresses[0].emailAddress}
-                onChange={handlePaymentChange}
-                onSubmit={handleSubmit}
-              />
-            </Stepper.Step>
+              {/* Step 2: Shipping Details */}
+              <Stepper.Step color='yellow' label='Shipping Details'>
+                <ShippingDetailsForm
+                  shippingDetails={shippingDetails}
+                  onChange={(newShippinDetailInfo) => {
+                    Object.entries(newShippinDetailInfo).forEach(
+                      ([key, value]) => {
+                        handleShippingChange(
+                          key as keyof typeof shippingDetails,
+                          value as string
+                        );
+                      }
+                    );
+                  }}
+                  onNext={() => setActiveStep(2)}
+                />
+              </Stepper.Step>
 
-            {/* Step Completed */}
-            <Stepper.Completed>
-              Order has been placed successfully! Thank you for shopping with
-              us.
-            </Stepper.Completed>
-          </Stepper>
-        </div>
+              {/* Step 3: Payment */}
+              <Stepper.Step color='yellow' label='Payment'>
+                <PaymentForm
+                  paymentDetails={paymentDetails}
+                  email={user.emailAddresses[0].emailAddress}
+                  onChange={handlePaymentChange}
+                  onSubmit={handleSubmit}
+                  loading={loading}
+                  setLoading={setLoading}
+                  baseAmount={totalPrice}
+                />
+              </Stepper.Step>
+
+              {/* Step Completed */}
+              <Stepper.Completed>
+                Order has been placed successfully! Thank you for shopping with
+                us.
+              </Stepper.Completed>
+            </Stepper>
+          </div>
+        )
       )}
     </>
   );

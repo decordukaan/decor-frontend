@@ -163,7 +163,8 @@ const Cart = () => {
                           {item.quantity}
                         </Skeleton>
                       </Box>
-                      {item.quantity >=
+                      {item.product.attributes.stock_quantity !== null &&
+                      item.quantity >=
                       item.product.attributes.stock_quantity ? (
                         <Tooltip label='Out of stock' withArrow>
                           <Button size='xs' disabled>

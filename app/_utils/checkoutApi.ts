@@ -5,7 +5,7 @@ import Razorpay from 'razorpay';
 const razorpay = new Razorpay({
   key_id: process.env.NEXT_PUBLIC_RAZORPAY_KEY!,
   key_secret: process.env.NEXT_PUBLIC_RAZORPAY_SECRET,
- });
+});
 
 export const submitOrder = async (
   email: string,
@@ -28,7 +28,7 @@ export const submitOrder = async (
     let paymentCreateResponse;
     try {
       paymentCreateResponse = await GlobalApi.createPaymentDetails(email, paymentDetails);
-      console.log('this is payment update detail :)))))',paymentCreateResponse)
+      console.log('this is payment update detail :)))))', paymentCreateResponse);
     } catch (paymentError) {
       console.error('Error updating payment details:', paymentError);
       throw paymentError; // Throw the error to stop the order process if payment details update fails
@@ -49,8 +49,8 @@ export const submitOrder = async (
           total_price: totalPrice,
           payment_step: paymentCreateResponse.data.data.id,
           status: 'pending',
-          email:email,
-          order_status:"unfulfilled"
+          email: email,
+          order_status: "unfulfilled"
         };
 
         console.log('Order data:', orderData);
@@ -60,6 +60,12 @@ export const submitOrder = async (
 
         // Check if the order creation was successful (status 200)
         if (orderResponse.status === 200) {
+          // Update stock quantities for each product in the cart
+          for (const item of cartItems) {
+            const newStockQuantity = item.product.attributes.stock_quantity - item.quantity;
+            await GlobalApi.updateStockByProductId(item.product.id, newStockQuantity);
+          }
+
           // Clear the user's cart only if the order was created successfully
           await GlobalApi.clearUserCart(email);
           console.log('User cart cleared successfully');
@@ -87,25 +93,4 @@ export const submitOrder = async (
     console.error('Error submitting order:', error);
     throw error;
   }
-};
-
-export const orderCreate = async (
-  amount: string,
-  currency: string,
-) => {
-  try {
-
-    var options = {
-      amount: amount,
-      currency: currency,
-      receipt: 'rcp1',
-     };
-     const order = await razorpay.orders.create(options);
-     return order;
-  } catch (error) {
-    console.error('Error submitting order:', error);
-    throw error;
-  }
-};
-
-
+}; 

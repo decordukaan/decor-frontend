@@ -9,7 +9,6 @@ import { Button, Tooltip } from '@mantine/core';
 import Link from 'next/link';
 import { useCart } from '@/app/_hooks/useCart';
 
-
 interface ProductInfoProps {
   product: Product | undefined;
 }
@@ -19,26 +18,35 @@ const ProductInfo = ({ product }: ProductInfoProps) => {
     product?.attributes?.description?.[0]?.children?.[0]?.text || '';
 
   const { user } = useUser();
-  const {  setCart } = useContext(CartContext);
+  const { setCart } = useContext(CartContext);
 
   const [quantity, setQuantity] = useState(1);
   const [price, setPrice] = useState(product?.attributes?.pricing || 0);
   const [loading, setLoading] = useState(false);
   const [stockQuantity, setStockQuantity] = useState<number | null>(null);
   const [showTooltip, setShowTooltip] = useState(false);
-   const {cart,totalPrice } = useCart();
+  const { cart, totalPrice } = useCart();
 
-   useEffect(() => {
+  useEffect(() => {
     const fetchStockQuantity = async () => {
       if (product) {
         try {
           const stock = await GlobalApi.getStockByProductId(product.id);
 
+
+
           // Find the product in the cart
-          const cartItem = cart.find((item: any) => item.product.id === product.id);
+          const cartItem = cart.find(
+            (item: any) => item.product.id === product.id
+          );
 
           // Adjust stock quantity based on cart quantity
-          const adjustedStock = cartItem ? stock - cartItem.quantity : stock;
+          let adjustedStock = cartItem ? stock - cartItem.quantity : stock;
+
+          if (stock === null) {
+            adjustedStock = null;
+          }
+
 
           setStockQuantity(adjustedStock);
         } catch (error) {
@@ -67,6 +75,7 @@ const ProductInfo = ({ product }: ProductInfoProps) => {
       return newQuantity;
     });
   };
+
   const onDecreaseQuantity = () => {
     if (quantity > 1) {
       setQuantity((prev) => {
@@ -78,7 +87,7 @@ const ProductInfo = ({ product }: ProductInfoProps) => {
   };
 
   const onAddToCartClick = async () => {
-    if (!user || stockQuantity === 0) {
+    if (!user || (stockQuantity !== null && stockQuantity <= 0)) {
       notifications.show({
         title: 'Out of Stock',
         message: 'This product is currently out of stock.',
@@ -184,83 +193,88 @@ const ProductInfo = ({ product }: ProductInfoProps) => {
       <h2 className='text-[16px] text-gray-400'>
         {product?.attributes?.product_category?.data?.attributes.title || ''}
       </h2>
-      <p className='text-[18px] mt-5 text-gray-700 max-w-xl'>{descriptionText}</p>
+      <p className='text-[18px] mt-5 text-gray-700 max-w-xl'>
+        {descriptionText}
+      </p>
       <h2 className='text-[22px] text-[#373737] font-medium mt-5'>
         ₹{product?.attributes?.pricing}
       </h2>
 
       {/* Quantity Controls */}
-      <div className='flex items-center gap-4 mt-5'>
-        <button
-          className='p-2 bg-gray-200 rounded'
-          onClick={onDecreaseQuantity}
-          disabled={quantity === 1}
-        >
-          <Minus size={16} />
-        </button>
-
-        <span className='text-[18px] font-medium'>{quantity}</span>
-
-        {/* Tooltip appears only on click */}
-        <Tooltip
-          label='Out of Stock'
-          position='top'
-          withArrow
-          disabled={!(stockQuantity !== null && quantity >= stockQuantity)} // Disable when not needed
-        >
-          <div>
+      {stockQuantity == null  || stockQuantity > 0 ? (
+        <div>
+          <div className='flex items-center gap-4 mt-5'>
             <button
-              className={`p-2 rounded transition ${
-                stockQuantity !== null && quantity >= stockQuantity
-                  ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                  : 'bg-gray-200'
-              }`}
-              onClick={() => {
-                if (stockQuantity !== null && quantity >= stockQuantity) {
-                  handleDisabledClick();
-                } else {
-                  onIncreaseQuantity();
-                }
-              }}
-              disabled={stockQuantity !== null && quantity >= stockQuantity}
+              className='p-2 bg-gray-200 rounded'
+              onClick={onDecreaseQuantity}
+              disabled={quantity === 1}
             >
-              <Plus size={16} />
+              <Minus size={16} />
             </button>
+
+            <span className='text-[18px] font-medium'>{quantity}</span>
+
+            {/* Tooltip appears only on click */}
+            <Tooltip
+              label='Out of Stock'
+              position='top'
+              withArrow
+              disabled={!(stockQuantity !== null && quantity >= stockQuantity)} // Disable when not needed
+            >
+              <div>
+                <button
+                  className={`p-2 rounded transition ${
+                    stockQuantity !== null && quantity >= stockQuantity
+                      ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                      : 'bg-gray-200'
+                  }`}
+                  onClick={() => {
+                    if (stockQuantity !== null && quantity >= stockQuantity) {
+                      handleDisabledClick();
+                    } else {
+                      onIncreaseQuantity();
+                    }
+                  }}
+                  disabled={stockQuantity !== null && quantity >= stockQuantity}
+                >
+                  <Plus size={16} />
+                </button>
+              </div>
+            </Tooltip>
           </div>
-        </Tooltip>
-      </div>
 
-      {/* Sign-in Button if User is Not Logged In */}
-      {!user ? (
-        <Link href='/sign-in' passHref>
-          <Button
-            className='flex gap-2 mt-[24px] px-8 py-3 bg-yellow-500 hover:bg-yellow-500 hover:bg-opacity-30 hover:text-yellow-600 text-white font-semibold rounded-lg'
-            leftSection={<ShoppingCart />}
-            color='yellow'
-          >
-            Sign in to Add to Cart
-          </Button>
-        </Link>
+          {/* Add to Cart Button */}
+          {!user ? (
+            <Link href='/sign-in' passHref>
+              <Button
+                className='flex gap-2 mt-[24px] px-8 py-3 bg-yellow-500 hover:bg-yellow-500 hover:bg-opacity-30 hover:text-yellow-600 text-white font-semibold rounded-lg'
+                leftSection={<ShoppingCart />}
+                color='yellow'
+              >
+                Sign in to Add to Cart
+              </Button>
+            </Link>
+          ) : (
+            <Button
+              className='flex gap-2 mt-[24px] px-8 py-3 bg-yellow-500 hover:bg-yellow-500 hover:bg-opacity-30 hover:text-yellow-600 text-white font-semibold rounded-lg'
+              leftSection={<ShoppingCart />}
+              loading={loading}
+              onClick={onAddToCartClick}
+              color='yellow'
+              disabled={stockQuantity !== null && stockQuantity <= 0}
+            >
+              Add to cart
+            </Button>
+          )}
+        </div>
       ) : (
-        <Button
-          className='flex gap-2 mt-[24px] px-8 py-3 bg-yellow-500 hover:bg-yellow-500 hover:bg-opacity-30 hover:text-yellow-600 text-white font-semibold rounded-lg'
-          leftSection={<ShoppingCart />}
-          loading={loading}
-          onClick={onAddToCartClick}
-          color='yellow'
-          disabled={stockQuantity === 0}
-        >
-          Add to cart
-        </Button>
-      )}
-
-      {stockQuantity === 0 && (
         <div className='text-red-500 mt-2'>
           This product is currently out of stock.
         </div>
       )}
     </div>
   );
+
 };
 
 export default ProductInfo;

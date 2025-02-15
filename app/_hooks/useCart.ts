@@ -1,4 +1,4 @@
-import { useContext, useEffect, useCallback } from 'react';
+import { useContext, useEffect, useCallback, useState } from 'react';
 import { CartContext } from '@/app/_context/CartContext';
 import GlobalApi from '@/app/_utils/GlobalApi';
 import { useUser } from '@clerk/nextjs';
@@ -6,6 +6,7 @@ import { useUser } from '@clerk/nextjs';
 export const useCart = () => {
   const { cart, setCart } = useContext(CartContext);
   const { user, isLoaded } = useUser();
+  const [codCharge,setCodCharge] = useState(100);
 
   const calculateTotalPrice = useCallback((cartItems: any) => {
     return cartItems.reduce((total: number, item: any) => {
@@ -50,5 +51,5 @@ export const useCart = () => {
     fetchCartItems();
   }, [isLoaded, user, setCart]);
 
-  return { cart, setCart, totalPrice: updateTotalPrice(), clearCart };
+  return { cart, setCart,codCharge, totalPrice: updateTotalPrice(), clearCart };
 };

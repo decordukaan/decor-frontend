@@ -497,12 +497,14 @@ const validateLastOrder = async (
       params: {
         'filters[contact_information][email][$eq]': email,
         'sort[0]': 'createdAt:desc',
-        populate: '*',
+        populate: '*', // Ensure related fields are included
         'pagination[limit]': 1,
       },
     });
 
-    if (response.data.data.length === 0) {
+    console.log('Last order response:', response.data);
+
+    if (!response.data?.data?.length) {
       return { isValid: false };
     }
 
@@ -516,21 +518,25 @@ const validateLastOrder = async (
 
     // Check if the payment status is completed
     if (
-      order.attributes.payment_step?.data?.attributes?.status !== 'completed'
+      order.attributes.payment_step?.data?.attributes?.status !== 'Pending' &&
+      order.attributes.payment_step?.data?.attributes?.status !== 'Completed'
     ) {
+      console.log(
+        'order.attributes.payment_step?.data?.attributes?.status',
+        order.attributes.payment_step?.data?.attributes?.status
+      );
       return { isValid: false };
     }
-
     return {
       isValid: true,
       orderDetails: {
-        totalPrice: order.attributes.totalPrice,
+        totalPrice: order.attributes.total_price,
         orderId: order.id,
         createdAt: order.attributes.createdAt,
-        status: order.attributes.status,
-        items: order.attributes.items.map((item: any) => ({
+        status: order.attributes.order_status,
+        items: order.attributes.order_items_list.map((item: any) => ({
           id: item.id,
-          name: item.name,
+          name: item.name || 'Unknown Item', // Fallback for missing name
           quantity: item.quantity,
           price: item.price,
         })),
@@ -541,6 +547,8 @@ const validateLastOrder = async (
     throw error;
   }
 };
+
+
 
 const getUserOrderItems = (email: string, page: number = 1) =>
   axiosClient.get('/orders', {
@@ -599,6 +607,29 @@ const getStockByProductId = async (id: number) => {
   }
 };
 
+const updateStockByProductId = async (id: number, newStockQuantity: number) => {
+  const productResponse = await axiosClient.get(`/products/${id}`);
+  const product = productResponse.data.data;
+  if (product.attributes.stock_quantity === null || product.attributes.stock_quantity <= 0) {
+    console.log('Product is abundant or Stock update not required.');
+    return;
+  }
+
+  try {
+    const response = await axiosClient.put(`/products/${id}`, {
+      data: {
+        stock_quantity: newStockQuantity,
+      },
+    });
+
+    console.log('Stock updated successfully:', response.data);
+    return response.data;
+  } catch (error) {
+    console.error('Error updating stock quantity:', error);
+    throw error;
+  }
+};
+
 export default {
   getAllProducts,
   getProductById,
@@ -633,4 +664,5 @@ export default {
   getUserOrderItems,
   addContactForm,
   getStockByProductId,
+  updateStockByProductId
 };

@@ -17,7 +17,7 @@ export interface Product {
     updatedAt: string;
     publishedAt: string;
     featured: boolean;
-    stock_quantity: number;
+    stock_quantity: number | null;
     banner: {
       id: number;
       data:{
