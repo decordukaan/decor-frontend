@@ -1,17 +1,19 @@
 import { Table, Image, ScrollArea } from '@mantine/core';
 import { useCart } from '../_hooks/useCart';
 
-const CartTable: React.FC<{ cart: any[]; orderPrice?: any }> = ({
-  cart,
-  orderPrice,
-}) => {
+const CartTable: React.FC<{
+  cart: any[];
+  orderPrice?: any;
+  paymentMethod?: string;
+}> = ({ cart, orderPrice, paymentMethod }) => {
   let totalPriceInCart;
   if (!orderPrice) {
-    const {totalPrice } = useCart();
-    totalPriceInCart =totalPrice;
+    const { totalPrice } = useCart();
+    totalPriceInCart = totalPrice;
   } else {
     totalPriceInCart = orderPrice;
   }
+  const { codCharge } = useCart();
 
   const rows = cart.map((item, index) => (
     <Table.Tr key={index}>
@@ -47,6 +49,28 @@ const CartTable: React.FC<{ cart: any[]; orderPrice?: any }> = ({
         </Table.Thead>
         <Table.Tbody>{rows}</Table.Tbody>
         <Table.Tfoot>
+          {paymentMethod === 'cod' && (
+            <>
+              <Table.Tr>
+                <Table.Td
+                  colSpan={4}
+                  style={{
+                    textAlign: 'right',
+                  }}
+                >
+                  COD Charge:
+                </Table.Td>
+                <Table.Td
+                  style={{
+
+                    textAlign: 'right',
+                  }}
+                >
+                  ₹{codCharge || 100}
+                </Table.Td>
+              </Table.Tr>
+            </>
+          )}
           <Table.Tr>
             <Table.Td
               colSpan={4}
@@ -55,7 +79,7 @@ const CartTable: React.FC<{ cart: any[]; orderPrice?: any }> = ({
               Total Price:
             </Table.Td>
             <Table.Td style={{ fontWeight: 'bold', textAlign: 'right' }}>
-              ₹{totalPriceInCart}
+              ₹{paymentMethod === 'cod' ? (Number(totalPriceInCart)) : totalPriceInCart  }
             </Table.Td>
           </Table.Tr>
         </Table.Tfoot>
@@ -65,4 +89,3 @@ const CartTable: React.FC<{ cart: any[]; orderPrice?: any }> = ({
 };
 
 export default CartTable;
-

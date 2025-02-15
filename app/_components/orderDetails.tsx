@@ -159,6 +159,7 @@ const OrderDetails = () => {
                                 quantity: item.quantity,
                               })
                             )}
+                            paymentMethod={order.attributes.payment_step.data.attributes.payment_method}
                             orderPrice={order.attributes.total_price}
                           />
                         </Accordion.Panel>

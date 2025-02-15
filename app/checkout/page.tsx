@@ -38,7 +38,7 @@ const Checkout = () => {
     email: 'string',
   };
   const initialPaymentDetails = {
-    payment_method: 'razory_pay',
+    payment_method: 'razor_pay',
     transaction_id: '',
     status: 'Pending',
   };
