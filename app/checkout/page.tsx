@@ -21,7 +21,7 @@ const Checkout = () => {
   const { user, isSignedIn } = useUser();
   const { cart, clearCart, setCart } = useCart(); // Add this line to use the useCart hook
   const router = useRouter(); // Initialize router
-  const { totalPrice,codCharge } = useCart();
+  const { totalPrice, codCharge } = useCart();
 
   const initialContactInfo = {
     userName: '',
@@ -58,31 +58,48 @@ const Checkout = () => {
 
     try {
       const email = user?.emailAddresses[0].emailAddress || '';
-
       if (paymentDetails.payment_method === 'cod') {
         // Handle Cash on Delivery logic here
         console.log('Processing Cash on Delivery');
 
-        const orderData = await submitOrder(
-          email,
-          paymentDetails,
-          cart,
-          totalPrice+codCharge
-        );
+        try {
+          const orderData: any = await submitOrder(
+            email,
+            paymentDetails,
+            cart,
+            totalPrice + codCharge
+          );
 
-        console.log('Order submitted successfully:', orderData);
+          const orderId = orderData?.orderResponse?.data?.data?.id;
+          console.log('Order ID:', orderId);
 
-        notifications.show({
-          title: 'Order Placed Successfully',
-          message: 'Thank you for your purchase!',
-          color: 'green',
-          icon: <IconCheck size='1.1rem' />,
-          autoClose: 5000,
-        });
+          if (orderId) {
+            console.log('Order submitted successfully:', orderData);
+            notifications.show({
+              title: 'Order Placed Successfully',
+              message: 'Thank you for your purchase!',
+              color: 'green',
+              icon: <IconCheck size='1.1rem' />,
+              autoClose: 5000,
+            });
 
-        // Clear the cart and redirect to a confirmation page
-        setCart([]);
-        router.push('/order-confirmation');
+            // Clear the cart and redirect to a confirmation page
+            setCart([]);
+            router.push('/order-confirmation?orderId=' + orderId);
+          } else {
+            console.error('Order ID not found in response:', orderData);
+            throw new Error('Order ID not found');
+          }
+        } catch (error) {
+          console.error('Error processing Cash on Delivery:', error);
+          notifications.show({
+            title: 'Order Placement Failed',
+            message: 'There was an error placing your order. Please try again.',
+            color: 'red',
+            icon: <IconX size='1.1rem' />,
+            autoClose: 5000,
+          });
+        }
         return;
       }
 
@@ -132,26 +149,28 @@ const Checkout = () => {
           const res = await result.json();
           if (res.isOk) {
             paymentDetails.status = 'Completed';
-            const orderData = await submitOrder(
+            const orderData: any = await submitOrder(
               email,
               paymentDetails,
               cart,
               totalPrice
             );
-
+            const orderId = orderData?.orderResponse?.data?.data?.id;
             console.log('Order submitted successfully:', orderData);
 
-            notifications.show({
-              title: 'Order Placed Successfully',
-              message: 'Thank you for your purchase!',
-              color: 'green',
-              icon: <IconCheck size='1.1rem' />,
-              autoClose: 10000,
-            });
+            if (orderId) {
+              notifications.show({
+                title: 'Order Placed Successfully',
+                message: 'Thank you for your purchase!',
+                color: 'green',
+                icon: <IconCheck size='1.1rem' />,
+                autoClose: 10000,
+              });
 
-            // Clear the cart and redirect to a confirmation page
-            setCart([]);
-            router.push('/order-confirmation');
+              // Clear the cart and redirect to a confirmation page
+              setCart([]);
+              router.push('/order-confirmation?orderId=' + orderId);
+            }
           } else {
             alert(res.message);
           }

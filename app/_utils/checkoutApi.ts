@@ -31,7 +31,7 @@ export const submitOrder = async (
       console.log('this is payment update detail :)))))', paymentCreateResponse);
     } catch (paymentError) {
       console.error('Error updating payment details:', paymentError);
-      throw paymentError; // Throw the error to stop the order process if payment details update fails
+      throw paymentError; // Stop the order process if payment details update fails
     }
 
     // Check if payment update was successful
@@ -72,18 +72,13 @@ export const submitOrder = async (
         } else {
           console.warn('Order creation response was not 200. Cart not cleared.');
         }
-
         return orderResponse;
       };
 
       // Start the asynchronous order creation process
-      createOrderAsync().catch(error => {
-        console.error('Error in asynchronous order creation:', error);
-        // Handle the error as needed (e.g., notify the user, retry, etc.)
-      });
+      const orderResponse = await createOrderAsync();
+      return { message: 'Order processing started', orderResponse };
 
-      // Return immediately after starting the asynchronous process
-      return { message: 'Order processing started' };
     } else {
       console.error('Payment update failed. Order not created.');
       throw new Error('Payment update failed');
@@ -93,4 +88,4 @@ export const submitOrder = async (
     console.error('Error submitting order:', error);
     throw error;
   }
-}; 
+};

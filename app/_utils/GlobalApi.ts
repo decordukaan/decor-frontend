@@ -478,6 +478,25 @@ const handlePaymentDetails = async (email: string, data: PaymentDetails) => {
   }
 };
 
+const fetchOrderById = async (orderId: string) => {
+  try {
+    const response = await axiosClient.get(`/orders/${orderId}`, {
+      params: {
+        populate: {
+          payment_step: '*',
+        },
+      },
+    });
+
+    console.log('Fetched Orders:', response.data);
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching orders:', error);
+    throw error;
+  }
+};
+
+
 const createOrder = async (orderData: any) => {
   try {
     const response = await axiosClient.post('/orders', { data: orderData });
@@ -488,33 +507,25 @@ const createOrder = async (orderData: any) => {
   }
 };
 
-const validateLastOrder = async (
-  email: string
+
+const validateOrderById = async (
+  orderId: string
 ): Promise<OrderValidationResult> => {
   try {
-    // Fetch the most recent order for the given email
-    const response = await axiosClient.get('/orders', {
+    // Fetch the order by its ID
+    const response = await axiosClient.get(`/orders/${orderId}`, {
       params: {
-        'filters[contact_information][email][$eq]': email,
-        'sort[0]': 'createdAt:desc',
         populate: '*', // Ensure related fields are included
-        'pagination[limit]': 1,
       },
     });
 
-    console.log('Last order response:', response.data);
+    console.log('Order response:', response.data);
 
-    if (!response.data?.data?.length) {
+    if (!response.data?.data) {
       return { isValid: false };
     }
 
-    const order = response.data.data[0];
-
-    // Check if the order was created within the last hour
-    const oneHourAgo = new Date(Date.now() - 60 * 60 * 1000);
-    if (new Date(order.attributes.createdAt) < oneHourAgo) {
-      return { isValid: false };
-    }
+    const order = response.data.data;
 
     // Check if the payment status is completed
     if (
@@ -543,11 +554,10 @@ const validateLastOrder = async (
       },
     };
   } catch (error) {
-    console.error('Error validating last order:', error);
+    console.error('Error validating order by ID:', error);
     throw error;
   }
 };
-
 
 
 const getUserOrderItems = (email: string, page: number = 1) =>
@@ -660,7 +670,7 @@ export default {
   createPaymentDetails,
   updatePaymentDetails,
   createOrder,
-  validateLastOrder,
+  validateOrderById,
   getUserOrderItems,
   addContactForm,
   getStockByProductId,

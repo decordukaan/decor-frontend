@@ -105,6 +105,7 @@ const PaymentForm = ({
                 backgroundColor: '#fff5f5',
               }}
             >
+              <Text>Payment method:{paymentDetails.payment_method}</Text>
               <Text color='yellow' fw={600} display='flex' >
                 Cash On Delivery Charge: ₹100
                 <Tooltip
