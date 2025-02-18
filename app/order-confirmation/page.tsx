@@ -41,7 +41,7 @@ const OrderConfirmation = ({ params }:any) => {
           }, 10000);
         }
       } catch (error) {
-        console.error('Error validating order:', error);
+        console.error('Error validating order::', error);
         setTimeout(() => {
           router.push('/');
         }, 10000);
