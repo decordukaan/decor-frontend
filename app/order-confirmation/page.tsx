@@ -1,16 +1,15 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useRouter, useParams } from 'next/navigation';
 import { Button, Container, Title, Text, Stack, Skeleton } from '@mantine/core';
 import { IconCheck } from '@tabler/icons-react';
 import { useUser } from '@clerk/nextjs';
 import GlobalApi from '../_utils/GlobalApi';
 import { OrderDetails } from '../types/order';
 
-const OrderConfirmation = () => {
+const OrderConfirmation = ({ params }:any) => {
   const router = useRouter();
-  const searchParams = useSearchParams();
   const { user, isLoaded } = useUser();
   const [isValidOrder, setIsValidOrder] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
@@ -23,7 +22,7 @@ const OrderConfirmation = () => {
         return;
       }
 
-      const orderId = searchParams.get('orderId');
+      const orderId = params;
       if (!orderId) {
         router.push('/');
         return;
@@ -52,7 +51,7 @@ const OrderConfirmation = () => {
     };
 
     validateOrder();
-  }, [isLoaded, user, router, searchParams]);
+  }, [isLoaded, user, router, params]);
 
   return (
     <Container size="sm">
