@@ -29,7 +29,7 @@ const Footer = () => {
           </button>
         </div>
       </div>
-      <div className='container mx-auto sm:my-12 sm:px-4 px-[20px] py-6'>
+      <div className='container mx-auto sm:mt-12 sm:px-0 px-[20px] py-6'>
         <div className='grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 sm:gap-6 gap-9'>
           {/* Support Section */}
           <div>
@@ -128,14 +128,14 @@ const Footer = () => {
               <li className=' flex items-center sm:gap-2'>
                 <IoIosCall className='sm:text-[30px] sm:block hidden text-[20px]' />
                 <span className='inline-block pb-1 relative group'>
-                  +91 1234567890 / +91 9876543210
+                  +91 9895560404
                   <span className='absolute bottom-0 left-0 w-0 h-[2px] bg-[#373737] transition-all duration-300 group-hover:w-full'></span>
                 </span>
               </li>
               <li className=' flex items-center sm:gap-2'>
                 <MdOutlineMailOutline className='sm:text-[30px] sm:block hidden text-[20px]' />
                 <span className='inline-block pb-1 relative group'>
-                  dev.decordukaan@gmail.com
+                  info@decordukaan.com
                   <span className='absolute bottom-0 left-0 w-0 h-[2px] bg-[#373737] transition-all duration-300 group-hover:w-full'></span>
                 </span>
               </li>
@@ -153,10 +153,10 @@ const Footer = () => {
             </div>
           </div>
         </div>
-        <div className='sm:pb-[0px] pb-[30px] pt-[40px] sm:pt-[72px] flex justify-center'>
+        <div className='sm:pb-[0px] pb-[30px] pt-[40px] sm:pt-[0px] flex justify-center'>
           <Link
             href='/'
-            className='text-[34px] sm:text-[120px] font-bold text-yellow-600 text-opacity-40 text-center'
+            className='text-[34px] sm:text-[130px] font-bold text-yellow-600 text-opacity-40 text-center'
           >
             D E C O R D U K A A N
           </Link>

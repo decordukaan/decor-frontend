@@ -74,13 +74,13 @@ function ContactUsCom() {
       </section>
 
       {/* Contact Information */}
-      <section className='sm:py-16 px-[20px] py-[52px] md:px-20 grid grid-cols-1 md:grid-cols-3 sm:gap-12 gap-[24px]'>
+      <section className='sm:py-16 px-[20px] py-[52px] md:px-20 grid grid-cols-1 md:grid-cols-4 sm:gap-12 gap-[24px]'>
         <div className='bg-yellow-600 bg-opacity-10 shadow-lg rounded-lg sm:p-6 p-3 text-center'>
           <h2 className='sm:text-xl text-[18px] font-semibold sm:mb-4 mb-2'>
             Email Us
           </h2>
           <p className='text-gray-600 sm:text-[18px] text-[16px]'>
-            support@decordukaan.com
+            info@decordukaan.com
           </p>
         </div>
         <div className='bg-yellow-600 bg-opacity-10 shadow-lg rounded-lg sm:p-6 p-3 text-center'>
@@ -88,7 +88,7 @@ function ContactUsCom() {
             Call Us
           </h2>
           <p className='text-gray-600 sm:text-[18px] text-[16px]'>
-            +91 98765 43210
+            +91 9895560404
           </p>
         </div>
         <div className='bg-yellow-600 bg-opacity-10 shadow-lg rounded-lg sm:p-6 p-3 text-center'>
@@ -96,7 +96,15 @@ function ContactUsCom() {
             Visit Us
           </h2>
           <p className='text-gray-600 sm:text-[18px] text-[16px]'>
-            123 Decor Street, Home City, HC 56789
+            15/651 Moochikkal Tower, Moochikkal, Kerala - 676307
+          </p>
+        </div>
+        <div className='bg-yellow-600 bg-opacity-10 shadow-lg rounded-lg sm:p-6 p-3 text-center'>
+          <h2 className='sm:text-xl text-[18px] font-semibold sm:mb-4 mb-2'>
+            Support Hours
+          </h2>
+          <p className='text-gray-600 sm:text-[18px] text-[16px]'>
+            9:30 AM - 6:30 PM (Monday to Saturday)
           </p>
         </div>
       </section>
