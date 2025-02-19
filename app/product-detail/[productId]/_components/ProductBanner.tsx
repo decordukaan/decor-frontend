@@ -10,7 +10,7 @@ interface ProductIdProps {
 const ProductBanner = ({ product }: ProductIdProps) => {
   const slides =
     product?.attributes?.images?.data?.map((item) => ({
-      url: item.attributes.url,
+      url: item.attributes.url || '/images/default.png',
     })) || [];
 
   const banner = product?.attributes?.banner?.data?.attributes?.url;

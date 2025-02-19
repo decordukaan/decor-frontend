@@ -19,7 +19,7 @@ const CartTable: React.FC<{
     <Table.Tr key={index}>
       <Table.Td>
         <Image
-          src={item.product?.attributes?.banner?.data.attributes.url || ''}
+          src={item.product?.attributes?.banner?.data.attributes.url || '/images/default.png'}
           alt={item.product?.attributes?.title || 'Product image'}
           w={'50px'}
           h={'50px'}
