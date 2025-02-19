@@ -44,9 +44,9 @@ const Hero = () => {
                   radius={0}
                   style={{
                     backgroundImage: `url(${
-                      product.attributes?.banner?.data?.attributes?.url || ''
+                      product.attributes?.cover?.data?.attributes?.url || '/images/default.png'
                     })`,
-                    
+
                   }}
                   className={`sm:h-[780px] h-[360px] ${classes.card}`}
                 >
