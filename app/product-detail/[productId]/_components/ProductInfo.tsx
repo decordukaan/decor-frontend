@@ -5,7 +5,7 @@ import GlobalApi from '@/app/_utils/GlobalApi';
 import { useContext, useEffect, useState } from 'react';
 import { CartContext } from '@/app/_context/CartContext';
 import { notifications } from '@mantine/notifications';
-import { Button, Tooltip } from '@mantine/core';
+import { Button, Tooltip, Collapse } from '@mantine/core';
 import Link from 'next/link';
 import { useCart } from '@/app/_hooks/useCart';
 
@@ -14,8 +14,26 @@ interface ProductInfoProps {
 }
 
 const ProductInfo = ({ product }: ProductInfoProps) => {
-  const descriptionText =
-    product?.attributes?.description?.[0]?.children?.[0]?.text || '';
+  const [isExpanded, setIsExpanded] = useState(false);
+  const [truncatedDescription, setTruncatedDescription] = useState('');
+
+  useEffect(() => {
+    if (product?.attributes?.description) {
+      // Extract text content and join with line breaks
+      const fullText = product.attributes.description
+        .map((paragraph: any) => paragraph.children[0].text)
+        .join('\n');
+
+      // Check if truncation is needed
+      if (fullText.length > 150) {
+        setTruncatedDescription(fullText.slice(0, 150) + '...');
+      } else {
+        setTruncatedDescription(fullText);
+      }
+    }
+  }, [product]);
+
+  const toggleDescription = () => setIsExpanded(!isExpanded);
 
   const { user } = useUser();
   const { setCart } = useContext(CartContext);
@@ -33,8 +51,6 @@ const ProductInfo = ({ product }: ProductInfoProps) => {
         try {
           const stock = await GlobalApi.getStockByProductId(product.id);
 
-
-
           // Find the product in the cart
           const cartItem = cart.find(
             (item: any) => item.product.id === product.id
@@ -46,7 +62,6 @@ const ProductInfo = ({ product }: ProductInfoProps) => {
           if (stock === null) {
             adjustedStock = null;
           }
-
 
           setStockQuantity(adjustedStock);
         } catch (error) {
@@ -193,15 +208,37 @@ const ProductInfo = ({ product }: ProductInfoProps) => {
       <h2 className='text-[16px] text-gray-400'>
         {product?.attributes?.product_category?.data?.attributes.title || ''}
       </h2>
-      <p className='text-[18px] mt-5 text-gray-700 max-w-xl'>
-        {descriptionText}
+
+      {/* Render description with line breaks */}
+      <p className='text-[18px] mt-5 text-gray-700 max-w-xl whitespace-pre-line'>
+        {isExpanded
+          ? product?.attributes?.description
+              ?.map((p) => p.children[0].text)
+              .join('\n')
+          : truncatedDescription}
+        {/* Show 'See More' if text exceeds 150 characters */}
+        {product?.attributes?.description &&
+          product.attributes.description
+            .map((p) => p.children[0].text)
+            .join('\n').length > 150 && (
+            <>
+              {isExpanded && <br />}
+              <button
+                onClick={toggleDescription}
+                className='text-blue-500 mt-2'
+              >
+                {isExpanded ? 'See less' : 'See more'}
+              </button>
+            </>
+          )}
       </p>
+
       <h2 className='text-[22px] text-[#373737] font-medium mt-5'>
         ₹{product?.attributes?.pricing}
       </h2>
 
       {/* Quantity Controls */}
-      {stockQuantity == null  || stockQuantity > 0 ? (
+      {stockQuantity == null || stockQuantity > 0 ? (
         <div>
           <div className='flex items-center gap-4 mt-5'>
             <button
@@ -274,7 +311,6 @@ const ProductInfo = ({ product }: ProductInfoProps) => {
       )}
     </div>
   );
-
 };
 
 export default ProductInfo;
