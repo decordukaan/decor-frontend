@@ -54,9 +54,9 @@ const Hero = () => {
                     <Text className={classes.category} size='xs'>
                       {product?.attributes?.product_category?.data?.attributes.title || ''}
                     </Text>
-                    <Title order={3} className={classes.title}>
+                    <h3 className='sm:text-[22px] font-bold text-[16px] text-white max-w-3xl text-center sm:pt-[24px] pt-[18px]'>
                       {product.attributes?.title || 'Product Name'}
-                    </Title>
+                    </h3>
                     <Link
                       className='mt-[24px]'
                       href={`/product-detail/${product.id}`}
