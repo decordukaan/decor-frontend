@@ -54,7 +54,7 @@ const Hero = () => {
                     <Text className={classes.category} size='xs'>
                       {product?.attributes?.product_category?.data?.attributes.title || ''}
                     </Text>
-                    <h3 className='sm:text-[22px] font-bold text-[16px] text-white max-w-3xl text-center sm:pt-[24px] pt-[18px]'>
+                    <h3 className='sm:text-[22px] font-bold text-[16px] text-white max-w-lg text-center sm:pt-[24px] pt-[18px]'>
                       {product.attributes?.title || 'Product Name'}
                     </h3>
                     <Link
