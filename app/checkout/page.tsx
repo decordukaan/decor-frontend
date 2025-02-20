@@ -218,7 +218,7 @@ const Checkout = () => {
         isSignedIn &&
         cart.length > 0 &&
         totalPrice > 0 && (
-          <div className='max-w-3xl mx-auto py-[72px]'>
+          <div className='max-w-3xl sm:mx-auto mx-[20px] py-[72px]'>
             <Accordion
               styles={{
                 control: {

@@ -182,7 +182,7 @@ const OrderDetails = () => {
             </>
           ) : (
             <div className='flex flex-col items-center justify-center h-[70vh]'>
-              <p className='font-bold sm:text-[38px] text-[32px]'>Your Cart is Empty</p>
+              <p className='font-bold text-[#373737] sm:text-[38px] text-[32px]'>Your Cart is Empty</p>
               <Link className='mt-[24px]' href='/'>
                 <Button size='lg'>Continue Shopping</Button>
               </Link>

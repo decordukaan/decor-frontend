@@ -22,12 +22,12 @@ const Footer = () => {
             Bring Your Dream Space to Life with Decor Dukaan!
           </h2>
           <Link href='/all-products'>
-          <button className='group bg-[#373737] flex justify-center sm:justify-between items-center gap-3 rounded-md p-3 text-[#ffffee] mt-4 w-auto sm:w-auto'>
-            Shop now
-            <span>
-              <FaLongArrowAltRight />
-            </span>
-          </button>
+            <button className='group bg-[#373737] flex justify-center sm:justify-between items-center gap-3 rounded-md p-3 text-[#ffffee] mt-4 w-auto sm:w-auto'>
+              Shop now
+              <span>
+                <FaLongArrowAltRight />
+              </span>
+            </button>
           </Link>
         </div>
       </div>
@@ -40,7 +40,10 @@ const Footer = () => {
             </h4>
             <ul className='sm:text-base text-[14px] text-[#373737] sm:mt-4 mt-2 sm:space-y-2'>
               <li>
-                <Link href='/contact-us' className=' pb-1 relative group'>
+                <Link
+                  href='/contact-us'
+                  className='inline-block pb-1 relative group'
+                >
                   Contact Us
                   <span className='absolute bottom-0 left-0 w-0 h-[2px] bg-[#373737] transition-all duration-300 sm:group-hover:w-full'></span>
                 </Link>
@@ -112,7 +115,7 @@ const Footer = () => {
               </li>
               <li>
                 <Link
-                  href='/products'
+                  href='/all-products'
                   className='inline-block pb-1 relative group'
                 >
                   Products

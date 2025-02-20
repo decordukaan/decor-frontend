@@ -95,11 +95,12 @@ const Cart = () => {
 
   if (!cart.length) {
     return (
-      <div className='max-w-2xl mx-auto p-8'>
-        <h2 className='text-2xl font-bold mb-6 text-center'>
-          Your cart is empty
-        </h2>
-      </div>
+      <div className='flex flex-col items-center justify-center h-[90vh]'>
+      <p className='font-bold text-[#373737] sm:text-[38px] text-[32px]'>Your Cart is Empty</p>
+      <Link className='mt-[24px]' href='/'>
+        <Button size='lg'>Continue Shopping</Button>
+      </Link>
+    </div>
     );
   }
 
@@ -114,7 +115,7 @@ const Cart = () => {
           <div className='mt-[38px]'>
             <ul className='space-y-4'>
               {cart.map((item: any) => (
-                <li key={item.id} className='flex items-center gap-4'>
+                <li key={item.id} className='flex sm:flex-row flex-col justify-center sm:justify-start sm:items-center gap-4'>
                   {loadingItems.includes(item.id) ? (
                     <Skeleton height={64} width={64} radius='md' />
                   ) : (
@@ -129,7 +130,7 @@ const Cart = () => {
                   )}
                   <div className='flex-grow'>
                     <Skeleton visible={loadingItems.includes(item.id)}>
-                      <h3 className='text-[16px] text-gray-900'>
+                      <h3 className='text-[16px] max-w-[60%] text-gray-900'>
                         {item.product?.attributes?.title} {item.id}
                       </h3>
                     </Skeleton>

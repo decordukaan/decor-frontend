@@ -8,10 +8,11 @@ import { ChevronRightSquare, Heart } from 'lucide-react';
 import Link from 'next/link';
 import Image from 'next/image';
 import ProductList from './ProductList';
+import { Button } from '@mantine/core';
 
 function WishList() {
   const { user, isLoaded } = useUser();
-  const { wishListItems,isInWishList } = useWishList();
+  const { wishListItems, isInWishList } = useWishList();
   const [wishListProducts, setWishListProducts] = useState<any[]>([]);
 
   useEffect(() => {
@@ -25,9 +26,7 @@ function WishList() {
             const products = res.data.data[0]?.attributes.products.data || [];
             console.log(products, 'ith aanu produts in wishList');
             setWishListProducts(products);
-
           }
-
         }
       } catch (error) {
         console.error('Error fetching wishList products:', error);
@@ -37,7 +36,7 @@ function WishList() {
     if (isLoaded && user) {
       fetchWishListProducts();
     }
-  }, [ user, isLoaded]);
+  }, [user, isLoaded]);
 
   useEffect(() => {
     if (isLoaded && user) {
@@ -52,15 +51,20 @@ function WishList() {
     }
   }, [wishListItems.length, isLoaded, user]);
 
-
   return (
     <div className='container mx-auto my-[52px]'>
-      <h1 className='text-[38px] text-[#373737] font-bold '>WishList</h1>
-      <h1>{wishListItems.length}</h1>
       {wishListProducts.length > 0 ? (
-        <ProductList productList={wishListProducts} />
+        <>
+          <h1 className='text-[38px] text-[#373737] font-bold '>Your WishList</h1>
+          <ProductList productList={wishListProducts} />
+        </>
       ) : (
-        <p>Your wishList is empty.</p>
+        <div className='flex flex-col items-center justify-center h-[80vh]'>
+              <p className='font-bold text-[#373737] sm:text-[38px] text-[32px]'>Your Wishlist is Empty</p>
+              <Link className='mt-[24px]' href='/'>
+                <Button size='lg'>Continue Shopping</Button>
+              </Link>
+            </div>
       )}
     </div>
   );
