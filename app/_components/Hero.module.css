@@ -1,11 +1,29 @@
 .card {
-  height: 580px;
+  position: relative;
+  height: 680px;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   background-size: cover;
   background-position: center;
+  overflow: hidden;
+}
+
+.card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.3); /* Adjust opacity as needed */
+  z-index: 1; /* Ensure it's above the image */
+}
+
+.card > * {
+  position: relative;
+  z-index: 2; /* Ensure content is above the overlay */
 }
 
 .title {
@@ -24,12 +42,20 @@
   text-transform: uppercase;
   cursor: default;
 }
-.hero-carousel-container{
- .mantine-Carousel-indicators{
-  bottom: 200px;
- }
+.hero-carousel-container {
+  .mantine-Carousel-indicators {
+    bottom: 200px;
+  }
 }
 
-/* .btn:hover{
-
-} */
+@media (max-width: 639px) {
+  .card {
+    height: 400px !important;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-size: cover;
+    background-position: center;
+  }
+}

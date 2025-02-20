@@ -4,8 +4,9 @@ import { useEffect, useState } from 'react';
 import GlobalApi from '../_utils/GlobalApi';
 import { useUser } from '@clerk/nextjs';
 import CartTable from './CartTable';
-import { Accordion, Paper, Stepper, Skeleton } from '@mantine/core';
+import { Accordion, Paper, Stepper, Skeleton, Button } from '@mantine/core';
 import MainPagination from './MainPagination';
+import Link from 'next/link';
 
 const orderStatusSteps = [
   {
@@ -159,7 +160,10 @@ const OrderDetails = () => {
                                 quantity: item.quantity,
                               })
                             )}
-                            paymentMethod={order.attributes.payment_step.data.attributes.payment_method}
+                            paymentMethod={
+                              order.attributes.payment_step.data.attributes
+                                .payment_method
+                            }
                             orderPrice={order.attributes.total_price}
                           />
                         </Accordion.Panel>
@@ -177,7 +181,12 @@ const OrderDetails = () => {
               </div>
             </>
           ) : (
-            <p>No orders found.</p>
+            <div className='flex flex-col items-center justify-center h-[70vh]'>
+              <p className='font-bold sm:text-[38px] text-[32px]'>Your Cart is Empty</p>
+              <Link className='mt-[24px]' href='/'>
+                <Button size='lg'>Continue Shopping</Button>
+              </Link>
+            </div>
           )}
         </div>
       </div>

@@ -28,7 +28,7 @@ const Profile = () => {
   return (
     <div className='sm:container sm:mx-auto mx-[20px] mt-12 mb-16'>
       <div className='mx-auto max-w-3xl'>
-        <h1 className='sm:text-[38px] text-[28px] font-bold '>Set Up Your Profile</h1>
+        <h1 className='sm:text-[38px] text-[28px] font-bold text-[#373737]'>Set Up Your Profile</h1>
         <div className='mt-[38px]'>
           <Tabs defaultValue='contact'>
             <Tabs.List>

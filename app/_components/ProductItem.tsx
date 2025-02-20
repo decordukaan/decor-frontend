@@ -75,7 +75,7 @@ const ProductItem = ({ product }: ProductItemProps) => {
         />
         <div className='flex justify-between sm:items-center items-start bg-gray-50 p-3 rounded-b-lg'>
           <div className='sm:p-2'>
-            <h2 className='text-[12px] sm:text-[16px] font-medium'>
+            <h2 className='text-[12px] sm:text-[14px] font-medium'>
               {product.attributes?.title}
             </h2>
             <h2 className='text-[10px] sm:text-[14px] mt-[6px] text-gray-400 flex gap-1 sm:gap-2'>
@@ -83,7 +83,7 @@ const ProductItem = ({ product }: ProductItemProps) => {
               {product.attributes?.product_category?.data?.attributes.title}
             </h2>
           </div>
-          <h2 className='font-medium text-[12px] sm:text-[16px] '>₹{product.attributes?.pricing}</h2>
+          <h2 className='font-medium text-[14px] sm:text-[18px] '>₹{product.attributes?.pricing}</h2>
         </div>
       </Link>
     </div>

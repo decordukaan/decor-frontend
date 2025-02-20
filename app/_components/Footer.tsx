@@ -21,12 +21,14 @@ const Footer = () => {
           <h2 className='sm:text-[18px] text-[16px] text-[#373737] leading-[24px]'>
             Bring Your Dream Space to Life with Decor Dukaan!
           </h2>
+          <Link href='/all-products'>
           <button className='group bg-[#373737] flex justify-center sm:justify-between items-center gap-3 rounded-md p-3 text-[#ffffee] mt-4 w-auto sm:w-auto'>
             Shop now
             <span>
               <FaLongArrowAltRight />
             </span>
           </button>
+          </Link>
         </div>
       </div>
       <div className='container mx-auto sm:mt-12 sm:px-0 px-[20px] py-6'>
@@ -40,7 +42,7 @@ const Footer = () => {
               <li>
                 <Link href='/contact-us' className=' pb-1 relative group'>
                   Contact Us
-                  <span className='absolute bottom-0 left-0 w-0 h-[2px] bg-[#373737] transition-all duration-300 group-hover:w-full'></span>
+                  <span className='absolute bottom-0 left-0 w-0 h-[2px] bg-[#373737] transition-all duration-300 sm:group-hover:w-full'></span>
                 </Link>
               </li>
               <li>
@@ -49,7 +51,7 @@ const Footer = () => {
                   className='inline-block pb-1 relative group'
                 >
                   Terms & Conditions
-                  <span className='absolute bottom-0 left-0 w-0 h-[2px] bg-[#373737] transition-all duration-300 group-hover:w-full'></span>
+                  <span className='absolute bottom-0 left-0 w-0 h-[2px] bg-[#373737] transition-all duration-300 sm:group-hover:w-full'></span>
                 </Link>
               </li>
               <li>
@@ -58,7 +60,7 @@ const Footer = () => {
                   className='inline-block pb-1 relative group'
                 >
                   Delivery Policy
-                  <span className='absolute bottom-0 left-0 w-0 h-[2px] bg-[#373737] transition-all duration-300 group-hover:w-full'></span>
+                  <span className='absolute bottom-0 left-0 w-0 h-[2px] bg-[#373737] transition-all duration-300 sm:group-hover:w-full'></span>
                 </Link>
               </li>
               <li>
@@ -67,7 +69,7 @@ const Footer = () => {
                   className='inline-block pb-1 relative group'
                 >
                   Payment Refund Policy
-                  <span className='absolute bottom-0 left-0 w-0 h-[2px] bg-[#373737] transition-all duration-300 group-hover:w-full'></span>
+                  <span className='absolute bottom-0 left-0 w-0 h-[2px] bg-[#373737] transition-all duration-300 sm:group-hover:w-full'></span>
                 </Link>
               </li>
               <li>
@@ -76,13 +78,13 @@ const Footer = () => {
                   className='inline-block pb-1 relative group'
                 >
                   Cancellation Policy
-                  <span className='absolute bottom-0 left-0 w-0 h-[2px] bg-[#373737] transition-all duration-300 group-hover:w-full'></span>
+                  <span className='absolute bottom-0 left-0 w-0 h-[2px] bg-[#373737] transition-all duration-300 sm:group-hover:w-full'></span>
                 </Link>
               </li>
               <li>
                 <Link href='/faq' className=' pb-1 relative group'>
                   FAQs
-                  <span className='absolute bottom-0 left-0 w-0 h-[2px] bg-[#373737] transition-all duration-300 group-hover:w-full'></span>
+                  <span className='absolute bottom-0 left-0 w-0 h-[2px] bg-[#373737] transition-all duration-300 sm:group-hover:w-full'></span>
                 </Link>
               </li>
             </ul>
@@ -99,13 +101,13 @@ const Footer = () => {
                   className='inline-block pb-1 relative group'
                 >
                   About Us
-                  <span className='absolute bottom-0 left-0 w-0 h-[2px] bg-[#373737] transition-all duration-300 group-hover:w-full'></span>
+                  <span className='absolute bottom-0 left-0 w-0 h-[2px] bg-[#373737] transition-all duration-300 sm:group-hover:w-full'></span>
                 </Link>
               </li>
               <li>
                 <span className='inline-block pb-1 relative group'>
                   Categories
-                  <span className='absolute bottom-0 left-0 w-0 h-[2px] bg-[#373737] transition-all duration-300 group-hover:w-full'></span>
+                  <span className='absolute bottom-0 left-0 w-0 h-[2px] bg-[#373737] transition-all duration-300 sm:group-hover:w-full'></span>
                 </span>
               </li>
               <li>
@@ -114,7 +116,7 @@ const Footer = () => {
                   className='inline-block pb-1 relative group'
                 >
                   Products
-                  <span className='absolute bottom-0 left-0 w-0 h-[2px] bg-[#373737] transition-all duration-300 group-hover:w-full'></span>
+                  <span className='absolute bottom-0 left-0 w-0 h-[2px] bg-[#373737] transition-all duration-300 sm:group-hover:w-full'></span>
                 </Link>
               </li>
             </ul>
@@ -129,14 +131,14 @@ const Footer = () => {
                 <IoIosCall className='sm:text-[30px] sm:block hidden text-[20px]' />
                 <span className='inline-block pb-1 relative group'>
                   +91 9895560404
-                  <span className='absolute bottom-0 left-0 w-0 h-[2px] bg-[#373737] transition-all duration-300 group-hover:w-full'></span>
+                  <span className='absolute bottom-0 left-0 w-0 h-[2px] bg-[#373737] transition-all duration-300 sm:group-hover:w-full'></span>
                 </span>
               </li>
               <li className=' flex items-center sm:gap-2'>
                 <MdOutlineMailOutline className='sm:text-[30px] sm:block hidden text-[20px]' />
                 <span className='inline-block pb-1 relative group'>
                   info@decordukaan.com
-                  <span className='absolute bottom-0 left-0 w-0 h-[2px] bg-[#373737] transition-all duration-300 group-hover:w-full'></span>
+                  <span className='absolute bottom-0 left-0 w-0 h-[2px] bg-[#373737] transition-all duration-300 sm:group-hover:w-full'></span>
                 </span>
               </li>
             </ul>

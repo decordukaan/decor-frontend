@@ -9,11 +9,17 @@ import { Product } from '@/app/types/products';
 
 function AllProducts() {
   const [products, setProducts] = useState<{ [key: string]: Product[] }>({});
-  const [categories, setCategories] = useState<{ id: string; title: string }[]>([]);
+  const [categories, setCategories] = useState<{ id: string; title: string }[]>(
+    []
+  );
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [currentPage, setCurrentPage] = useState<{ [key: string]: number }>({ All: 1 });
-  const [totalProducts, setTotalProducts] = useState<{ [key: string]: number }>({ All: 0 });
+  const [currentPage, setCurrentPage] = useState<{ [key: string]: number }>({
+    All: 1,
+  });
+  const [totalProducts, setTotalProducts] = useState<{ [key: string]: number }>(
+    { All: 0 }
+  );
   const [activeTab, setActiveTab] = useState('All');
 
   const pageSize = 25;
@@ -29,10 +35,16 @@ function AllProducts() {
         setCategories(categoryList);
 
         // Initialize pagination for each category
-        const paginationInit = categoryList.reduce((acc: { [key: string]: number }, category: { title: string | number; }) => {
-          acc[category.title] = 1;
-          return acc;
-        }, {});
+        const paginationInit = categoryList.reduce(
+          (
+            acc: { [key: string]: number },
+            category: { title: string | number }
+          ) => {
+            acc[category.title] = 1;
+            return acc;
+          },
+          {}
+        );
 
         setCurrentPage((prev) => ({ ...prev, ...paginationInit }));
       } catch (err) {
@@ -42,7 +54,6 @@ function AllProducts() {
 
     fetchCategories();
   }, []);
-
 
   // Fetch products when the tab changes or pagination changes
   useEffect(() => {
@@ -60,9 +71,14 @@ function AllProducts() {
       } else {
         // Get category ID from the state
         const categoryObj = categories.find((c) => c.title === category);
-        if (!categoryObj) return console.error(`Category "${category}" not found`);
+        if (!categoryObj)
+          return console.error(`Category "${category}" not found`);
 
-        res = await GlobalApi.getProductsByCategory(categoryObj.id, page, pageSize);
+        res = await GlobalApi.getProductsByCategory(
+          categoryObj.id,
+          page,
+          pageSize
+        );
       }
 
       console.log(`Fetched products for ${category}:`, res.data);
@@ -79,59 +95,63 @@ function AllProducts() {
     }
   };
 
-
   // Handle pagination changes
   const handlePageChange = (page: number) => {
     setCurrentPage((prev) => ({ ...prev, [activeTab]: page }));
   };
 
   return (
-    <div className='container mx-auto my-[72px]'>
-      <Tabs value={activeTab} onChange={(tab) => setActiveTab(tab || 'All')}>
-        <Tabs.List>
-          <Tabs.Tab value='All'>All Products</Tabs.Tab>
-          {categories.map((category) => (
-            <Tabs.Tab key={category.id} value={category.title}>
-              {category.title}
-            </Tabs.Tab>
-          ))}
-        </Tabs.List>
-        <Tabs.Panel value="All">
-          {loading ? (
-            <div className='grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4 mt-6'>
-              {Array.from({ length: 8}).map((_, index) => (
-                <Skeleton key={index} height={200} radius="md" />
-              ))}
-            </div>
-          ) : (
-            <ProductList productList={products['All'] || []} />
-          )}
-          <MainPagination
-            total={Math.ceil((totalProducts['All'] || 0) / pageSize)}
-            page={currentPage['All']}
-            onChange={handlePageChange}
-          />
-        </Tabs.Panel>
+    <div className='container mx-auto sm:my-[72px] my-[48px]'>
+      <div className='mx-[20px] sm:mx-0'>
+        <Tabs value={activeTab} onChange={(tab) => setActiveTab(tab || 'All')}>
+          <Tabs.List className='tabs-list sm:overflow-hidden overflow-x-auto flex'>
+            <Tabs.Tab value='All'>All Products</Tabs.Tab>
+            {categories.map((category) => (
+              <Tabs.Tab key={category.id} value={category.title}>
+                {category.title}
+              </Tabs.Tab>
+            ))}
+          </Tabs.List>
 
-        {categories.map((category) => (
-          <Tabs.Panel key={category.id} value={category.title}>
+          <Tabs.Panel value='All'>
             {loading ? (
               <div className='grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4 mt-6'>
-                {Array.from({ length: 8}).map((_, index) => (
-                  <Skeleton key={index} height={200} radius="md" />
+                {Array.from({ length: 8 }).map((_, index) => (
+                  <Skeleton key={index} height={200} radius='md' />
                 ))}
               </div>
             ) : (
-              <ProductList productList={products[category.title] || []} />
+              <ProductList productList={products['All'] || []} />
             )}
             <MainPagination
-              total={Math.ceil((totalProducts[category.title] || 0) / pageSize)}
-              page={currentPage[category.title] || 1}
+              total={Math.ceil((totalProducts['All'] || 0) / pageSize)}
+              page={currentPage['All']}
               onChange={handlePageChange}
             />
           </Tabs.Panel>
-        ))}
-      </Tabs>
+
+          {categories.map((category) => (
+            <Tabs.Panel key={category.id} value={category.title}>
+              {loading ? (
+                <div className='grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4 mt-6'>
+                  {Array.from({ length: 8 }).map((_, index) => (
+                    <Skeleton key={index} height={200} radius='md' />
+                  ))}
+                </div>
+              ) : (
+                <ProductList productList={products[category.title] || []} />
+              )}
+              <MainPagination
+                total={Math.ceil(
+                  (totalProducts[category.title] || 0) / pageSize
+                )}
+                page={currentPage[category.title] || 1}
+                onChange={handlePageChange}
+              />
+            </Tabs.Panel>
+          ))}
+        </Tabs>
+      </div>
     </div>
   );
 }

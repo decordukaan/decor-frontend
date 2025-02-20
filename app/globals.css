@@ -86,3 +86,17 @@
   .embla-thumbs__slide--selected .embla-thumbs__slide__number {
     color: var(--text-body);
   }
+
+
+  .tabs-list {
+    display: flex;
+    overflow-x: auto;
+    flex-wrap: nowrap !important; /* Enables horizontal scrolling */
+    white-space: nowrap; /* Prevents text from wrapping */
+    scrollbar-width: none; /* Hides scrollbar for Firefox */
+    -ms-overflow-style: none; /* Hides scrollbar for IE/Edge */
+  }
+
+  .tabs-list::-webkit-scrollbar {
+    display: none; /* Hides scrollbar for Chrome, Safari */
+  }

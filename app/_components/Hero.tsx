@@ -48,7 +48,7 @@ const Hero = () => {
                     })`,
 
                   }}
-                  className={`sm:h-[780px] h-[360px] ${classes.card}`}
+                  className={`${classes.card}`}
                 >
                   <div className='flex flex-col justify-center items-center'>
                     <Text className={classes.category} size='xs'>
