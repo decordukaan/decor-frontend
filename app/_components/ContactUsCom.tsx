@@ -159,16 +159,35 @@ function ContactUsCom() {
               {/* Map Section */}
               <Grid.Col span={{ base: 12, md: 6 }}>
                 <Paper shadow='sm' radius='md'>
-                  <iframe
-                    title='Decor Dukaan Location'
+                  <div
+                    className='mapouter'
                     style={{
+                      position: 'relative',
+                      textAlign: 'right',
                       width: '100%',
-                      minHeight: '420px',
-                      border: 'none',
+                      height: '400px',
                     }}
-                    src='https://www.google.com/maps/embed/v1/place?q=123+Decor+Street,+Home+City,+HC+56789&key=YOUR_GOOGLE_MAPS_API_KEY'
-                    allowFullScreen
-                  ></iframe>
+                  >
+                    <div
+                      className='gmap_canvas'
+                      style={{
+                        overflow: 'hidden',
+                        background: 'none!important',
+                        width: '100%',
+                        height: '400px',
+                      }}
+                    >
+                      <iframe
+                        className='gmap_iframe'
+                        frameBorder='0'
+                        scrolling='no'
+                        marginHeight={0}
+                        marginWidth={0}
+                        src='https://maps.google.com/maps?width=600&height=400&hl=en&q=Moochikkal tirur&t=&z=14&ie=UTF8&iwloc=B&output=embed'
+                        style={{ width: '100%', height: '400px' }}
+                      ></iframe>
+                    </div>
+                  </div>
                 </Paper>
               </Grid.Col>
             </Grid>

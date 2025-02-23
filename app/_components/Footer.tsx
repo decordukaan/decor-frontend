@@ -62,7 +62,7 @@ const Footer = () => {
                   href='/delivery-policy'
                   className='inline-block pb-1 relative group'
                 >
-                  Delivery Policy
+                  Shipping Policy
                   <span className='absolute bottom-0 left-0 w-0 h-[2px] bg-[#373737] transition-all duration-300 sm:group-hover:w-full'></span>
                 </Link>
               </li>
