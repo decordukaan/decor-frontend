@@ -279,6 +279,7 @@ export interface Product {
         };
       }>;
     };
+    sale: boolean;
   };
 }
 

@@ -22,6 +22,7 @@ const ContactInformationForm = ({ contactInfo, onChange, onNext, profile = false
   const { user } = useUser();
   const [initialValues, setInitialValues] = useState<ContactInfo | null>(null);
   const [loading, setLoading] = useState(true);
+  const [isModified, setIsModified] = useState(false);
 
   const form = useForm({
     initialValues: initialValues ?? { userName: "", email: "", phone: "" },
@@ -74,6 +75,16 @@ const ContactInformationForm = ({ contactInfo, onChange, onNext, profile = false
     }
   }, [form.values, loading]);
 
+  useEffect(() => {
+    if (initialValues) {
+      setIsModified(
+        form.values.userName !== initialValues.userName ||
+        form.values.email !== initialValues.email ||
+        form.values.phone !== initialValues.phone
+      );
+    }
+  }, [form.values, initialValues]);
+
   const handleSubmit = async (values: ContactInfo) => {
     const processedContactInfo: ContactInfo = {
       ...values,
@@ -83,7 +94,7 @@ const ContactInformationForm = ({ contactInfo, onChange, onNext, profile = false
     try {
       await GlobalApi.updateContactInformationByEmail(values.email, processedContactInfo);
       if (profile) {
-        // If it's a profile update, we might want to show a success message or update local state
+        setIsModified(false); // Reset isModified after successful save
         onNext(processedContactInfo);
       } else {
         onNext(processedContactInfo);
@@ -115,7 +126,13 @@ const ContactInformationForm = ({ contactInfo, onChange, onNext, profile = false
         required
         {...form.getInputProps("phone")}
       />
-       <Button fullWidth type="submit" color="yellow" mt={38}>
+      <Button
+        fullWidth
+        type="submit"
+        color="yellow"
+        mt={38}
+        disabled={profile && !isModified}
+      >
         {profile ? "Save" : "Next"}
       </Button>
     </form>

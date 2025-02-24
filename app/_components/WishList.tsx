@@ -55,16 +55,21 @@ function WishList() {
     <div className='container mx-auto my-[52px]'>
       {wishListProducts.length > 0 ? (
         <>
-          <h1 className='text-[38px] text-[#373737] font-bold '>Your WishList</h1>
-          <ProductList productList={wishListProducts} />
+          <h1 className='text-[38px] text-[#373737] font-bold '>
+            Your WishList
+          </h1>
+
+          <ProductList products={wishListProducts} />
         </>
       ) : (
         <div className='flex flex-col items-center justify-center h-[80vh]'>
-              <p className='font-bold text-[#373737] sm:text-[38px] text-[32px]'>Your Wishlist is Empty</p>
-              <Link className='mt-[24px]' href='/'>
-                <Button size='lg'>Continue Shopping</Button>
-              </Link>
-            </div>
+          <p className='font-bold text-[#373737] sm:text-[38px] text-[32px]'>
+            Your Wishlist is Empty
+          </p>
+          <Link className='mt-[24px]' href='/'>
+            <Button size='lg'>Continue Shopping</Button>
+          </Link>
+        </div>
       )}
     </div>
   );

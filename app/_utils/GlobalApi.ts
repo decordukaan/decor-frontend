@@ -20,9 +20,10 @@ const axiosClient = axios.create({
 
 const getAllProducts = (currentPage: number = 1, pageSize: number = 25) => {
   return axiosClient.get(
-    `/products?populate=*&pagination[page]=${currentPage}&pagination[pageSize]=${pageSize}&sort=createdAt:desc&sort=updatedAt:desc`
+    `/products?populate=*&pagination[page]=${currentPage}&pagination[pageSize]=${pageSize}&sort=createdAt:desc&sort=updatedAt:desc&filters[sale][$eq]=true`
   );
 };
+
 
 
 // get product by id
@@ -31,12 +32,15 @@ const getProductById = (id: number | string) =>
 
 // get featured products
 const getFeaturedProducts = () =>
-  axiosClient.get('/products?filters[featured][$eq]=true&populate=*');
+  axiosClient.get(
+    '/products?filters[featured][$eq]=true&filters[sale][$eq]=true&sort=createdAt:desc&populate=*'
+  );
+
 
 // get latest products
 const getLatestProducts = (limit: number = 10) =>
   axiosClient.get(
-    `/products?sort=createdAt:desc&pagination[limit]=${limit}&populate=*`
+    `/products?sort=createdAt:desc&pagination[limit]=${limit}&filters[sale][$eq]=true&populate=*`
   );
 
 // Add to cart collection
@@ -212,7 +216,7 @@ const getProductsByCategory = async (categoryId: string, page = 1, pageSize = 25
     return axiosClient.get(
       `/products?filters[product_category][id][$eq]=${categoryId}&populate=*` +
       `&pagination[page]=${page}&pagination[pageSize]=${pageSize}` +
-      `&sort=createdAt:desc,updatedAt:desc`
+      `&sort=createdAt:desc,updatedAt:desc&filters[sale][$eq]=true`
     );
   } catch (error) {
     console.error('Error fetching products by category:', error);
@@ -580,6 +584,7 @@ const getUserOrderItems = (email: string, page: number = 1) =>
         page,
         pageSize: 10, // Change this to the required page size
       },
+      sort: ['createdAt:desc'], 
     },
   });
 

@@ -70,7 +70,7 @@ function ProductDetailPage() {
         </Tabs.List>
 
         <Tabs.Panel value='All Products'>
-          <ProductList productList={allProducts} />
+          <ProductList products={allProducts} />
           <MainPagination
             total={Math.ceil(totalProducts / pageSize)}
             page={currentPage}
@@ -79,7 +79,7 @@ function ProductDetailPage() {
         </Tabs.Panel>
         {Object.keys(productsByCategory).map((categoryName) => (
           <Tabs.Panel key={categoryName} value={categoryName}>
-            <ProductList productList={productsByCategory[categoryName]} />
+            <ProductList products={productsByCategory[categoryName]} />
           </Tabs.Panel>
         ))}
       </Tabs>

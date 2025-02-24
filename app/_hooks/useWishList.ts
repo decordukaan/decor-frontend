@@ -6,6 +6,7 @@ import { WishListContext } from '../_context/WishListContext';
 export const useWishList = () => {
   const { wishListItems, setWishListItems } = useContext(WishListContext);
   const { user, isLoaded } = useUser();
+  const [isWishListLoaded, setIsWishListLoaded] = useState(false);
 
   const isInWishList = useCallback(
     (productId: number) => wishListItems.includes(productId),
@@ -13,8 +14,11 @@ export const useWishList = () => {
   );
 
   useEffect(() => {
+    if (!isLoaded) return;
+
     const fetchWishList = async () => {
-      if (isLoaded && user?.primaryEmailAddress?.emailAddress) {
+      setIsWishListLoaded(false); // Start loading
+      if (user?.primaryEmailAddress?.emailAddress) {
         try {
           const res = await GlobalApi.getWishListProductList(
             user.primaryEmailAddress.emailAddress
@@ -29,17 +33,20 @@ export const useWishList = () => {
           }
         } catch (error) {
           console.error('Error fetching wishList:', error);
+        } finally {
+          setIsWishListLoaded(true); // Loading complete
         }
-      } else if (isLoaded && !user) {
+      } else {
         setWishListItems([]);
+        setIsWishListLoaded(true); // Loading complete
       }
     };
 
     fetchWishList();
-  }, [user, isLoaded, setWishListItems]); // Remove isInWishList from dependencies
+  }, [user, isLoaded, setWishListItems]);
 
   const toggleWishListItem = async (productId: number) => {
-    if (!user?.primaryEmailAddress?.emailAddress) return;
+    if (!isLoaded || !user?.primaryEmailAddress?.emailAddress) return;
 
     const isCurrentlyInWishList = isInWishList(productId);
 
@@ -74,5 +81,5 @@ export const useWishList = () => {
     }
   };
 
-  return { wishListItems, isInWishList, toggleWishListItem };
+  return { wishListItems, isInWishList, toggleWishListItem, isWishListLoaded };
 };

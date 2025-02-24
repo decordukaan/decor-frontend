@@ -20,11 +20,11 @@ interface ShippingDetailsFormProps {
   profile?: boolean;
 }
 
-
-const ShippingDetailsForm = ({ shippingDetails, onNext,profile = false }: ShippingDetailsFormProps) => {
+const ShippingDetailsForm = ({ shippingDetails, onNext, profile = false }: ShippingDetailsFormProps) => {
   const { user } = useUser();
   const [initialValues, setInitialValues] = useState<ShippingDetailsFormProps['shippingDetails'] | null>(null);
   const [loading, setLoading] = useState(true);
+  const [isModified, setIsModified] = useState(false);
 
   const form = useForm({
     initialValues: initialValues ?? {
@@ -34,7 +34,7 @@ const ShippingDetailsForm = ({ shippingDetails, onNext,profile = false }: Shippi
       state: "",
       postal_code: "",
       country: "",
-      email: user?.emailAddresses[0]?.emailAddress?? shippingDetails.email?? "",
+      email: user?.emailAddresses[0]?.emailAddress ?? shippingDetails.email ?? "",
     },
     validate: {
       address_line1: (value) => (value ? null : "Address is required"),
@@ -76,9 +76,14 @@ const ShippingDetailsForm = ({ shippingDetails, onNext,profile = false }: Shippi
       setLoading(false);
     };
 
-
     fetchShippingDetails();
   }, [user, shippingDetails]);
+
+  useEffect(() => {
+    if (initialValues) {
+      setIsModified(JSON.stringify(form.values) !== JSON.stringify(initialValues));
+    }
+  }, [form.values, initialValues]);
 
   const updateShippingDetails = useDebounce(async (values: ShippingDetailsFormProps['shippingDetails']) => {
     try {
@@ -103,6 +108,7 @@ const ShippingDetailsForm = ({ shippingDetails, onNext,profile = false }: Shippi
       const email = user?.emailAddresses[0]?.emailAddress || "";
       await GlobalApi.updateOrCreateShippingDetailsByEmail(email, values);
       onNext(values);
+      setIsModified(false); // Reset modification state after successful save
     } catch (error) {
       console.error("Error updating/creating shipping details:", error);
     }
@@ -147,7 +153,7 @@ const ShippingDetailsForm = ({ shippingDetails, onNext,profile = false }: Shippi
         required
         {...form.getInputProps("country")}
       />
-       <Button fullWidth type="submit" color="yellow" mt={38}>
+      <Button fullWidth type="submit" color="yellow" mt={38} disabled={profile && !isModified}>
         {profile ? "Save" : "Next"}
       </Button>
     </form>

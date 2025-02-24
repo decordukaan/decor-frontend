@@ -6,7 +6,8 @@ import { useUser } from '@clerk/nextjs';
 export const useCart = () => {
   const { cart, setCart } = useContext(CartContext);
   const { user, isLoaded } = useUser();
-  const [codCharge,setCodCharge] = useState(100);
+  const [codCharge, setCodCharge] = useState(100);
+  const [isCartLoaded, setIsCartLoaded] = useState(false);
 
   const calculateTotalPrice = useCallback((cartItems: any) => {
     return cartItems.reduce((total: number, item: any) => {
@@ -42,7 +43,8 @@ export const useCart = () => {
             price: parseFloat(item.attributes.price) || 0,
           }));
           setCart(cartItems);
-        } catch (error){
+          setIsCartLoaded(true);
+        } catch (error) {
           console.error('Error fetching cart items:', error);
         }
       }
@@ -51,5 +53,5 @@ export const useCart = () => {
     fetchCartItems();
   }, [isLoaded, user, setCart]);
 
-  return { cart, setCart,codCharge, totalPrice: updateTotalPrice(), clearCart };
+  return { cart, setCart, codCharge, totalPrice: updateTotalPrice(), clearCart, isCartLoaded };
 };

@@ -4,10 +4,9 @@ import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
 import GlobalApi from '@/app/_utils/GlobalApi';
 import { Product } from '@/app/types/products';
-import Image from 'next/image';
-import Link from 'next/link';
 import { Category } from '@/app/types/categoryList';
-import ProductItem from '@/app/_components/ProductItem';
+import ProductList from '@/app/_components/ProductList';
+import { Skeleton } from '@mantine/core';
 
 const CategoryPage = () => {
   const params = useParams();
@@ -18,7 +17,9 @@ const CategoryPage = () => {
   const fetchCategoryProducts = async () => {
     setLoading(true);
     try {
-      const response = await GlobalApi.getProductsByCategory(params.id as string);
+      const response = await GlobalApi.getProductsByCategory(
+        params.id as string
+      );
       setProducts(response.data.data);
     } catch (error) {
       console.error('Error fetching category products:', error);
@@ -45,19 +46,30 @@ const CategoryPage = () => {
   }, [params.id]);
 
   if (loading) {
-    return <div>Loading...</div>;
+    return (
+      <div className='container mx-auto my-[52px] sm:my-[72px]'>
+        <h2 className='text-[#3a3a3a] font-semibold text-[28px] sm:text-[38px]'>
+          Latest collections
+        </h2>
+        <div className='grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 sm:gap-4 gap-2 sm:my-6 my-3'>
+          {Array.from({ length: 8 }).map((_, index) => (
+            <Skeleton key={index} height={200} radius='md' />
+          ))}
+        </div>
+      </div>
+    );
   }
 
   return (
     <div className='container mx-auto mt-12 mb-16'>
       <h1 className='text-[38px] font-bold mb-6'>
-        Category: {category?.attributes.title}
+      {category?.attributes.title}
       </h1>
-      <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6'>
-        {products?.map((product,index) => (
-          <ProductItem key={index} product={product} />
-        ))}
-      </div>
+      {products.length > 0 ? (
+        <ProductList products={products} />
+      ) : (
+        <div>No products are currently available in this category. Please check back later.</div>
+      )}
     </div>
   );
 };

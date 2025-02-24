@@ -5,7 +5,7 @@ import GlobalApi from '@/app/_utils/GlobalApi';
 import { useContext, useEffect, useState } from 'react';
 import { CartContext } from '@/app/_context/CartContext';
 import { notifications } from '@mantine/notifications';
-import { Button, Tooltip, Collapse } from '@mantine/core';
+import { Button, Tooltip, Collapse, Skeleton } from '@mantine/core';
 import Link from 'next/link';
 import { useCart } from '@/app/_hooks/useCart';
 
@@ -16,47 +16,41 @@ interface ProductInfoProps {
 const ProductInfo = ({ product }: ProductInfoProps) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const [truncatedDescription, setTruncatedDescription] = useState('');
+  const [loading, setLoading] = useState(true);
+  const [isDataLoaded, setIsDataLoaded] = useState(false);
+
+  const { user, isLoaded } = useUser();
+  const { setCart } = useContext(CartContext);
+  const { cart } = useCart();
+
+  const [quantity, setQuantity] = useState(1);
+  const [price, setPrice] = useState(product?.attributes?.pricing || 0);
+  const [stockQuantity, setStockQuantity] = useState<number | null>(null);
+  const [showTooltip, setShowTooltip] = useState(false);
 
   useEffect(() => {
     if (product?.attributes?.description) {
-      // Extract text content and join with line breaks
       const fullText = product.attributes.description
         .map((paragraph: any) => paragraph.children[0].text)
         .join('\n');
 
-      // Check if truncation is needed
       if (fullText.length > 150) {
         setTruncatedDescription(fullText.slice(0, 150) + '...');
       } else {
         setTruncatedDescription(fullText);
       }
     }
+    setLoading(false);
   }, [product]);
-
-  const toggleDescription = () => setIsExpanded(!isExpanded);
-
-  const { user } = useUser();
-  const { setCart } = useContext(CartContext);
-
-  const [quantity, setQuantity] = useState(1);
-  const [price, setPrice] = useState(product?.attributes?.pricing || 0);
-  const [loading, setLoading] = useState(false);
-  const [stockQuantity, setStockQuantity] = useState<number | null>(null);
-  const [showTooltip, setShowTooltip] = useState(false);
-  const { cart, totalPrice } = useCart();
 
   useEffect(() => {
     const fetchStockQuantity = async () => {
       if (product) {
         try {
           const stock = await GlobalApi.getStockByProductId(product.id);
-
-          // Find the product in the cart
           const cartItem = cart.find(
             (item: any) => item.product.id === product.id
           );
-
-          // Adjust stock quantity based on cart quantity
           let adjustedStock = cartItem ? stock - cartItem.quantity : stock;
 
           if (stock === null) {
@@ -66,12 +60,16 @@ const ProductInfo = ({ product }: ProductInfoProps) => {
           setStockQuantity(adjustedStock);
         } catch (error) {
           console.error('Error fetching stock quantity:', error);
+        } finally {
+          setIsDataLoaded(true);
         }
       }
     };
 
     fetchStockQuantity();
   }, [product, cart]);
+
+  const toggleDescription = () => setIsExpanded(!isExpanded);
 
   const onIncreaseQuantity = () => {
     if (stockQuantity !== null && quantity >= stockQuantity) {
@@ -112,7 +110,7 @@ const ProductInfo = ({ product }: ProductInfoProps) => {
       return;
     }
 
-    setLoading(true); // Show loading spinner
+    setLoading(true);
 
     const userEmail = user.primaryEmailAddress?.emailAddress;
 
@@ -132,7 +130,6 @@ const ProductInfo = ({ product }: ProductInfoProps) => {
 
       let response;
       if (existingCartItem) {
-        // Update existing cart item
         const cartItemId = existingCartItem.id;
         const newQuantity = existingCartItem.attributes.quantity + quantity;
         const newPrice = Number(product.attributes?.pricing) * newQuantity;
@@ -144,7 +141,6 @@ const ProductInfo = ({ product }: ProductInfoProps) => {
           },
         });
       } else {
-        // Add new cart item
         response = await GlobalApi.addToCart({
           data: {
             userName: user.fullName,
@@ -158,10 +154,8 @@ const ProductInfo = ({ product }: ProductInfoProps) => {
 
       console.log('Cart updated successfully', response);
 
-      // Refresh cart data
       const updatedCartResponse = await GlobalApi.getUserCartItems(userEmail);
 
-      // Update local cart state with the fresh data from the server
       const updatedCartItems = updatedCartResponse.data.data.map(
         (item: any) => ({
           id: item.id,
@@ -172,7 +166,8 @@ const ProductInfo = ({ product }: ProductInfoProps) => {
       );
       setCart(updatedCartItems);
 
-      // Show success notification
+      setQuantity(1);
+
       notifications.show({
         title: 'Added to Cart',
         message: `${quantity} ${
@@ -183,7 +178,6 @@ const ProductInfo = ({ product }: ProductInfoProps) => {
       });
     } catch (error) {
       console.error('Error updating cart:', error);
-      // Show error notification
       notifications.show({
         title: 'Error',
         message: 'Failed to add item to cart. Please try again.',
@@ -191,123 +185,143 @@ const ProductInfo = ({ product }: ProductInfoProps) => {
         icon: <X />,
       });
     } finally {
-      setLoading(false); // Hide loading spinner
+      setLoading(false);
     }
   };
 
   const handleDisabledClick = () => {
     if (stockQuantity !== null && quantity >= stockQuantity) {
       setShowTooltip(true);
-      setTimeout(() => setShowTooltip(false), 2000); // Hide after 2 seconds
+      setTimeout(() => setShowTooltip(false), 2000);
     }
   };
 
   return (
     <div>
-      <h2 className='text-[22px]'>{product?.attributes?.title}</h2>
-      <h2 className='text-[16px] text-gray-400'>
-        {product?.attributes?.product_category?.data?.attributes.title || ''}
-      </h2>
-
-      {/* Render description with line breaks */}
-      <p className='text-[18px] mt-5 text-gray-700 max-w-xl whitespace-pre-line'>
-        {isExpanded
-          ? product?.attributes?.description
-              ?.map((p) => p.children[0].text)
-              .join('\n')
-          : truncatedDescription}
-        {/* Show 'See More' if text exceeds 150 characters */}
-        {product?.attributes?.description &&
-          product.attributes.description
-            .map((p) => p.children[0].text)
-            .join('\n').length > 150 && (
-            <>
-              {isExpanded && <br />}
-              <button
-                onClick={toggleDescription}
-                className='text-blue-500 mt-2'
-              >
-                {isExpanded ? 'See less' : 'See more'}
-              </button>
-            </>
-          )}
-      </p>
-
-      <h2 className='text-[22px] text-[#373737] font-medium mt-5'>
-        ₹{product?.attributes?.pricing}
-      </h2>
-
-      {/* Quantity Controls */}
-      {stockQuantity == null || stockQuantity > 0 ? (
+      {!isDataLoaded || !isLoaded ? (
         <div>
-          <div className='flex items-center gap-4 mt-5'>
-            <button
-              className='p-2 bg-gray-200 rounded'
-              onClick={onDecreaseQuantity}
-              disabled={quantity === 1}
-            >
-              <Minus size={16} />
-            </button>
-
-            <span className='text-[18px] font-medium'>{quantity}</span>
-
-            {/* Tooltip appears only on click */}
-            <Tooltip
-              label='Out of Stock'
-              position='top'
-              withArrow
-              disabled={!(stockQuantity !== null && quantity >= stockQuantity)} // Disable when not needed
-            >
-              <div>
-                <button
-                  className={`p-2 rounded transition ${
-                    stockQuantity !== null && quantity >= stockQuantity
-                      ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                      : 'bg-gray-200'
-                  }`}
-                  onClick={() => {
-                    if (stockQuantity !== null && quantity >= stockQuantity) {
-                      handleDisabledClick();
-                    } else {
-                      onIncreaseQuantity();
-                    }
-                  }}
-                  disabled={stockQuantity !== null && quantity >= stockQuantity}
-                >
-                  <Plus size={16} />
-                </button>
-              </div>
-            </Tooltip>
+          <Skeleton height={24} width="60%" radius="sm" />
+          <Skeleton height={18} width="30%" radius="sm" mt={8} />
+          <Skeleton height={20} width="90%" radius="sm" mt={16} />
+          <Skeleton height={20} width="85%" radius="sm" mt={4} />
+          <Skeleton height={20} width="50%" radius="sm" mt={4} />
+          <Skeleton height={30} width="20%" radius="sm" mt={20} />
+          <div style={{ display: 'flex', alignItems: 'center', marginTop: 16, gap: 8 }}>
+            <Skeleton height={40} width={40} radius="md" />
+            <Skeleton height={40} width={40} radius="md" />
+            <Skeleton height={40} width={40} radius="md" />
           </div>
-
-          {/* Add to Cart Button */}
-          {!user ? (
-            <Link href='/sign-in' passHref>
-              <Button
-                className='flex gap-2 mt-[24px] px-8 py-3 bg-yellow-500 hover:bg-yellow-500 hover:bg-opacity-30 hover:text-yellow-600 text-white font-semibold rounded-lg'
-                leftSection={<ShoppingCart />}
-                color='yellow'
-              >
-                Sign in to Add to Cart
-              </Button>
-            </Link>
-          ) : (
-            <Button
-              className='flex gap-2 mt-[24px] px-8 py-3 bg-yellow-500 hover:bg-yellow-500 hover:bg-opacity-30 hover:text-yellow-600 text-white font-semibold rounded-lg'
-              leftSection={<ShoppingCart />}
-              loading={loading}
-              onClick={onAddToCartClick}
-              color='yellow'
-              disabled={stockQuantity !== null && stockQuantity <= 0}
-            >
-              Add to cart
-            </Button>
-          )}
+          <Skeleton height={50} width="50%" radius="md" mt={16} />
         </div>
       ) : (
-        <div className='text-red-500 mt-2'>
-          This product is currently out of stock.
-        </div>
+        <>
+          <h2 className='text-[22px]'>{product?.attributes?.title}</h2>
+          <h2 className='text-[16px] text-gray-400'>
+            {product?.attributes?.product_category?.data?.attributes.title || ''}
+          </h2>
+
+          <p className='text-[18px] mt-5 text-gray-700 max-w-xl whitespace-pre-line'>
+            {isExpanded
+              ? product?.attributes?.description
+                  ?.map((p) => p.children[0].text)
+                  .join('\n')
+              : truncatedDescription}
+            {product?.attributes?.description &&
+              product.attributes.description
+                .map((p) => p.children[0].text)
+                .join('\n').length > 150 && (
+                <>
+                  {isExpanded && <br />}
+                  <button
+                    onClick={toggleDescription}
+                    className='text-blue-500 mt-2'
+                  >
+                    {isExpanded ? 'See less' : 'See more'}
+                  </button>
+                </>
+              )}
+          </p>
+
+          <h2 className='text-[22px] text-[#373737] font-medium mt-5'>
+            ₹{product?.attributes?.pricing}
+          </h2>
+
+          {stockQuantity !== null && stockQuantity > 0 ? (
+            <div>
+              <div className='flex items-center gap-4 mt-5'>
+                <button
+                  className='p-2 bg-gray-200 rounded'
+                  onClick={onDecreaseQuantity}
+                  disabled={quantity === 1}
+                >
+                  <Minus size={16} />
+                </button>
+
+                <span className='text-[18px] font-medium'>{quantity}</span>
+
+                <Tooltip
+                  label='Out of Stock'
+                  position='top'
+                  withArrow
+                  disabled={
+                    !(stockQuantity !== null && quantity >= stockQuantity)
+                  }
+                >
+                  <div>
+                    <button
+                      className={`p-2 rounded transition ${
+                        stockQuantity !== null && quantity >= stockQuantity
+                          ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                          : 'bg-gray-200'
+                      }`}
+                      onClick={() => {
+                        if (
+                          stockQuantity !== null &&
+                          quantity >= stockQuantity
+                        ) {
+                          handleDisabledClick();
+                        } else {
+                          onIncreaseQuantity();
+                        }
+                      }}
+                      disabled={
+                        stockQuantity !== null && quantity >= stockQuantity
+                      }
+                    >
+                      <Plus size={16} />
+                    </button>
+                  </div>
+                </Tooltip>
+              </div>
+
+              {!user ? (
+                <Link href='/sign-in' passHref>
+                  <Button
+                    className='flex gap-2 mt-[24px] px-8 py-3 bg-yellow-500 hover:bg-yellow-500 hover:bg-opacity-30 hover:text-yellow-600 text-white font-semibold rounded-lg'
+                    leftSection={<ShoppingCart />}
+                    color='yellow'
+                  >
+                    Sign in to Add to Cart
+                  </Button>
+                </Link>
+              ) : (
+                <Button
+                  className='flex gap-2 mt-[24px] px-8 py-3 bg-yellow-500 hover:bg-yellow-500 hover:bg-opacity-30 hover:text-yellow-600 text-white font-semibold rounded-lg'
+                  leftSection={<ShoppingCart />}
+                  loading={loading}
+                  onClick={onAddToCartClick}
+                  color='yellow'
+                >
+                  Add to cart
+                </Button>
+              )}
+            </div>
+          ) : (
+            <div className='text-red-500 mt-2'>
+              This product is currently out of stock.
+            </div>
+          )}
+        </>
       )}
     </div>
   );

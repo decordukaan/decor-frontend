@@ -4,7 +4,6 @@ import { useEffect, useState, useRef } from 'react';
 import { Tabs } from '@mantine/core';
 import { useIntersection } from '@mantine/hooks';
 
-
 import { Product } from '@/app/types/products';
 import GlobalApi from '@/app/_utils/GlobalApi';
 import ProductList from '@/app/_components/ProductList';
@@ -73,7 +72,8 @@ function AllProducts() {
     }
   }, [entry, loading]);
 
-  if (loading && currentPage === 1) return <div className='text-center'>Loading...</div>;
+  if (loading && currentPage === 1)
+    return <div className='text-center'>Loading...</div>;
   if (error) return <div className='text-center text-red-500'>{error}</div>;
 
   return (
@@ -89,13 +89,15 @@ function AllProducts() {
         </Tabs.List>
 
         <Tabs.Panel value='All Products'>
-          <ProductList productList={allProducts} />
-          {loading && <div className='text-center'>Loading more products...</div>}
+          <ProductList products={allProducts} />
+          {loading && (
+            <div className='text-center'>Loading more products...</div>
+          )}
           <div ref={ref} className='h-1'></div>
         </Tabs.Panel>
         {Object.keys(productsByCategory).map((categoryName) => (
           <Tabs.Panel key={categoryName} value={categoryName}>
-            <ProductList productList={productsByCategory[categoryName]} />
+            <ProductList products={productsByCategory[categoryName]} />
           </Tabs.Panel>
         ))}
       </Tabs>

@@ -20,7 +20,7 @@ const ProductSection = () => {
         </h2>
         <div className='grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 sm:gap-4 gap-2 sm:my-6 my-3'>
           {Array.from({ length: 8 }).map((_, index) => (
-            <Skeleton key={index} height={200} radius="md" />
+            <Skeleton key={index} height={200} radius='md' />
           ))}
         </div>
       </div>
@@ -36,7 +36,8 @@ const ProductSection = () => {
       <h2 className='text-[#3a3a3a] font-semibold text-[28px] sm:text-[38px]'>
         Latest collections
       </h2>
-      <ProductList productList={latestProducts} />
+
+      <ProductList products={latestProducts} />
     </div>
   );
 };

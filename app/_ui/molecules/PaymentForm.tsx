@@ -76,7 +76,6 @@ const PaymentForm = ({
         <Skeleton height={500} width='100%' radius='md' />
       ) : (
         <>
-          <Text>Payement Details: {paymentDetails.payment_method}</Text>
           {/* Payment Method Selection */}
           <Select
             label='Payment Method'

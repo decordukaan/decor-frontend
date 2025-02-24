@@ -12,7 +12,7 @@ function AllProducts() {
   const [categories, setCategories] = useState<{ id: string; title: string }[]>(
     []
   );
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [currentPage, setCurrentPage] = useState<{ [key: string]: number }>({
     All: 1,
@@ -22,20 +22,39 @@ function AllProducts() {
   );
   const [activeTab, setActiveTab] = useState('All');
 
+
+
   const pageSize = 25;
 
   useEffect(() => {
-    const fetchCategories = async () => {
+    const fetchData = async () => {
       try {
-        const res = await GlobalApi.getCategoryList();
-        const categoryList = res.data.data.map((cat: any) => ({
-          id: cat.id, // Store category ID
-          title: cat.attributes.title,
-        }));
-        setCategories(categoryList);
+        setLoading(true);
 
-        // Initialize pagination for each category
-        const paginationInit = categoryList.reduce(
+        const [categoryRes, allProductsRes] = await Promise.all([
+          GlobalApi.getCategoryList(),
+          GlobalApi.getAllProducts(1, pageSize),
+        ]);
+
+        const categoriesWithProducts = await Promise.all(
+          categoryRes.data.data.map(async (cat: any) => {
+            const productsRes = await GlobalApi.getProductsByCategory(cat.id);
+            const productCount = productsRes.data.data.length;
+            return {
+              id: cat.id,
+              title: cat.attributes.title,
+              productCount,
+            };
+          })
+        );
+
+        const sortedCategories = categoriesWithProducts
+          .filter((category) => category.productCount > 0)
+          .sort((a, b) => b.productCount - a.productCount);
+
+        setCategories(sortedCategories);
+
+        const paginationInit = sortedCategories.reduce(
           (
             acc: { [key: string]: number },
             category: { title: string | number }
@@ -47,55 +66,55 @@ function AllProducts() {
         );
 
         setCurrentPage((prev) => ({ ...prev, ...paginationInit }));
+
+        const totalAllProducts =
+          allProductsRes.data.meta?.pagination?.total || 0;
+        setProducts((prev) => ({
+          ...prev,
+          All: allProductsRes.data.data || [],
+        }));
+        setTotalProducts((prev) => ({ ...prev, All: totalAllProducts }));
       } catch (err) {
-        console.error('Error fetching categories:', err);
+        setError('Failed to fetch data');
+        console.error('Error fetching data:', err);
+      } finally {
+        setLoading(false);
       }
     };
 
-    fetchCategories();
+    fetchData();
   }, []);
 
-  // Fetch products when the tab changes or pagination changes
   useEffect(() => {
-    fetchProducts(activeTab, currentPage[activeTab] || 1);
-  }, [activeTab, currentPage]);
+    if (activeTab !== 'All') {
+      const fetchProducts = async (category: string, page: number) => {
+        try {
+          setLoading(true);
+          const categoryObj = categories.find((c) => c.title === category);
+          if (!categoryObj)
+            return console.error(`Category "${category}" not found`);
 
-  // Fetch products (All or by category)
-  const fetchProducts = async (category: string, page: number) => {
-    try {
-      setLoading(true);
-      let res;
+          const res = await GlobalApi.getProductsByCategory(
+            categoryObj.id,
+            page,
+            pageSize
+          );
+          const total = res.data.meta?.pagination?.total || 0;
 
-      if (category === 'All') {
-        res = await GlobalApi.getAllProducts(page, pageSize);
-      } else {
-        // Get category ID from the state
-        const categoryObj = categories.find((c) => c.title === category);
-        if (!categoryObj)
-          return console.error(`Category "${category}" not found`);
+          setProducts((prev) => ({ ...prev, [category]: res.data.data || [] }));
+          setTotalProducts((prev) => ({ ...prev, [category]: total }));
+        } catch (err) {
+          setError(`Failed to fetch products for ${category}`);
+          console.error(`Error fetching category ${category}:`, err);
+        } finally {
+          setLoading(false);
+        }
+      };
 
-        res = await GlobalApi.getProductsByCategory(
-          categoryObj.id,
-          page,
-          pageSize
-        );
-      }
-
-      console.log(`Fetched products for ${category}:`, res.data);
-
-      const total = res.data.meta?.pagination?.total || 0;
-
-      setProducts((prev) => ({ ...prev, [category]: res.data.data || [] }));
-      setTotalProducts((prev) => ({ ...prev, [category]: total }));
-    } catch (err) {
-      setError(`Failed to fetch products for ${category}`);
-      console.error(`Error fetching category ${category}:`, err);
-    } finally {
-      setLoading(false);
+      fetchProducts(activeTab, currentPage[activeTab] || 1);
     }
-  };
+  }, [activeTab, currentPage, categories]);
 
-  // Handle pagination changes
   const handlePageChange = (page: number) => {
     setCurrentPage((prev) => ({ ...prev, [activeTab]: page }));
   };
@@ -121,7 +140,8 @@ function AllProducts() {
                 ))}
               </div>
             ) : (
-              <ProductList productList={products['All'] || []} />
+
+             <ProductList products={products['All'] || []} />
             )}
             <MainPagination
               total={Math.ceil((totalProducts['All'] || 0) / pageSize)}
@@ -139,7 +159,9 @@ function AllProducts() {
                   ))}
                 </div>
               ) : (
-                <ProductList productList={products[category.title] || []} />
+
+                  <ProductList products={products[category.title] || []} />
+
               )}
               <MainPagination
                 total={Math.ceil(

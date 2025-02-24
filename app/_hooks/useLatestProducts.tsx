@@ -1,11 +1,13 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import GlobalApi from '../_utils/GlobalApi';
 import { Product } from '../types/products';
+import { CartContext } from '../_context/CartContext';
 
 export const useLatestProducts = (limit: number = 10) => {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const { cart } = useContext(CartContext);
 
   useEffect(() => {
     const fetchLatestProducts = async () => {
