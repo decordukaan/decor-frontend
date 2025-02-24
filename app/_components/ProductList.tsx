@@ -11,7 +11,10 @@ const ProductList = ({ products }: { products: Product[] }) => {
   const { isInWishList, toggleWishListItem, isWishListLoaded } = useWishList();
   const { user, isLoaded } = useUser();
   const { setCart, isCartLoaded, cart } = useCart();
-  const [stockQuantities, setStockQuantities] = useState<Record<number, number>>({});
+  const [stockQuantities, setStockQuantities] = useState<
+    Record<number, number>
+  >({});
+  const [stockQuantityLoaded, setStockQuantityLoaded] = useState(false);
 
   useEffect(() => {
     const fetchStockQuantities = async () => {
@@ -38,6 +41,7 @@ const ProductList = ({ products }: { products: Product[] }) => {
         }
       }
       setStockQuantities(quantities);
+      setStockQuantityLoaded(true);
     };
 
     fetchStockQuantities();
@@ -56,7 +60,9 @@ const ProductList = ({ products }: { products: Product[] }) => {
     try {
       await toggleWishListItem(productId);
       notifications.show({
-        title: isInWishList(productId) ? 'Removed from Wishlist' : 'Added to Wishlist',
+        title: isInWishList(productId)
+          ? 'Removed from Wishlist'
+          : 'Added to Wishlist',
         message: isInWishList(productId)
           ? 'This product has been removed from your wishlist.'
           : 'This product has been added to your wishlist.',
@@ -115,7 +121,14 @@ const ProductList = ({ products }: { products: Product[] }) => {
         const newQuantity = currentCartQuantity + quantityToAdd;
         const newPrice = Number(product.attributes?.pricing) * newQuantity;
 
-        console.log('Updating Cart Item:', cartItemId, 'New Quantity:', newQuantity, 'New Price:', newPrice);
+        console.log(
+          'Updating Cart Item:',
+          cartItemId,
+          'New Quantity:',
+          newQuantity,
+          'New Price:',
+          newPrice
+        );
 
         response = await GlobalApi.updateCartItem(cartItemId, {
           data: {
@@ -138,8 +151,12 @@ const ProductList = ({ products }: { products: Product[] }) => {
       }
 
       // Update the stock quantities and cart state after a successful API call
-      const updatedStockQuantity = stockQuantity !== null ? stockQuantity - quantityToAdd : null;
-      setStockQuantities((prev: any) => ({ ...prev, [product.id]: updatedStockQuantity }));
+      const updatedStockQuantity =
+        stockQuantity !== null ? stockQuantity - quantityToAdd : null;
+      setStockQuantities((prev: any) => ({
+        ...prev,
+        [product.id]: updatedStockQuantity,
+      }));
 
       const updatedCartResponse = await GlobalApi.getUserCartItems(userEmail);
       const updatedCartItems = updatedCartResponse.data.data.map(
@@ -168,7 +185,7 @@ const ProductList = ({ products }: { products: Product[] }) => {
   };
 
   return (
-    <div className="grid grid-cols-2 lg:grid-cols-4 sm:gap-4 gap-4 lg:gap-x-6 lg:gap-y-8 mt-[24px]">
+    <div className='grid grid-cols-2 lg:grid-cols-4 sm:gap-4 gap-4 lg:gap-x-6 lg:gap-y-8 mt-[24px]'>
       {products.map((product) => (
         <ProductItem
           key={product.id}
@@ -181,6 +198,7 @@ const ProductList = ({ products }: { products: Product[] }) => {
           isCartLoaded={isCartLoaded}
           isUserLoggedIn={isLoaded && !!user}
           stockQuantity={stockQuantities[product.id]}
+          stockQuantityLoaded={stockQuantityLoaded}
         />
       ))}
     </div>

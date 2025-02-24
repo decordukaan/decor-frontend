@@ -22,6 +22,7 @@ interface ProductItemProps {
   isCartLoaded: boolean;
   isUserLoggedIn: boolean;
   stockQuantity: number;
+  stockQuantityLoaded: boolean;
 }
 
 const ProductItem = ({
@@ -34,6 +35,7 @@ const ProductItem = ({
   isCartLoaded,
   isUserLoggedIn,
   stockQuantity,
+  stockQuantityLoaded,
 }: ProductItemProps) => {
   return (
     <Link href={`/product-detail/${product.id}`} className='block h-full'>
@@ -113,7 +115,7 @@ const ProductItem = ({
           </Group>
 
           <Group py='xs' mt='xs'>
-            {isUserLoggedIn && !isCartLoaded ? (
+            {!stockQuantityLoaded ? (
               <Skeleton height={36} width='100%' />
             ) : (
               <Button
