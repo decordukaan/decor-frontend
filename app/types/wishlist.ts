@@ -31,4 +31,8 @@ interface UserWishList {
   };
 }
 
+// Add this line to define UsersWishListData
 type UsersWishListData = UserWishList[];
+
+// Export the types
+export type { WishListItem, UserWishList, UsersWishListData };
