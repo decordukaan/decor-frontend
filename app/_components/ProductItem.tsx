@@ -1,6 +1,6 @@
 import Image from 'next/image';
 import { Product } from '../types/products';
-import { Heart, ChevronRightSquare } from 'lucide-react';
+import { Heart, ChevronRightSquare, ShoppingCart } from 'lucide-react';
 import Link from 'next/link';
 import {
   Card,
@@ -11,12 +11,13 @@ import {
   Button,
   Skeleton,
 } from '@mantine/core';
+import { useState } from 'react';
 
 interface ProductItemProps {
   product: Product;
   isInWishList: boolean;
   onToggleFavorite: () => void;
-  onAddToCart: () => void;
+  onAddToCart: () => Promise<void>;
   isOutOfStock: boolean;
   isWishListLoaded: boolean;
   isCartLoaded: boolean;
@@ -37,6 +38,19 @@ const ProductItem = ({
   stockQuantity,
   stockQuantityLoaded,
 }: ProductItemProps) => {
+  const [isAddingToCart, setIsAddingToCart] = useState(false);
+
+  const handleAddToCart = async (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsAddingToCart(true);
+    try {
+      await onAddToCart();
+    } finally {
+      setIsAddingToCart(false);
+    }
+  };
+
   return (
     <Link href={`/product-detail/${product.id}`} className='block h-full'>
       <Card
@@ -117,17 +131,27 @@ const ProductItem = ({
           <Group py='xs' mt='xs'>
             {!stockQuantityLoaded ? (
               <Skeleton height={36} width='100%' />
+            ) : !isUserLoggedIn ? (
+              <Link className='w-full flex' href='/sign-in' passHref>
+                <Button
+                  variant='light'
+                  color={isOutOfStock ? 'gray' : 'yellow'}
+                  leftSection={<ShoppingCart />}
+                  fullWidth
+                >
+                  {isOutOfStock ? 'Out of Stock' : 'Sign in to Add to Cart'}
+                </Button>
+              </Link>
             ) : (
               <Button
                 variant='light'
                 color={isOutOfStock ? 'gray' : 'yellow'}
                 flex={5}
-                onClick={(e) => {
-                  e.preventDefault();
-                  e.stopPropagation();
-                  onAddToCart();
-                }}
-                disabled={isOutOfStock}
+                onClick={handleAddToCart}
+                disabled={isOutOfStock || isAddingToCart}
+                loading={isAddingToCart}
+                leftSection={<ShoppingCart />}
+                fullWidth
               >
                 {isOutOfStock ? 'Out of Stock' : 'Add to Cart'}
               </Button>
