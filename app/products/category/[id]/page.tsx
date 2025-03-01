@@ -61,15 +61,20 @@ const CategoryPage = () => {
   }
 
   return (
-    <div className='container mx-auto mt-12 mb-16'>
-      <h1 className='text-[38px] font-bold mb-6'>
-      {category?.attributes.title}
-      </h1>
-      {products.length > 0 ? (
-        <ProductList products={products} />
-      ) : (
-        <div>No products are currently available in this category. Please check back later.</div>
-      )}
+    <div className='mx-[20px] sm:mx-0'>
+      <div className='container mx-auto mt-12 mb-16'>
+        <h1 className='text-[38px] font-bold mb-6 text-[#373737]'>
+          {category?.attributes.title}
+        </h1>
+        {products.length > 0 ? (
+          <ProductList products={products} />
+        ) : (
+          <div className='text-[#373737]'>
+            No products are currently available in this category. Please check
+            back later.
+          </div>
+        )}
+      </div>
     </div>
   );
 };

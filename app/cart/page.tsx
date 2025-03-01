@@ -96,17 +96,19 @@ const Cart = () => {
   if (!cart.length) {
     return (
       <div className='flex flex-col items-center justify-center h-[90vh]'>
-      <p className='font-bold text-[#373737] sm:text-[38px] text-[32px]'>Your Cart is Empty</p>
-      <Link className='mt-[24px]' href='/'>
-        <Button size='lg'>Continue Shopping</Button>
-      </Link>
-    </div>
+        <p className='font-bold text-[#373737] sm:text-[38px] text-[32px]'>
+          Your Cart is Empty
+        </p>
+        <Link className='mt-[24px]' href='/'>
+          <Button size='lg'>Continue Shopping</Button>
+        </Link>
+      </div>
     );
   }
 
   return (
     <section>
-      <div className='mx-auto max-w-screen-xl px-4 py-8 sm:px-6 sm:pt-[72px] sm:pb-20 lg:px-8'>
+      <div className='mx-auto max-w-screen-xl px-[20px] py-8 sm:px-6 sm:pt-[72px] sm:pb-20 lg:px-8'>
         <div className='mx-auto max-w-3xl'>
           <h1 className='text-[28px] font-bold text-[#373737] sm:text-[38px]'>
             Your Cart
@@ -115,7 +117,10 @@ const Cart = () => {
           <div className='mt-[38px]'>
             <ul className='space-y-4'>
               {cart.map((item: any) => (
-                <li key={item.id} className='flex sm:flex-row flex-col justify-center sm:justify-start sm:items-center gap-4'>
+                <li
+                  key={item.id}
+                  className='flex sm:flex-row flex-col justify-center sm:justify-start sm:items-center gap-4'
+                >
                   {loadingItems.includes(item.id) ? (
                     <Skeleton height={64} width={64} radius='md' />
                   ) : (
@@ -166,7 +171,7 @@ const Cart = () => {
                       </Box>
                       {item.product?.attributes?.stock_quantity !== null &&
                       item.quantity >=
-                      item.product.attributes.stock_quantity ? (
+                        item.product.attributes.stock_quantity ? (
                         <Tooltip label='Out of stock' withArrow>
                           <Button size='xs' disabled>
                             <IconPlus size={16} />
@@ -184,11 +189,11 @@ const Cart = () => {
                         </Button>
                       )}
                     </div>
-                    <Box style={{ width: '80px', textAlign: 'right' }}>
+                    <div className='sm:w-[80px] w-full text-right'>
                       <Skeleton visible={updatingItems.includes(item.id)}>
                         <dt className='inline'>₹ {item.price}</dt>
                       </Skeleton>
-                    </Box>
+                    </div>
                   </div>
                 </li>
               ))}

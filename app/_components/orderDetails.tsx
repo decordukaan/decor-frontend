@@ -7,6 +7,7 @@ import CartTable from './CartTable';
 import { Accordion, Paper, Stepper, Skeleton, Button } from '@mantine/core';
 import MainPagination from './MainPagination';
 import Link from 'next/link';
+import { useMediaQuery } from '@mantine/hooks';
 
 const orderStatusSteps = [
   {
@@ -37,6 +38,7 @@ const OrderDetails = () => {
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+  const isMobileOrTablet = useMediaQuery('(max-width: 1024px)'); // Adjust breakpoint for tablets
 
   useEffect(() => {
     if (!user?.primaryEmailAddress?.emailAddress) return;
@@ -71,7 +73,7 @@ const OrderDetails = () => {
 
   return (
     <section>
-      <div className='mx-auto max-w-screen-xl px-4  sm:px-6   lg:px-8'>
+      <div className='mx-auto max-w-screen-xl px-4 sm:px-6 lg:px-8'>
         <div className='mx-auto max-w-3xl'>
           {loading ? (
             <Skeleton height={200} radius='md' animate />
@@ -107,14 +109,12 @@ const OrderDetails = () => {
                           </h3>
                         </Accordion.Control>
                         <Accordion.Panel>
-                          {/* Mantine Stepper */}
+                          {/* Responsive Mantine Stepper */}
                           <Stepper
                             title='Order Status'
-                            style={{
-                              background: 'white',
-                              borderRadius: '5px',
-                              padding: '10px',
-                            }}
+                            orientation={
+                              isMobileOrTablet ? 'horizontal' : 'vertical'
+                            }
                             active={cancelled ? 0 : currentStep}
                             size='sm'
                             mt='md'
@@ -182,7 +182,9 @@ const OrderDetails = () => {
             </>
           ) : (
             <div className='flex flex-col items-center justify-center h-[70vh]'>
-              <p className='font-bold text-[#373737] sm:text-[38px] text-[32px]'>No orders found</p>
+              <p className='font-bold text-[#373737] sm:text-[38px] text-[32px]'>
+                No orders found
+              </p>
               <Link className='mt-[24px]' href='/'>
                 <Button size='lg'>Continue Shopping</Button>
               </Link>

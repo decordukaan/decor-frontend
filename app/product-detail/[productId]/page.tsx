@@ -39,13 +39,12 @@ const ProductDetail = ({ params }: ProductDetailProps) => {
   // };
 
   return (
-    <div className='py-[72px] px-10 md:px-28'>
+    <div className='sm:py-[72px] py-[52px] px-[20px] md:px-28'>
       {/* <BreadCrumb /> */}
       <div className='grid grid-cols-1 sm:grid-cols-2  gap-5 sm:gap-0 '>
         <ProductBanner product={productDetail} />
         <ProductInfo product={productDetail} />
       </div>
-
     </div>
   );
 };
