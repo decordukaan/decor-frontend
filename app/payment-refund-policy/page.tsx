@@ -4,7 +4,7 @@ function PaymentRefundPolicyPage() {
       <h1 className='sm:text-[38px] text-[28px] font-bold text-[#373737] sm:mb-[38px] mb-[24px]'>
         Payment & Refund Policy
       </h1>
-      <p className='text-[#373737] text-sm mb-6'>Last Updated: 23-02-2025</p>
+      <p className='text-[#373737] text-sm mb-6'>Last Updated: 02-03-2025</p>
 
       <h2 className='text-[20px] font-semibold text-[#373737] mt-8 mb-4'>
         1. Payment Methods
@@ -55,7 +55,7 @@ function PaymentRefundPolicyPage() {
         </li>
         <li>
           Refunds for prepaid orders will be issued to the original payment
-          method within 7-10 business days.
+          method within 15 working days.
         </li>
       </ul>
 
@@ -64,7 +64,8 @@ function PaymentRefundPolicyPage() {
       </h3>
       <ul className='list-disc sm:text-[18px] text-[16px] list-inside text-[#373737] space-y-1'>
         <li>
-          COD ₹50 handling fee is non-refundable, even if the order is canceled.
+          COD ₹100 handling fee is non-refundable, even if the order is
+          canceled.
         </li>
         <li>If the return request is not submitted within 24 hours.</li>
         <li>

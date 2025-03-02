@@ -74,11 +74,9 @@ const ProductItem = ({
           />
 
           {isUserLoggedIn && !isWishListLoaded ? (
-            <Skeleton
-              height={36}
-              width={36}
-              className='absolute top-2 right-2'
-            />
+            <div className='absolute top-2 right-2'>
+              <Skeleton height={36} width={36} style={{ opacity: 0 }} />
+            </div>
           ) : (
             <div className='absolute top-2 right-2'>
               <ActionIcon

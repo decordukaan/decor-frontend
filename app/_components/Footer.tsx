@@ -59,7 +59,16 @@ const Footer = () => {
               </li>
               <li>
                 <Link
-                  href='/delivery-policy'
+                  href='/privacy-policy'
+                  className='inline-block pb-1 relative group'
+                >
+                  Privacy Policy
+                  <span className='absolute bottom-0 left-0 w-0 h-[2px] bg-[#373737] transition-all duration-300 sm:group-hover:w-full'></span>
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href='/shipping-policy'
                   className='inline-block pb-1 relative group'
                 >
                   Shipping Policy
@@ -84,12 +93,12 @@ const Footer = () => {
                   <span className='absolute bottom-0 left-0 w-0 h-[2px] bg-[#373737] transition-all duration-300 sm:group-hover:w-full'></span>
                 </Link>
               </li>
-              <li>
+              {/* <li>
                 <Link href='/faq' className=' pb-1 relative group'>
                   FAQs
                   <span className='absolute bottom-0 left-0 w-0 h-[2px] bg-[#373737] transition-all duration-300 sm:group-hover:w-full'></span>
                 </Link>
-              </li>
+              </li> */}
             </ul>
           </div>
           {/* Quick Links Section */}
@@ -106,12 +115,6 @@ const Footer = () => {
                   About Us
                   <span className='absolute bottom-0 left-0 w-0 h-[2px] bg-[#373737] transition-all duration-300 sm:group-hover:w-full'></span>
                 </Link>
-              </li>
-              <li>
-                <span className='inline-block pb-1 relative group'>
-                  Categories
-                  <span className='absolute bottom-0 left-0 w-0 h-[2px] bg-[#373737] transition-all duration-300 sm:group-hover:w-full'></span>
-                </span>
               </li>
               <li>
                 <Link
@@ -152,9 +155,15 @@ const Footer = () => {
               Follow Us
             </h4>
             <div className='flex items-center gap-3 mt-4'>
-              <FaInstagram className='sm:text-[30px] text-[20px] transition-all duration-300 hover:text-[#E4405F]' />
-              <RiFacebookCircleLine className='sm:text-[30px] text-[20px] transition-all duration-300 hover:text-[#1877F2]' />
-              <FaWhatsapp className='sm:text-[30px] text-[20px] transition-all duration-300 hover:text-[#25D366]' />
+              <Link href='https://www.instagram.com/decor.dukaan?igsh=MXR5aGo3ZzkzbHdleg=='>
+                <FaInstagram className='sm:text-[30px] text-[20px] transition-all duration-300 hover:text-[#E4405F]' />
+              </Link>
+              <Link href='https://www.facebook.com/share/15fW2cKAN5'>
+                <RiFacebookCircleLine className='sm:text-[30px] text-[20px] transition-all duration-300 hover:text-[#1877F2]' />
+              </Link>
+              <Link href='https://wa.link/mzhvdr'>
+                <FaWhatsapp className='sm:text-[30px] text-[20px] transition-all duration-300 hover:text-[#25D366]' />
+              </Link>
             </div>
           </div>
         </div>

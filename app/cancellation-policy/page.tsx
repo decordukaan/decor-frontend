@@ -4,7 +4,7 @@ function CancellationPolicyPage() {
       <h1 className='sm:text-[38px] text-[28px] font-bold text-[#373737] sm:mb-[38px] mb-[24px]'>
         Cancellation Policy
       </h1>
-      <p className='text-[#373737] text-sm mb-6'>Last Updated: 23-02-2025</p>
+      <p className='text-[#373737] text-sm mb-6'>Last Updated: 02-03-2025</p>
 
       <h2 className='text-[20px] font-semibold text-[#373737] mt-8 mb-4'>
         1. Order Cancellation

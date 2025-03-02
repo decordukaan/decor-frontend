@@ -15,9 +15,9 @@ const faqData = [
         <p>
           <strong>Metro Cities:</strong> 3-5 business days
           <br />
-          <strong>Tier 2 & 3 Cities:</strong> 5-7 business days
+          <strong>Tier 2 & 3 Cities:</strong> 7 business days
           <br />
-          <strong>Remote Areas:</strong> 7-10 business days
+          <strong>Remote Areas:</strong> 7 business days
         </p>
         <p>
           You will receive a tracking link once your order is shipped. In case
@@ -149,7 +149,8 @@ const faqData = [
         </p>
         <h3>Order Tracking</h3>
         <p>
-          You will receive a tracking link once your order is shipped. In case of unexpected delays, we will notify you.
+          You will receive a tracking link once your order is shipped. In case
+          of unexpected delays, we will notify you.
         </p>
         <h3>Shipping Partners</h3>
         <p>

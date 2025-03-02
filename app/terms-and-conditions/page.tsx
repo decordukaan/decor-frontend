@@ -4,11 +4,11 @@ function TermsAndConditionPage() {
       <h1 className='sm:text-[38px] text-[28px] font-bold text-[#373737] sm:mb-[38px] mb-[24px] '>
         Terms and Conditions
       </h1>
-      <p className='text-[#373737] text-sm mb-6'>Last Updated: 23-02-2025</p>
+      <p className='text-[#373737] text-sm mb-6'>Last Updated: 02-03-2025</p>
 
       <p className='sm:text-[18px] text-[16px] text-[#373737] mb-6'>
         Welcome to <strong>DecorDukaan</strong>, owned and operated by Reforms
-        Marketing Solutions. By accessing or using our website{' '}
+        Marketing Solution. By accessing or using our website{' '}
         <a
           href='https://www.decordukaan.com'
           className='text-blue-600 underline'
@@ -26,7 +26,7 @@ function TermsAndConditionPage() {
         <strong>Brand Name:</strong> DecorDukaan
       </p>
       <p className='sm:text-[18px] text-[16px]'>
-        <strong>Parent Company:</strong> Reforms Marketing Solutions
+        <strong>Parent Company:</strong> Reforms Marketing Solution
       </p>
       <p className='sm:text-[18px] text-[16px]'>
         <strong>Registered Address:</strong> 15/651 Moochikkal Tower,

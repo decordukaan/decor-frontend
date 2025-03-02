@@ -128,7 +128,7 @@ const Checkout = () => {
         key: process.env.key_id,
         amount: parseFloat(totalPrice) * 100,
         currency: 'INR',
-        name: 'Reforms Marketing Solutions',
+        name: 'Decor Dukaan',
         description: 'description',
         order_id: orderData.id,
         handler: async function (response: any) {
