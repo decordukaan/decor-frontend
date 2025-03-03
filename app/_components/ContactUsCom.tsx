@@ -14,6 +14,7 @@ import {
 } from '@mantine/core';
 import { useState } from 'react';
 import GlobalApi from '../_utils/GlobalApi';
+import { GoogleMapsEmbed } from '@next/third-parties/google';
 
 function ContactUsCom() {
   const form = useForm({
@@ -157,36 +158,19 @@ function ContactUsCom() {
               </Grid.Col>
 
               {/* Map Section */}
+              {/* Map Section */}
               <Grid.Col span={{ base: 12, md: 6 }}>
                 <Paper shadow='sm' radius='md'>
-                  <div
-                    className='mapouter'
-                    style={{
-                      position: 'relative',
-                      textAlign: 'right',
-                      width: '100%',
-                      height: '400px',
-                    }}
-                  >
-                    <div
-                      className='gmap_canvas'
-                      style={{
-                        overflow: 'hidden',
-                        background: 'none!important',
-                        width: '100%',
-                        height: '400px',
-                      }}
-                    >
-                      <iframe
-                        className='gmap_iframe'
-                        frameBorder='0'
-                        scrolling='no'
-                        marginHeight={0}
-                        marginWidth={0}
-                        src='https://maps.google.com/maps?width=600&height=400&hl=en&q=Moochikkal tirur&t=&z=14&ie=UTF8&iwloc=B&output=embed'
-                        style={{ width: '100%', height: '400px' }}
-                      ></iframe>
-                    </div>
+                  <div style={{ width: '100%', height: '400px' }}>
+                    <iframe
+                      src='https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3916.5170763426396!2d75.92281307484825!3d10.998444155738615!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3ba7b14f1f6c8a8f%3A0x5f116a8f2a8bd1eb!2sWWM5%2BW2%20Tirur%2C%20Kerala!5e0!3m2!1sen!2sin!4v1709215391112!5m2!1sen!2sin'
+                      width='100%'
+                      height='400'
+                      style={{ border: 0 }}
+                      allowFullScreen={false}
+                      loading='lazy'
+                      referrerPolicy='no-referrer-when-downgrade'
+                    ></iframe>
                   </div>
                 </Paper>
               </Grid.Col>

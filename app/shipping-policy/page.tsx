@@ -11,8 +11,8 @@ function ShippingPolicyPage() {
         <h2 className='text-2xl font-semibold mb-4'>Delivery Timelines</h2>
         <ul className='list-disc pl-5 space-y-2'>
           <li>
-            <strong>All India Delivery:</strong> Orders are delivered within 7
-            working days.
+            <strong>All India Delivery:</strong> Orders are typically delivered
+            within 5 to 7 working days.
           </li>
           <li>
             <strong>Order Processing:</strong> Orders are processed within 2

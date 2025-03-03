@@ -1,3 +1,5 @@
+'use client';
+
 import {
   FaInstagram,
   FaFacebookF,
@@ -9,8 +11,15 @@ import { MdOutlineMailOutline } from 'react-icons/md';
 import { IoIosCall } from 'react-icons/io';
 import Link from 'next/link';
 import Image from 'next/image';
+import { useEffect, useState } from 'react';
 
 const Footer = () => {
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
+
   return (
     <footer>
       <div
@@ -39,108 +48,67 @@ const Footer = () => {
               Support
             </h4>
             <ul className='sm:text-base text-[14px] text-[#373737] sm:mt-4 mt-2 sm:space-y-2'>
-              <li>
-                <Link
-                  href='/contact-us'
-                  className='inline-block pb-1 relative group'
-                >
-                  Contact Us
-                  <span className='absolute bottom-0 left-0 w-0 h-[2px] bg-[#373737] transition-all duration-300 sm:group-hover:w-full'></span>
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href='/terms-and-conditions'
-                  className='inline-block pb-1 relative group'
-                >
-                  Terms & Conditions
-                  <span className='absolute bottom-0 left-0 w-0 h-[2px] bg-[#373737] transition-all duration-300 sm:group-hover:w-full'></span>
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href='/privacy-policy'
-                  className='inline-block pb-1 relative group'
-                >
-                  Privacy Policy
-                  <span className='absolute bottom-0 left-0 w-0 h-[2px] bg-[#373737] transition-all duration-300 sm:group-hover:w-full'></span>
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href='/shipping-policy'
-                  className='inline-block pb-1 relative group'
-                >
-                  Shipping Policy
-                  <span className='absolute bottom-0 left-0 w-0 h-[2px] bg-[#373737] transition-all duration-300 sm:group-hover:w-full'></span>
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href='/payment-refund-policy'
-                  className='inline-block pb-1 relative group'
-                >
-                  Payment Refund Policy
-                  <span className='absolute bottom-0 left-0 w-0 h-[2px] bg-[#373737] transition-all duration-300 sm:group-hover:w-full'></span>
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href='/cancellation-policy'
-                  className='inline-block pb-1 relative group'
-                >
-                  Cancellation Policy
-                  <span className='absolute bottom-0 left-0 w-0 h-[2px] bg-[#373737] transition-all duration-300 sm:group-hover:w-full'></span>
-                </Link>
-              </li>
-              {/* <li>
-                <Link href='/faq' className=' pb-1 relative group'>
-                  FAQs
-                  <span className='absolute bottom-0 left-0 w-0 h-[2px] bg-[#373737] transition-all duration-300 sm:group-hover:w-full'></span>
-                </Link>
-              </li> */}
+              {[
+                { href: '/contact-us', text: 'Contact Us' },
+                { href: '/terms-and-conditions', text: 'Terms & Conditions' },
+                { href: '/privacy-policy', text: 'Privacy Policy' },
+                { href: '/shipping-policy', text: 'Shipping Policy' },
+                {
+                  href: '/payment-refund-policy',
+                  text: 'Payment Refund Policy',
+                },
+                { href: '/cancellation-policy', text: 'Cancellation Policy' },
+              ].map((item, index) => (
+                <li key={index}>
+                  <Link
+                    href={item.href}
+                    className='inline-block pb-1 relative group'
+                  >
+                    {item.text}
+                    <span className='absolute bottom-0 left-0 w-0 h-[2px] bg-[#373737] transition-all duration-300 sm:group-hover:w-full'></span>
+                  </Link>
+                </li>
+              ))}
             </ul>
           </div>
+
           {/* Quick Links Section */}
           <div>
             <h4 className='sm:text-lg text-[16px] font-semibold text-[#373737]'>
               Quick Links
             </h4>
             <ul className='sm:text-base text-[14px] text-[#373737] sm:mt-4 mt-2 sm:space-y-2'>
-              <li>
-                <Link
-                  href='/about-us'
-                  className='inline-block pb-1 relative group'
-                >
-                  About Us
-                  <span className='absolute bottom-0 left-0 w-0 h-[2px] bg-[#373737] transition-all duration-300 sm:group-hover:w-full'></span>
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href='/all-products'
-                  className='inline-block pb-1 relative group'
-                >
-                  Products
-                  <span className='absolute bottom-0 left-0 w-0 h-[2px] bg-[#373737] transition-all duration-300 sm:group-hover:w-full'></span>
-                </Link>
-              </li>
+              {[
+                { href: '/about-us', text: 'About Us' },
+                { href: '/all-products', text: 'Products' },
+              ].map((item, index) => (
+                <li key={index}>
+                  <Link
+                    href={item.href}
+                    className='inline-block pb-1 relative group'
+                  >
+                    {item.text}
+                    <span className='absolute bottom-0 left-0 w-0 h-[2px] bg-[#373737] transition-all duration-300 sm:group-hover:w-full'></span>
+                  </Link>
+                </li>
+              ))}
             </ul>
           </div>
+
           {/* Get in Touch Section */}
           <div>
             <h4 className='sm:text-lg text-[16px] font-semibold text-[#373737]'>
               Get in touch
             </h4>
             <ul className='sm:text-base text-[14px] text-[#373737] sm:mt-4 mt-2 sm:space-y-2'>
-              <li className=' flex items-center sm:gap-2'>
+              <li className='flex items-center sm:gap-2'>
                 <IoIosCall className='sm:text-[30px] sm:block hidden text-[20px]' />
                 <span className='inline-block pb-1 relative group'>
                   +91 9895560404
                   <span className='absolute bottom-0 left-0 w-0 h-[2px] bg-[#373737] transition-all duration-300 sm:group-hover:w-full'></span>
                 </span>
               </li>
-              <li className=' flex items-center sm:gap-2'>
+              <li className='flex items-center sm:gap-2'>
                 <MdOutlineMailOutline className='sm:text-[30px] sm:block hidden text-[20px]' />
                 <span className='inline-block pb-1 relative group'>
                   info@decordukaan.com
@@ -149,32 +117,57 @@ const Footer = () => {
               </li>
             </ul>
           </div>
+
           {/* Follow Us Section */}
           <div>
             <h4 className='sm:text-lg text-[16px] font-semibold text-[#373737]'>
               Follow Us
             </h4>
             <div className='flex items-center gap-3 mt-4'>
-              <Link href='https://www.instagram.com/decor.dukaan?igsh=MXR5aGo3ZzkzbHdleg=='>
-                <FaInstagram className='sm:text-[30px] text-[20px] transition-all duration-300 hover:text-[#E4405F]' />
-              </Link>
-              <Link href='https://www.facebook.com/share/15fW2cKAN5'>
-                <RiFacebookCircleLine className='sm:text-[30px] text-[20px] transition-all duration-300 hover:text-[#1877F2]' />
-              </Link>
-              <Link href='https://wa.link/mzhvdr'>
-                <FaWhatsapp className='sm:text-[30px] text-[20px] transition-all duration-300 hover:text-[#25D366]' />
-              </Link>
+              {[
+                {
+                  href: 'https://www.instagram.com/decor.dukaan?igsh=MXR5aGo3ZzkzbHdleg==',
+                  icon: (
+                    <FaInstagram className='text-[20px] sm:text-[30px] hover:text-[#E4405F]' />
+                  ),
+                },
+                {
+                  href: 'https://www.facebook.com/share/15fW2cKAN5',
+                  icon: (
+                    <RiFacebookCircleLine className='text-[20px] sm:text-[30px] hover:text-[#1877F2]' />
+                  ),
+                },
+                {
+                  href: 'https://wa.link/mzhvdr',
+                  icon: (
+                    <FaWhatsapp className='text-[20px] sm:text-[30px] hover:text-[#25D366]' />
+                  ),
+                },
+              ].map((item, index) => (
+                <Link
+                  key={index}
+                  href={item.href}
+                  target='_blank'
+                  rel='noopener noreferrer'
+                >
+                  {item.icon}
+                </Link>
+              ))}
             </div>
           </div>
         </div>
-        <div className='sm:pb-[0px] pb-[30px] pt-[40px] sm:pt-[0px] flex justify-center'>
-          <Link
-            href='/'
-            className='text-[34px] sm:text-[130px] font-bold text-yellow-600 text-opacity-40 text-center'
-          >
-            D E C O R D U K A A N
+
+        <div className='sm:pb-0 pb-[30px] pt-[40px] sm:pt-0 text-center'>
+          <Link href='/'>
+            <span className='text-[34px] sm:text-[130px] font-bold text-yellow-600 text-opacity-40'>
+              D E C O R D U K A A N
+            </span>
           </Link>
         </div>
+      </div>
+
+      <div className='text-center'>
+        Marketed by Reforms Marketing Solution, © 2025. All rights reserved.
       </div>
     </footer>
   );

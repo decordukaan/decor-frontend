@@ -28,6 +28,7 @@ import { Notifications } from '@mantine/notifications';
 import { WishListContext } from './_context/WishListContext';
 import { StockProvider } from './_context/StockContext';
 import Script from 'next/script';
+import { GoogleTagManager, GoogleAnalytics } from '@next/third-parties/google';
 
 const outfit = Outfit({ subsets: ['latin'] });
 
@@ -56,6 +57,9 @@ export default function RootLayout({
                   id='razorpay-checkout-js'
                   src='https://checkout.razorpay.com/v1/checkout.js'
                 />
+                <GoogleTagManager gtmId='GTM-N7MTTGPW' />
+                <GoogleAnalytics gaId='G-04S1DLREZC' />
+                {/* Google Analytics */}
               </head>
               <body className={outfit.className}>
                 <MantineProvider

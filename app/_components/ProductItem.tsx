@@ -10,8 +10,10 @@ import {
   ActionIcon,
   Button,
   Skeleton,
+  Anchor,
 } from '@mantine/core';
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 
 interface ProductItemProps {
   product: Product;
@@ -39,6 +41,7 @@ const ProductItem = ({
   stockQuantityLoaded,
 }: ProductItemProps) => {
   const [isAddingToCart, setIsAddingToCart] = useState(false);
+  const router = useRouter(); // Initialize the router
 
   const handleAddToCart = async (e: React.MouseEvent) => {
     e.preventDefault();
@@ -51,8 +54,18 @@ const ProductItem = ({
     }
   };
 
+  const handleSignInRedirect = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    router.push('/sign-in'); // Use router to navigate
+  };
+
   return (
-    <Link href={`/product-detail/${product.id}`} className='block h-full'>
+    <Anchor
+      style={{ textDecoration: 'none' }}
+      href={`/product-detail/${product.id}`}
+      className='block h-full'
+    >
       <Card
         shadow='sm'
         radius='md'
@@ -130,16 +143,15 @@ const ProductItem = ({
             {!stockQuantityLoaded ? (
               <Skeleton height={36} width='100%' />
             ) : !isUserLoggedIn ? (
-              <Link className='w-full flex' href='/sign-in' passHref>
-                <Button
-                  variant='light'
-                  color={isOutOfStock ? 'gray' : 'yellow'}
-                  leftSection={<ShoppingCart />}
-                  fullWidth
-                >
-                  {isOutOfStock ? 'Out of Stock' : 'Sign in to Add to Cart'}
-                </Button>
-              </Link>
+              <Button
+                variant='light'
+                color={isOutOfStock ? 'gray' : 'yellow'}
+                leftSection={<ShoppingCart />}
+                fullWidth
+                onClick={handleSignInRedirect} // Use the redirect handler
+              >
+                {isOutOfStock ? 'Out of Stock' : 'Sign in to Add to Cart'}
+              </Button>
             ) : (
               <Button
                 variant='light'
@@ -157,7 +169,7 @@ const ProductItem = ({
           </Group>
         </div>
       </Card>
-    </Link>
+    </Anchor>
   );
 };
 

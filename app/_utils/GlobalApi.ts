@@ -24,8 +24,6 @@ const getAllProducts = (currentPage: number = 1, pageSize: number = 25) => {
   );
 };
 
-
-
 // get product by id
 const getProductById = (id: number | string) =>
   axiosClient.get('/products/' + id + '?populate=*');
@@ -35,7 +33,6 @@ const getFeaturedProducts = () =>
   axiosClient.get(
     '/products?filters[featured][$eq]=true&filters[sale][$eq]=true&sort=createdAt:desc&populate=*'
   );
-
 
 // get latest products
 const getLatestProducts = (limit: number = 10) =>
@@ -205,7 +202,11 @@ const getWishListProductList = (email: string) =>
 
 // To get products by category
 
-const getProductsByCategory = async (categoryId: string, page = 1, pageSize = 25) => {
+const getProductsByCategory = async (
+  categoryId: string,
+  page = 1,
+  pageSize = 25
+) => {
   try {
     const categoryRes = await getCategoryById(categoryId);
     if (!categoryRes.data || !categoryRes.data.data) {
@@ -215,8 +216,8 @@ const getProductsByCategory = async (categoryId: string, page = 1, pageSize = 25
 
     return axiosClient.get(
       `/products?filters[product_category][id][$eq]=${categoryId}&populate=*` +
-      `&pagination[page]=${page}&pagination[pageSize]=${pageSize}` +
-      `&sort=createdAt:desc,updatedAt:desc&filters[sale][$eq]=true`
+        `&pagination[page]=${page}&pagination[pageSize]=${pageSize}` +
+        `&sort=createdAt:desc,updatedAt:desc&filters[sale][$eq]=true`
     );
   } catch (error) {
     console.error('Error fetching products by category:', error);
@@ -500,7 +501,6 @@ const fetchOrderById = async (orderId: string) => {
   }
 };
 
-
 const createOrder = async (orderData: any) => {
   try {
     const response = await axiosClient.post('/orders', { data: orderData });
@@ -511,15 +511,13 @@ const createOrder = async (orderData: any) => {
   }
 };
 
-
 const validateOrderById = async (
   orderId: string
 ): Promise<OrderValidationResult> => {
   try {
-    // Fetch the order by its ID
     const response = await axiosClient.get(`/orders/${orderId}`, {
       params: {
-        populate: '*', // Ensure related fields are included
+        populate: '*',
       },
     });
 
@@ -531,7 +529,6 @@ const validateOrderById = async (
 
     const order = response.data.data;
 
-    // Check if the payment status is completed
     if (
       order.attributes.payment_step?.data?.attributes?.status !== 'Pending' &&
       order.attributes.payment_step?.data?.attributes?.status !== 'Completed'
@@ -545,13 +542,16 @@ const validateOrderById = async (
     return {
       isValid: true,
       orderDetails: {
+        id: order.id,
+        total: order.attributes.total,
         totalPrice: order.attributes.total_price,
         orderId: order.id,
         createdAt: order.attributes.createdAt,
         status: order.attributes.order_status,
+        email: order.attributes.email,
         items: order.attributes.order_items_list.map((item: any) => ({
           id: item.id,
-          name: item.name || 'Unknown Item', // Fallback for missing name
+          name: item.name || 'Unknown Item',
           quantity: item.quantity,
           price: item.price,
         })),
@@ -562,7 +562,6 @@ const validateOrderById = async (
     throw error;
   }
 };
-
 
 const getUserOrderItems = (email: string, page: number = 1) =>
   axiosClient.get('/orders', {
@@ -584,7 +583,7 @@ const getUserOrderItems = (email: string, page: number = 1) =>
         page,
         pageSize: 10, // Change this to the required page size
       },
-      sort: ['createdAt:desc'], 
+      sort: ['createdAt:desc'],
     },
   });
 
@@ -625,7 +624,10 @@ const getStockByProductId = async (id: number) => {
 const updateStockByProductId = async (id: number, newStockQuantity: number) => {
   const productResponse = await axiosClient.get(`/products/${id}`);
   const product = productResponse.data.data;
-  if (product.attributes.stock_quantity === null || product.attributes.stock_quantity <= 0) {
+  if (
+    product.attributes.stock_quantity === null ||
+    product.attributes.stock_quantity <= 0
+  ) {
     console.log('Product is abundant or Stock update not required.');
     return;
   }
@@ -679,5 +681,5 @@ export default {
   getUserOrderItems,
   addContactForm,
   getStockByProductId,
-  updateStockByProductId
+  updateStockByProductId,
 };
