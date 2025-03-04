@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: decor-dukaan-frontend
+  labels:
+    app: decor-dukaan-frontend
+spec:
+  type: LoadBalancer
+  ports:
+    - port: 80
+      targetPort: 3000
+  selector:
+    app: decor-dukaan-frontend

@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: decor-dukaan-frontend
+  labels:
+    app: decor-dukaan-frontend
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: decor-dukaan-frontend
+  template:
+    metadata:
+      labels:
+        app: decor-dukaan-frontend
+    spec:
+      containers:
+        - name: decor-dukaan-frontend
+          image: <your-docker-image>:<tag>
+          ports:
+            - containerPort: 3000
+          env:
+            - name: NODE_ENV
+              value: 'production'
+          # Add other environment variables as needed
