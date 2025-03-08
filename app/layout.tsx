@@ -47,6 +47,13 @@ export default function RootLayout({
           <WishListContext.Provider value={{ wishListItems, setWishListItems }}>
             <html lang='en' {...mantineHtmlProps}>
               <head>
+              <title>Decor Dukaan - Transforming Spaces with Elegance and Style</title>
+    <meta
+      name='description'
+      content='Discover Decor Dukaan, where we blend elegance with functionality to transform your spaces. Our curated collection of home decor items is designed to inspire and elevate your living environment. Explore our range of stylish and high-quality products that cater to every taste and preference.'
+    />
+    <meta name="google-site-verification" content="Vhj8cONYHe2iWkLUb-haNgo24VZNpw1Kijmh7UUknbg" />
+    <meta name="google-site-verification" content="C1tTbTZzKWQFnQNijPPqTVcvATtbYZlE0CPAcH5foj4" />
                 <ColorSchemeScript />
                 <Script
                   id='razorpay-checkout-js'
