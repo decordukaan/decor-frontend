@@ -1,6 +1,5 @@
 import { useContext, useEffect, useRef } from 'react';
 import { CartContext } from '../_context/CartContext';
-import { Product } from '../types/products';
 import { Button } from '@mantine/core';
 
 const Cart = ({ openCart, setOpenCart }: any) => {

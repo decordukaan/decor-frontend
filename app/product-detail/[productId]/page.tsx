@@ -9,6 +9,7 @@ import { Product } from '@/app/types/products';
 import ProductList from '@/app/_components/ProductList';
 import { Skeleton } from '@mantine/core';
 import ProductJsonLd from '@/app/_components/ProductJsonLd';
+import ProductOgData from '@/app/_components/ProductOgData';
 
 interface ProductDetailProps {
   params: Promise<{
@@ -61,6 +62,7 @@ const ProductDetail = ({ params }: ProductDetailProps) => {
   return (
     <>
       {productDetail && <ProductJsonLd product={productDetail} />}
+      {productDetail && <ProductOgData product={productDetail} />}
       <div className='sm:py-[72px] py-[52px] px-[20px] md:px-28'>
         <div className='grid grid-cols-1 sm:grid-cols-2 gap-5 sm:gap-0'>
           <ProductBanner product={productDetail} />

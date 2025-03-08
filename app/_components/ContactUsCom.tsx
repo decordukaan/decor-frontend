@@ -12,9 +12,8 @@ import {
   Group,
   Text,
 } from '@mantine/core';
-import { useState } from 'react';
 import GlobalApi from '../_utils/GlobalApi';
-import { GoogleMapsEmbed } from '@next/third-parties/google';
+
 
 function ContactUsCom() {
   const form = useForm({
@@ -157,7 +156,6 @@ function ContactUsCom() {
                 </Paper>
               </Grid.Col>
 
-              {/* Map Section */}
               {/* Map Section */}
               <Grid.Col span={{ base: 12, md: 6 }}>
                 <Paper shadow='sm' radius='md'>
