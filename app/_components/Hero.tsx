@@ -18,7 +18,6 @@ const Hero = () => {
   //   autoplay.current = Autoplay({ delay: 4000 });
   // }, []);
 
-
   return (
     <section>
       <div>
@@ -44,15 +43,16 @@ const Hero = () => {
                   radius={0}
                   style={{
                     backgroundImage: `url(${
-                      product.attributes?.cover?.data?.attributes?.url || '/images/default.png'
+                      product.attributes?.cover?.data?.attributes?.url ||
+                      '/images/default.png'
                     })`,
-
                   }}
                   className={`${classes.card}`}
                 >
-                  <div className='flex flex-col justify-center items-center'>
+                  <div className='flex flex-col justify-center items-center md:mt-[200px] xl:mt-0'>
                     <Text className={classes.category} size='xs'>
-                      {product?.attributes?.product_category?.data?.attributes.title || ''}
+                      {product?.attributes?.product_category?.data?.attributes
+                        .title || ''}
                     </Text>
                     <h3 className='sm:text-[22px] font-bold text-[16px] text-white max-w-lg text-center sm:pt-[24px] pt-[18px]'>
                       {product.attributes?.title || 'Product Name'}
@@ -76,10 +76,12 @@ const Hero = () => {
           </Carousel>
         )}
       </div>
-      <div className='mt-[64px] sm:mt-[140px] mx-[20px] sm:mx-0'>
-        <h1 className='sm:text-[46px] text-[32px] leading-[32px] flex flex-col items-center text-center sm:leading-[46px] font-bold text-[#373737]'>
+      <div className='mt-[64px] xl:mt-[140px] mx-[20px] sm:mx-0'>
+        <h1 className='xl:text-[46px] md:text-[36px] text-[32px] leading-[32px] flex flex-col items-center text-center sm:leading-[46px] font-bold text-[#373737]'>
           Transform Your Home into a Heaven –{' '}
-          <span className='text-yellow-500 text-center'>Welcome to Decor Dukaan</span>
+          <span className='text-yellow-500 text-center'>
+            Welcome to Decor Dukaan
+          </span>
         </h1>
         <p className='sm:text-[20px] text-[16px] leading-[18px] text-center mt-[24px] sm:leading-[24px] text-[#373737]'>
           "Curate a space that resonates with your soul –
@@ -94,8 +96,8 @@ const Hero = () => {
           <br className='sm:block hidden' /> uniquely yours."
         </p>
       </div>
-      <div className='mx-[20px] sm:mx-0'>
-      <Categories />
+      <div className='mx-[20px] md:mx-[60px] xl:mx-0'>
+        <Categories />
       </div>
     </section>
   );

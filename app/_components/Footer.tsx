@@ -40,8 +40,8 @@ const Footer = () => {
           </Link>
         </div>
       </div>
-      <div className='container mx-auto sm:mt-12 sm:px-0 px-[20px] py-6'>
-        <div className='grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 sm:gap-6 gap-9'>
+      <div className='container mx-auto sm:mt-12 md:px-[60px] xl:px-0 px-[20px] py-6'>
+        <div className='grid grid-cols-2  md:grid-cols-4 sm:gap-6 gap-9'>
           {/* Support Section */}
           <div>
             <h4 className='sm:text-lg text-[16px] font-semibold text-[#373737]'>
@@ -159,7 +159,7 @@ const Footer = () => {
 
         <div className='sm:pb-0 pb-[30px] pt-[40px] sm:pt-0 text-center'>
           <Link href='/'>
-            <span className='text-[34px] sm:text-[130px] font-bold text-yellow-600 text-opacity-40'>
+            <span className='text-[34px] md:text-[60px] lg:text-[90px] xl:text-[130px] font-bold text-yellow-600 text-opacity-40'>
               D E C O R D U K A A N
             </span>
           </Link>

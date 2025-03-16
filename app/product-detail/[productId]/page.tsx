@@ -64,7 +64,7 @@ const ProductDetail = ({ params }: ProductDetailProps) => {
       {productDetail && <ProductJsonLd product={productDetail} />}
       {productDetail && <ProductOgData product={productDetail} />}
       <div className='sm:py-[72px] py-[52px] px-[20px] md:px-28'>
-        <div className='grid grid-cols-1 sm:grid-cols-2 gap-5 sm:gap-0'>
+        <div className='grid grid-cols-1 sm:grid-cols-2 gap-5 md:gap-14 xl:gap-0'>
           <ProductBanner product={productDetail} />
           <ProductInfo product={productDetail} />
         </div>

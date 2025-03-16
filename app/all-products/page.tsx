@@ -22,8 +22,6 @@ function AllProducts() {
   );
   const [activeTab, setActiveTab] = useState('All');
 
-
-
   const pageSize = 25;
 
   useEffect(() => {
@@ -121,7 +119,7 @@ function AllProducts() {
 
   return (
     <div className='container mx-auto sm:my-[72px] my-[48px]'>
-      <div className='mx-[20px] sm:mx-0'>
+      <div className='mx-[20px] md:mx-[60px] xl:mx-0'>
         <Tabs value={activeTab} onChange={(tab) => setActiveTab(tab || 'All')}>
           <Tabs.List className='tabs-list sm:overflow-hidden overflow-x-auto flex'>
             <Tabs.Tab value='All'>All Products</Tabs.Tab>
@@ -140,8 +138,7 @@ function AllProducts() {
                 ))}
               </div>
             ) : (
-
-             <ProductList products={products['All'] || []} />
+              <ProductList products={products['All'] || []} />
             )}
             <MainPagination
               total={Math.ceil((totalProducts['All'] || 0) / pageSize)}
@@ -159,9 +156,7 @@ function AllProducts() {
                   ))}
                 </div>
               ) : (
-
-                  <ProductList products={products[category.title] || []} />
-
+                <ProductList products={products[category.title] || []} />
               )}
               <MainPagination
                 total={Math.ceil(
